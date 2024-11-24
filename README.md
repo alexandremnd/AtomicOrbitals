@@ -1,6 +1,6 @@
 # AtomicOrbitals
 
-<div align="center>
+<div align="center">
     <a href="https://github.com/alexandremnd/AtomicOrbitals">
         <img src="img/illustration.png" alt="Logo", width="180", height="180">
     </a>
