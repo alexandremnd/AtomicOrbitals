@@ -25,7 +25,17 @@ Eigen::MatrixXd kinetic_matrix(int N, double dr) {
     return T;
 }
 
+void copyright_warranty() {
+    std::cout << "======================================\n";
+    std::cout << "AtomicOrbitals Copyright (C) 2024 by Ewan Bataille, Jéremy Atané and Alexandre Menard\n";
+    std::cout << "This program comes with ABSOLUTELY NO WARRANTY;\n";
+    std::cout << "This is free software, and you are welcome to\n";
+    std::cout << "redistribute it under certain conditions;\n";
+    std::cout << "======================================\n\n\n";
+}
+
 int main() {
+    copyright_warranty();
     double r_min = 0.00001;
     double r_max = 50.0;
     int N = 1000;
