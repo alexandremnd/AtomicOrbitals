@@ -4,6 +4,9 @@
 #include "include/Eigen/Dense"
 #include <iostream>
 
+#include "include/HartreeFock/hartree_fock.hpp"
+#include "include/BasisSet/gaussian_primitive.hpp"
+
 Eigen::MatrixXd potential_matrix(int N, double r_min, double dr, int L, int Z) {
     Eigen::MatrixXd V(N, N);
     for (int i = 0; i < N; i++) {
@@ -42,6 +45,8 @@ int main() {
     int L = 0;
     int Z = 1;
     double dr = (r_max - r_min) / N;
+
+    HartreeFock<GaussianPrimitive> hf();
 
     Eigen::MatrixXd hamiltonian = -kinetic_matrix(N, dr) + potential_matrix(N, r_min, dr, L, Z);
 

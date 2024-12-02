@@ -12,8 +12,3 @@
 #else
     #warning SSE is not available
 #endif
-
-int main() {
-    Atom He = Atom(2);
-    std::cout << He.getEnergyLevel(1);
-}
