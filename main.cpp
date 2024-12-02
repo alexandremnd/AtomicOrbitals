@@ -46,8 +46,6 @@ int main() {
     int Z = 1;
     double dr = (r_max - r_min) / N;
 
-    HartreeFock<GaussianPrimitive> hf();
-
     Eigen::MatrixXd hamiltonian = -kinetic_matrix(N, dr) + potential_matrix(N, r_min, dr, L, Z);
 
     // eigenvalues of selfadjoint m
