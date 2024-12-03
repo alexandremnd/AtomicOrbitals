@@ -1,11 +1,5 @@
-#define EIGEN_USE_BLAS
-#define EIGEN_USE_LAPACKE
-
 #include "include/Eigen/Dense"
 #include <iostream>
-
-#include "include/HartreeFock/hartree_fock.hpp"
-#include "include/BasisSet/gaussian_primitive.hpp"
 
 Eigen::MatrixXd potential_matrix(int N, double r_min, double dr, int L, int Z) {
     Eigen::MatrixXd V(N, N);
@@ -34,7 +28,7 @@ void copyright_warranty() {
     std::cout << "This program comes with ABSOLUTELY NO WARRANTY;\n";
     std::cout << "This is free software, and you are welcome to\n";
     std::cout << "redistribute it under certain conditions;\n";
-    std::cout << "======================================\n\n\n";
+    std::cout << "======================================\n\n";
 }
 
 int main() {
@@ -55,7 +49,6 @@ int main() {
     {
         std::cout << "The " << i << "th eigenvalue is: " << es.eigenvalues()[i]/2 << std::endl;
     }
-
 
     return 0;
 }
