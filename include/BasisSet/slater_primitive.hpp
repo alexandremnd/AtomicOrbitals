@@ -1,10 +1,16 @@
 #pragma once
 
 #include <boost/math/special_functions/gamma.hpp>
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
 
 class SlaterPrimitive {
 public:
     SlaterPrimitive(const int n, const int l, const int m, const double alpha) : m_alpha(alpha), m_n(n), m_l(l), m_m(m) {
+        assert(n > 0);
+        assert(0 <= l || l < n);
+        assert(abs(m) <= l);
         normalization_constant = std::pow(2 * alpha, n + 0.5) / std::sqrt(boost::math::tgamma(2 * n + 1));
     }
 

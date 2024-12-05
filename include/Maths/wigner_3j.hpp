@@ -1,7 +1,6 @@
 #pragma once
 
-#include "include/Maths/factorial.hpp"
-
+#include <boost/math/special_functions/gamma.hpp>
 #include <cmath>
 #include <algorithm>
 
@@ -11,7 +10,6 @@ namespace Math
      * @brief Computes the Wigner's 3-j symbol
      *
      * Definition given in: https://en.wikipedia.org/wiki/3-j_symbol
-     * Logarithmic gamma function is used to avoid (long) integer overflow, at the cost of precision.
      *
      * @param j1 First angular momentum quantum number
      * @param j2 Second angular momentum quantum number
@@ -34,49 +32,46 @@ namespace Math
             return 0.0;
         }
 
-        int phase_factor = ((j1 + j2 - m3 % 2) == 0) ? 1 : -1;
+        double phase_factor = ((j1 + j2 - m3) % 2) == 0 ? 1. : -1.;
 
         // Summation bounds for sum from k=K to N
         long int N = std::min({j1 + j2 - j3, j1 - m1, j2 + m2});
         long int K = std::max({0, j2 - j3 - m1, j1 - j3 + m2});
 
-        long int t1 = j1 + j2 - j3;
-        long int t2 = j1 - m1;
-        long int t3 = j2 + m2;
-        long int t4 = j3 - j2 + m1;
-        long int t5 = j3 - j1 - m2;
+        double t1 = j1 + j2 - j3;
+        double t2 = j1 - m1;
+        double t3 = j2 + m2;
+        double t4 = j3 - j2 + m1;
+        double t5 = j3 - j1 - m2;
 
         double sum = ((K % 2) == 0) ? 1.0 : -1.0;
-        double term = std::exp(
-            - std::lgamma(K + 1)
-            - std::lgamma(t1 - K + 1)
-            - std::lgamma(t2 - K + 1)
-            - std::lgamma(t3 - K + 1)
-            - std::lgamma(t4 + K + 1)
-            - std::lgamma(t5 + K + 1)
-        );
+        double term = boost::math::tgamma(K + 1)
+                    / boost::math::tgamma(t1 - K + 1)
+                    / boost::math::tgamma(t2 - K + 1)
+                    / boost::math::tgamma(t3 - K + 1)
+                    / boost::math::tgamma(t4 + K + 1)
+                    / boost::math::tgamma(t5 + K + 1);
         sum *= term;
 
-        for (int k = K; k < N; k++) {
-            term *= -1.0/(k + 1);
-            term *= (t1 - k) * (t2 - k) * (t3 - k);
-            term /= (t4 + k + 1) * (t5 + k + 1);
+        // Recurrence relation used on the sum over L in 3j symbol
+        for (int i = K; i < N; i++) {
+            term *= -1.0/(i + 1);
+            term *= (t1 - i) * (t2 - i) * (t3 - i);
+            term /= (t4 + i + 1) * (t5 + i + 1);
             sum += term;
         }
 
         double prefactor = phase_factor * std::sqrt(
-            std::exp(
-                std::lgamma(j1 + j2 - j3 + 1) +
-                std::lgamma(j1 - j2 + j3 + 1) +
-                std::lgamma(-j1 + j2 + j3 + 1) -
-                std::lgamma(j1 + j2 + j3 + 2) +
-                std::lgamma(j1 - m1 + 1) +
-                std::lgamma(j1 + m1 + 1) +
-                std::lgamma(j2 - m2 + 1) +
-                std::lgamma(j2 + m2 + 1) +
-                std::lgamma(j3 - m3 + 1) +
-                std::lgamma(j3 + m3 + 1)
-            )
+            boost::math::tgamma(j1 + j2 - j3 + 1)
+            * boost::math::tgamma(j1 - j2 + j3 + 1)
+            * boost::math::tgamma(-j1 + j2 + j3 + 1)
+            / boost::math::tgamma(j1 + j2 + j3 + 2)
+            * boost::math::tgamma(j1 - m1 + 1)
+            * boost::math::tgamma(j1 + m1 + 1)
+            * boost::math::tgamma(j2 - m2 + 1)
+            * boost::math::tgamma(j2 + m2 + 1)
+            * boost::math::tgamma(j3 - m3 + 1)
+            * boost::math::tgamma(j3 + m3 + 1)
         );
 
         return prefactor * sum;
