@@ -2,8 +2,8 @@ CXX := g++
 PYTHON_LIBS := $(shell python3-config --ldflags)
 BOOST_LIBS := -lboost_system -lboost_filesystem
 PYTHON_INCLUDE := $(shell python3-config --includes)
-LIBRARIES := -fopenmp -llapack -llapacke -lopenblas $(BOOST_LIBS) $(PYTHON_LIBS)
-CXXFLAGS := -I./ $(PYTHON_INCLUDE) -Wall -Wextra -std=c++2b $(LIBRARIES) -march=native # may add -o3 -ffast-math to benchmark
+LIBRARIES := $(BOOST_LIBS) $(PYTHON_LIBS) # -fopenmp -llapack -llapacke -lopenblas
+CXXFLAGS := -I./include/ $(PYTHON_INCLUDE) -Wall -Wextra -Wunused-parameter -std=c++2b $(LIBRARIES) -march=native # may add -o3 -ffast-math to benchmark
 SRC_DIR := ./src
 INC_DIR := ./include
 BUILD_DIR := ./build

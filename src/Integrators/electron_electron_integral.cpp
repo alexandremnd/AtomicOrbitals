@@ -1,5 +1,6 @@
 #include "include/Integrators/electron_electron_integral.hpp"
 #include <stdexcept>
+#include "Integrators/electron_electron_integral.hpp"
 
 double electron_electron_integral(const GaussianPrimitive &orbital1, const GaussianPrimitive &orbital2, const GaussianPrimitive &orbital3, const GaussianPrimitive &orbital4)
 {

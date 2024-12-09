@@ -1,4 +1,4 @@
-#include "include/Atom/atom.hpp"
+#include "Atom/atom.hpp"
 
 float Atom::getEnergyLevel(int n)
 {

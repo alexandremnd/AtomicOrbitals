@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "include/BasisSet/gaussian_primitive.hpp"
+#include "BasisSet/gaussian_primitive.hpp"
 
 class ContractedGaussian {
 public:
@@ -10,6 +10,10 @@ public:
         : m_coefficients(coefficients), m_primitives(primitives) {}
 
     double evaluate(double x, double y, double z) const {}
+
+    const int get_gaussian_count() const {
+        return m_primitives.size();
+    }
 
     double get_coefficient(int i) const {
         return m_coefficients[i];

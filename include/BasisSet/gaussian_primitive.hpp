@@ -1,6 +1,6 @@
 #pragma once
 
-#include "include/Eigen/Dense"
+#include "Eigen/Dense"
 
 class GaussianPrimitive {
 public:

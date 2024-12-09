@@ -1,8 +1,8 @@
 #pragma once
 
-#include "include/BasisSet/gaussian_primitive.hpp"
-#include "include/BasisSet/gaussian_contracted.hpp"
-#include "include/BasisSet/slater_primitive.hpp"
+#include "BasisSet/gaussian_primitive.hpp"
+#include "BasisSet/gaussian_contracted.hpp"
+#include "BasisSet/slater_primitive.hpp"
 
 
 double exchange_integral(const GaussianPrimitive& orbital1,

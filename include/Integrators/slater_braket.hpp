@@ -3,8 +3,8 @@
 #include <boost/math/special_functions/hypergeometric_pFq.hpp>
 #include <cmath>
 
-#include "include/BasisSet/slater_primitive.hpp"
-#include "include/Maths/wigner_3j.hpp"
+#include "BasisSet/slater_primitive.hpp"
+#include "Maths/wigner_3j.hpp"
 
 inline double radial_integral(const SlaterPrimitive &orbital1, const SlaterPrimitive &orbital2, const SlaterPrimitive &orbital3, const SlaterPrimitive &orbital4, const int L) {
     double n_ik = orbital1.n() + orbital3.n();

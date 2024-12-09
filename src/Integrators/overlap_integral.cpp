@@ -1,4 +1,4 @@
-#include "include/Integrators/overlap_integral.hpp"
+#include "Integrators/overlap_integral.hpp"
 #include <stdexcept>
 
 double overlap_integral(const GaussianPrimitive& orbital1, const GaussianPrimitive& orbital2) {

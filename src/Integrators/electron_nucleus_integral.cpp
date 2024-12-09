@@ -1,4 +1,4 @@
-#include "include/Integrators/electron_nucleus_integral.hpp"
+#include "Integrators/electron_nucleus_integral.hpp"
 #include <stdexcept>
 
 
