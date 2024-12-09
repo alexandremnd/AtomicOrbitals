@@ -22,5 +22,8 @@ inline double radial_integral(const SlaterPrimitive &orbital1, const SlaterPrimi
 }
 
 inline double angular_integral(const SlaterPrimitive &orbital1, const SlaterPrimitive &orbital2, const int L, const int M) {
-    return std::sqrt( (2 * orbital1.l() + 1) * (2 * orbital2.l()) * (2 * L + 1) / (4 * M_PI) ) * Math::wigner_3j(orbital1.l(), orbital2.l(), L, 0, 0, M) * Math::wigner_3j(orbital1.l(), orbital2.l(), L, orbital1.m(), orbital2.m(), M);
+    double phase_factor = (orbital1.m() % 2 == 0) ? 1. : -1.;
+    return phase_factor * std::sqrt( (2 * orbital1.l() + 1) * (2 * orbital2.l()) * (2 * L + 1) / (4 * M_PI) )
+    * Math::wigner_3j(orbital1.l(), orbital2.l(), L, 0, 0, M)
+    * Math::wigner_3j(orbital1.l(), orbital2.l(), L, orbital1.m(), orbital2.m(), M);
 }
