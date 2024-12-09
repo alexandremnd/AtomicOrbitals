@@ -1,4 +1,3 @@
-#include "include/Integrators/electron_electron_integral.hpp"
 #include <stdexcept>
 #include "Integrators/electron_electron_integral.hpp"
 
