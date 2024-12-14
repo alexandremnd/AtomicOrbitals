@@ -12,14 +12,9 @@ double laplacian_integral(const ContractedGaussian& orbital1, const ContractedGa
 }
 
 double laplacian_integral(const SlaterPrimitive& orbital1, const SlaterPrimitive& orbital2) {
-    SlaterPrimitive copy = orbital2;
-    double matrix_element = orbital2.alpha() * orbital2.alpha() * overlap_integral(orbital1, copy);
-
-    copy.decrement_n();
-    matrix_element -= 2 * orbital2.alpha() * orbital2.n() * overlap_integral(orbital1, copy);
-
-    copy.decrement_n();
-    matrix_element += (orbital2.n() * (orbital2.n() - 1) - orbital2.l() * (orbital2.l() + 1)) * overlap_integral(orbital1, copy);
+    double matrix_element = orbital2.alpha() * orbital2.alpha() * overlap_integral(orbital1, orbital2);
+    matrix_element -= 2 * orbital2.alpha() * orbital2.n() * overlap_integral(orbital1, orbital2, -1);
+    matrix_element += (orbital2.n() * (orbital2.n() - 1) - orbital2.l() * (orbital2.l() + 1)) * overlap_integral(orbital1, orbital2, -2);
 
     return matrix_element;
 }
