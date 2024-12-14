@@ -31,13 +31,12 @@ TEST(Wigner3jTest, CheckReturnedValue) {
     double r1 = Math::wigner_3j(1, 1, 1, 1, -1, 0);
     double r2 = Math::wigner_3j(2, 3, 4, 1, -2, 1);
     double r3 = Math::wigner_3j(2, 3, 3, -1, 3, -2);
+    double r4 = Math::wigner_3j(2, 3, 5, -2, -3, 5);
+    double r5 = Math::wigner_3j(3, 4, 5, 2, 3, -5);
 
     ASSERT_NEAR(r1, 0.408248, 1e-6);
     ASSERT_NEAR(r2, 0.197203, 1e-6);
     ASSERT_NEAR(r3, -0.243975, 1e-6);
-}
-
-int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    ASSERT_NEAR(r4, 0.301511, 1e-6);
+    ASSERT_NEAR(r5, -0.201972, 1e-6);
 }
