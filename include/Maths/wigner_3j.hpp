@@ -32,7 +32,7 @@ namespace Math
             return 0.0;
         }
 
-        double phase_factor = ((j1 + j2 - m3) % 2) == 0 ? 1. : -1.;
+        double phase_factor = ((j1 - j2 - m3) % 2) == 0 ? 1. : -1.;
 
         // Summation bounds for sum from k=K to N
         long int N = std::min({j1 + j2 - j3, j1 - m1, j2 + m2});
@@ -45,7 +45,8 @@ namespace Math
         double t5 = j3 - j1 - m2;
 
         double sum = ((K % 2) == 0) ? 1.0 : -1.0;
-        double term = boost::math::tgamma(K + 1)
+        double term = 1.
+                    / boost::math::tgamma(K + 1)
                     / boost::math::tgamma(t1 - K + 1)
                     / boost::math::tgamma(t2 - K + 1)
                     / boost::math::tgamma(t3 - K + 1)
