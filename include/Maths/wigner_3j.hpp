@@ -32,6 +32,10 @@ namespace Math
             return 0.0;
         }
 
+        if (m1 == 0 && m2 == 0 && m3 == 0 && (j1 + j2 + j3) % 2 != 0) {
+            return 0.0;
+        }
+
         double phase_factor = ((j1 - j2 - m3) % 2) == 0 ? 1. : -1.;
 
         // Summation bounds for sum from k=K to N

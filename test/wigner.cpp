@@ -14,6 +14,8 @@ TEST(Wigner3jTest, HandlesZeroCase) {
     double r8 = Math::wigner_3j(1, 3, 1, 0, 0, 0);
     double r9 = Math::wigner_3j(1, 1, 3, 0, 0, 0);
 
+    double r10 = Math::wigner_3j(2, 2, 1, 0, 0, 0);
+
     ASSERT_NEAR(r1, 0, 1e-6);
     ASSERT_NEAR(r2, 0, 1e-6);
     ASSERT_NEAR(r3, 0, 1e-6);
@@ -25,6 +27,8 @@ TEST(Wigner3jTest, HandlesZeroCase) {
     ASSERT_NEAR(r7, 0, 1e-6);
     ASSERT_NEAR(r8, 0, 1e-6);
     ASSERT_NEAR(r9, 0, 1e-6);
+
+    ASSERT_NEAR(r10, 0.0, 1e-6);
 }
 
 TEST(Wigner3jTest, CheckReturnedValue) {
