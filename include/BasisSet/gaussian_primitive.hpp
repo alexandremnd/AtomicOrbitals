@@ -19,12 +19,11 @@ public:
     }
 
     double evaluate(double x, double y, double z) const;
-    double evaluate(double r) const;
 
     // Getters
-    void set_x_exponent(int x_exponent) { m_x_exponent = x_exponent; }
-    void set_y_exponent(int y_exponent) { m_y_exponent = y_exponent; }
-    void set_z_exponent(int z_exponent) { m_z_exponent = z_exponent; }
+    void set_x_exponent(int x_exponent);
+    void set_y_exponent(int y_exponent);
+    void set_z_exponent(int z_exponent);
 
     int x_exponent() const { return m_x_exponent; }
     int y_exponent() const { return m_y_exponent; }

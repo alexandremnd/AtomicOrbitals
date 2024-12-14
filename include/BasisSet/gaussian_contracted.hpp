@@ -9,9 +9,9 @@ public:
                        const std::vector<GaussianPrimitive>& primitives)
         : m_coefficients(coefficients), m_primitives(primitives) {}
 
-    double evaluate(double x, double y, double z) const {}
+    double evaluate(double x, double y, double z) const;
 
-    const int get_gaussian_count() const {
+    int get_gaussian_count() const {
         return m_primitives.size();
     }
 
