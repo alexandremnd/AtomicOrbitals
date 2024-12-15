@@ -1,12 +1,24 @@
 #pragma once
 
 #include <boost/math/special_functions/gamma.hpp>
-#include <iostream>
 #include <stdexcept>
 #include <cassert>
 
+
 class SlaterPrimitive {
 public:
+    /**
+     * @brief Construct a new Slater Primitive object
+     *
+     * Note: The normalization constant only normalize the radial part of the wavefunction as
+     * we expressed braket STO without normalization constant.
+     * The angular part is normalized in the spherical harmonics.
+     *
+     * @param n Principal quantum number
+     * @param l Secondary quantum number
+     * @param m Magnetic quantum number
+     * @param alpha Exponential decay constant
+     */
     SlaterPrimitive(const int n, const int l, const int m, const double alpha) : m_n(n), m_l(l), m_m(m), m_alpha(alpha) {
         assert(1 <= n);
         assert(0 <= l); // We raise the constraint of l <= n - 1 to allow possible polarization
