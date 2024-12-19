@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include "Integrators/electron_electron_integral.hpp"
 #include "Integrators/slater_braket.hpp"
+#include <iostream>
 
 double electron_electron_integral(const GaussianPrimitive &orbital1, const GaussianPrimitive &orbital2, const GaussianPrimitive &orbital3, const GaussianPrimitive &orbital4)
 {
@@ -22,7 +23,7 @@ double electron_electron_integral(const SlaterPrimitive &orbital1, const SlaterP
 
         for (int M = -L; M <= L; M++) {
             // Wigner 3-j symbol are non-zero only if the sum of the m's is zero
-            if (-orbital1.m() + orbital3.m() + M != 0 || -orbital2.m() + orbital4.m() + M != 0) {
+            if (-orbital1.m() + orbital3.m() + M != 0 || -orbital2.m() + orbital4.m() - M != 0) {
                 continue;
             }
 
