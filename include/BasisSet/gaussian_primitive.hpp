@@ -4,6 +4,8 @@
 
 class GaussianPrimitive {
 public:
+    GaussianPrimitive() : m_x_exponent(0), m_y_exponent(0), m_z_exponent(0), m_alpha(0.0), m_normalization(0.0) {}
+
     GaussianPrimitive(int x_exponent, int y_exponent, int z_exponent, double alpha) : m_x_exponent(x_exponent), m_y_exponent(y_exponent), m_z_exponent(z_exponent), m_alpha(alpha) {
         m_normalization = 1.0;
     }
@@ -25,11 +27,11 @@ public:
     void set_y_exponent(int y_exponent);
     void set_z_exponent(int z_exponent);
 
-    int x_exponent() const { return m_x_exponent; }
-    int y_exponent() const { return m_y_exponent; }
-    int z_exponent() const { return m_z_exponent; }
-    double alpha() const { return m_alpha; }
-    double normalization() const { return m_normalization; }
+    inline int x_exponent() const { return m_x_exponent; }
+    inline int y_exponent() const { return m_y_exponent; }
+    inline int z_exponent() const { return m_z_exponent; }
+    inline double alpha() const { return m_alpha; }
+    inline double normalization() const { return m_normalization; }
 
 private:
     int m_x_exponent;

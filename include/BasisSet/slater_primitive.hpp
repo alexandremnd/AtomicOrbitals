@@ -45,11 +45,11 @@ public:
     void increment_n() { set_n(m_n + 1); }
     void decrement_n() { set_n(m_n - 1); }
 
-    int n() const { return m_n; }
-    int l() const { return m_l; }
-    int m() const { return m_m; }
-    double alpha() const { return m_alpha; }
-    double normalization() const { return normalization_constant; }
+    inline int n() const { return m_n; }
+    inline int l() const { return m_l; }
+    inline int m() const { return m_m; }
+    inline double alpha() const { return m_alpha; }
+    inline double normalization() const { return normalization_constant; }
 
 private:
     int m_n, m_l, m_m;
