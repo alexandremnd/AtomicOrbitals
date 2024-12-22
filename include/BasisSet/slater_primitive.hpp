@@ -21,7 +21,7 @@ public:
      */
     SlaterPrimitive(const int n, const int l, const int m, const double alpha) : m_n(n), m_l(l), m_m(m), m_alpha(alpha) {
         assert(1 <= n);
-        assert(0 <= l); // We raise the constraint of l <= n - 1 to allow possible polarization
+        assert(0 <= l && l < n);
         assert(abs(m) <= l);
         normalization_constant = std::pow(2 * alpha, n + 0.5) / std::sqrt(boost::math::tgamma(2 * n + 1));
     }
