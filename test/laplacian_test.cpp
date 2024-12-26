@@ -2,8 +2,8 @@
 #include "Integrators/laplacian_integral.hpp"
 
 TEST(LaplacianIntegral, SlaterPrimitiveZero) {
-    SlaterPrimitive orbital1(1, 0, 0, 0.5);
-    SlaterPrimitive orbital2(1, 1, 0, 0.5);
+    SlaterPrimitive orbital1(2, 0, 0, 0.5);
+    SlaterPrimitive orbital2(2, 1, 0, 0.5);
 
     EXPECT_NEAR(laplacian_integral(orbital1, orbital2), 0., 1e-6);
 

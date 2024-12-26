@@ -3,15 +3,15 @@
 #include "Integrators/overlap_integral.hpp"
 
 TEST(OverlapIntegralTest, SlaterPrimitiveZeroCase) {
-    SlaterPrimitive orbital1(1, 0, 0, 0.5);
+    SlaterPrimitive orbital1(2, 0, 0, 0.5);
     SlaterPrimitive orbital2(5, 1, 0, 1.3);
 
-    EXPECT_NEAR(overlap_integral(orbital1, orbital2), 0., 1e-2);
+    EXPECT_NEAR(overlap_integral(orbital1, orbital2), 0., 1e-6);
 
     orbital1.set_l(1); orbital1.set_m(0);
     orbital2.set_l(1); orbital2.set_m(1);
 
-    EXPECT_NEAR(overlap_integral(orbital1, orbital2), 0., 1e-2);
+    EXPECT_NEAR(overlap_integral(orbital1, orbital2), 0., 1e-6);
 }
 
 TEST(OverlapIntegralTest, SlaterPrimitiveValue) {

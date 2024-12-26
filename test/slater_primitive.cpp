@@ -9,9 +9,9 @@ TEST(SlaterPrimitive, Constructor) {
     EXPECT_EQ(sp.alpha(), 1.0);
     EXPECT_NEAR(sp.normalization(), 2.0, 1e-6);
 
-    SlaterPrimitive sp1(2, 3, 1, 3.0);
+    SlaterPrimitive sp1(2, 1, 1, 3.0);
     EXPECT_NEAR(sp1.normalization(), 18.0, 1e-6);
 
-    SlaterPrimitive sp2(3, 3, 1, 3.0);
+    SlaterPrimitive sp2(3, 2, 1, 3.0);
     EXPECT_NEAR(sp2.normalization(), 19.718012070, 1e-6);
 }

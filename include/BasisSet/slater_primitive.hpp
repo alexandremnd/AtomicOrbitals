@@ -23,14 +23,29 @@ public:
         assert(1 <= n);
         assert(0 <= l && l < n);
         assert(abs(m) <= l);
-        normalization_constant = std::pow(2 * alpha, n + 0.5) / std::sqrt(boost::math::tgamma(2 * n + 1));
+        assert(alpha > 0);
+        compute_normalization_constant();
     }
 
-    void set_n(const int n) { m_n = n; }
+    void set_alpha(const double alpha) {
+        if (alpha <= 0) {
+            throw std::invalid_argument("alpha must be a positive real number");
+        }
+        m_alpha = alpha;
+        compute_normalization_constant();
+    }
+
+    void set_n(const int n) {
+        if (n < 1) {
+            throw std::invalid_argument("n must be a positive integer");
+        }
+        m_n = n;
+        compute_normalization_constant();
+    }
 
     void set_l(const int l) {
-        if (l < 0) {
-            throw std::invalid_argument("l must be a non-negative integer");
+        if (l < 0 || l >= m_n) {
+            throw std::invalid_argument("l must be between 0 and n - 1");
         }
         m_l = l;
     }
@@ -49,11 +64,14 @@ public:
     inline int l() const { return m_l; }
     inline int m() const { return m_m; }
     inline double alpha() const { return m_alpha; }
-    inline double normalization() const { return normalization_constant; }
+    inline double normalization() const { return m_normalization_constant; }
 
 private:
+    void compute_normalization_constant() {
+        m_normalization_constant = std::pow(2 * m_alpha, m_n + 0.5) / std::sqrt(boost::math::tgamma(2 * m_n + 1));
+    }
+
     int m_n, m_l, m_m;
     double m_alpha;
-    double normalization_constant;
-
+    double m_normalization_constant;
 };

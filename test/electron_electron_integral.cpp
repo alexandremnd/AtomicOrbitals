@@ -34,4 +34,11 @@ TEST(ElectronElectronIntegralTest, SlaterPrimitive) {
     result = electron_electron_integral(orbital1, orbital2, orbital3, orbital4);
     EXPECT_NEAR(orbital1.normalization() * orbital2.normalization() * orbital3.normalization() * orbital4.normalization() * result, 1.25, 1e-6);
 
+
+    orbital1 = SlaterPrimitive(2, 1, 0, 2);
+    orbital2 = SlaterPrimitive(3, 2, 0, 2);
+    orbital3 = SlaterPrimitive(4, 2, -1, 2);
+    orbital4 = SlaterPrimitive(2, 1, -1, 2);
+    result = electron_electron_integral(orbital1, orbital2, orbital3, orbital4);
+    EXPECT_NEAR(result, 0.0, 1e-7);
 }
