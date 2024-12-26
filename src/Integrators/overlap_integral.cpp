@@ -15,6 +15,7 @@ double overlap_integral(const SlaterPrimitive& orbital1, const SlaterPrimitive& 
     }
 
     if (orbital1.n() + orbital2.n() + n_offset < 0) {
+        throw std::invalid_argument("OverlapIntegral : n_offset is too large");
         return 0.;
     }
 

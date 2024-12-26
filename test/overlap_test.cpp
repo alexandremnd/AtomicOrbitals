@@ -23,3 +23,22 @@ TEST(OverlapIntegralTest, SlaterPrimitiveValue) {
     orbital1.set_n(3); orbital2.set_n(8);
     EXPECT_NEAR(overlap_integral(orbital1, orbital2), 34505.28801422153, 1e-3);
 }
+
+TEST(OverlapIntegralTest, SlaterPrimitiveOffsetThrow) {
+    SlaterPrimitive orbital1(1, 0, 0, 0.5);
+    SlaterPrimitive orbital2(1, 0, 0, 1.3);
+
+    EXPECT_THROW(overlap_integral(orbital1, orbital2, -3), std::invalid_argument);
+    EXPECT_NO_THROW(overlap_integral(orbital1, orbital2, -2));
+    EXPECT_NO_THROW(overlap_integral(orbital1, orbital2, -1));
+    EXPECT_NO_THROW(overlap_integral(orbital1, orbital2));
+
+
+    SlaterPrimitive orbital3(2, 0, 0, 0.5);
+    SlaterPrimitive orbital4(1, 0, 0, 0.5);
+
+    EXPECT_THROW(overlap_integral(orbital3, orbital4, -4), std::invalid_argument);
+    EXPECT_NO_THROW(overlap_integral(orbital3, orbital4, -3));
+    EXPECT_NO_THROW(overlap_integral(orbital3, orbital4, -2));
+    EXPECT_NO_THROW(overlap_integral(orbital3, orbital4, -1));
+}
