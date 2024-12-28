@@ -8,9 +8,14 @@ template <typename T>
 class Yoshimine {
 public:
     /**
-     * @brief Construct a new Yoshimine container using Yoshimine sort
+     * @brief Container using Yoshimine sorting.
+     * For electron electron integrals denoted (ij|kl), we have an 8-fold symmetry:
+     * (ij|kl) = (ji|kl) = (ij|lk) = (ji|lk) = (kl|ij) = (lk|ij) = (kl|ji) = (lk|ji)
      *
-     * @param size The size of the Yoshimine container
+     * For an unordered set of indices (i, j, k, l), index(i, j, k, l) = index(j, i, k, l) = ...
+     * For a basis set of size N, Yoshimine container requires N(N+1)(N² + N + 2)/8 elements instead of N⁴ elements.
+     * Memory space is still of order N⁴ but the number of elements is  still reduced.
+     * @param size Size of the Yoshimine container
      */
     Yoshimine(int size) {
         m_yoshimine.resize(size);
@@ -27,16 +32,16 @@ public:
             throw std::out_of_range("Yoshimine index out of range");
         }
 
-        return m_yoshimine.at(abcd);
+        return m_yoshimine[abcd];
     }
 
     void print_content() {
         for (int i = 0; i < m_yoshimine.size(); i++) {
-            std::cout << i << ": " << m_yoshimine.at(i) << std::endl;
+            std::cout << i << ": " << m_yoshimine[i] << std::endl;
         }
     }
 
-    int size() const { return m_yoshimine.size(); }
+    inline int size() const { return m_yoshimine.size(); }
 
 private:
     inline int index(int a, int b, int c, int d) const {
