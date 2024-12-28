@@ -9,14 +9,37 @@
 template <typename T>
 class Atom {
     public:
-        Atom(int Z) : m_Z(Z), m_position(0., 0., 0.) {};
-        Atom(int Z, Eigen::Vector3f position) : m_Z(Z), m_position(position) {};
-        Atom(int Z, float x, float y, float z) : m_Z(Z), m_position(x, y, z) {};
-        Atom(Atom& atom) : m_Z(atom.Z()), m_position(atom.m_position) {};
+        /**
+         * Throws an invalid_argument exception if Z < 1.
+         *
+         * @param Z Number of protons in the nucleus.
+         * @param position Position of the nucleus.
+         */
+        Atom(int Z, Eigen::Vector3d position) : m_Z(Z), m_position(position) {
+            if (Z < 1) {
+                throw std::invalid_argument("Atom: The atomic number must be greater than 0.");
+            }
+        };
 
         /**
-         * @brief Add a basis orbital of any type to the atom.
+         * @brief Builds an atom at the origin.
          *
+         * Throws an invalid_argument exception if Z < 1.
+         *
+         * @param Z Number of protons in the nucleus.
+         */
+        Atom(int Z) : Atom(Z, Eigen::Vector3d{0., 0., 0.}) {};
+
+        /**
+         * Throws an invalid_argument exception if Z < 1.
+         *
+         * @param Z Number of protons in the nucleus.
+         */
+        Atom(int Z, float x, float y, float z) : Atom(Z, Eigen::Vector3d{x, y, z}) {};
+
+        Atom(Atom& atom) : Atom(atom.Z(), atom.position()) {};
+
+        /**
          * @param orbital The orbital to add to the atom.
          */
         void add_orbital(const T& orbital) {
@@ -24,26 +47,28 @@ class Atom {
         }
 
         /**
-         * @brief Add a slater orbital to the atom.
-         *
-         * @param n The principal quantum number.
-         * @param l The azimuthal quantum number.
-         * @param m The magnetic quantum number.
-         * @param alpha The radial exponential decay rate.
+         * @param n The principal quantum number. (0 < n)
+         * @param l The azimuthal quantum number. (0 <= l < n)
+         * @param m The magnetic quantum number. (-l <= m <= l)
+         * @param alpha The radial exponential decay rate. (alpha > 0)
          */
         void add_slater_orbital(const int n, const int l, const int m, const double alpha) requires std::is_same_v<T, SlaterPrimitive> {
             m_orbital.push_back(SlaterPrimitive(n, l, m, alpha));
         }
 
         /**
-         * @brief Add a contracted gaussian orbital (s type) to the atom.
+         * @brief Adds a contracted gaussian orbital (s type) to the atom.
+         *
          * The contracted gaussian orbital will be a linear combination of weight.size() primitive gaussians.
+         *
+         * Throws an invalid_argument exception if (weight.size() != decay.size())
+         *
          * @param weight Coefficient of the primitive gaussians in the linear combination.
          * @param decay Exponential decay rate of the primitive gaussians.
          */
         void add_gaussian_orbital_stype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<T, ContractedGaussian> {
             if (weight.size() != decay.size()) {
-                throw std::invalid_argument("[Atom] The weight and decay vectors must have the same size.");
+                throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
             }
 
             ContractedGaussian cg{};
@@ -56,13 +81,16 @@ class Atom {
 
         /**
          * @brief Add a contracted gaussian orbital (p type) to the atom.
+         *
          * The contracted gaussian orbital will be a linear combination of weight.size() primitive gaussians.
+         *
+         * Throws an invalid_argument exception if (weight.size() != decay.size())
          * @param weight Coefficient of the primitive gaussians in the linear combination.
          * @param decay Exponential decay rate of the primitive gaussians.
          */
         void add_gaussian_orbital_ptype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<T, ContractedGaussian> {
             if (weight.size() != decay.size()) {
-                throw std::invalid_argument("[Atom] The weight and decay vectors must have the same size.");
+                throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
             }
 
             ContractedGaussian cg_x{};
@@ -80,13 +108,16 @@ class Atom {
 
         /**
          * @brief Add a contracted gaussian orbital (d type) to the atom.
+         *
          * The contracted gaussian orbital will be a linear combination of weight.size() primitive gaussians.
+         *
+         * Throws an invalid_argument exception if (weight.size() != decay.size())
          * @param weight Coefficient of the primitive gaussians in the linear combination.
          * @param decay Exponential decay rate of the primitive gaussians.
          */
         void add_gaussian_orbital_dtype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<T, ContractedGaussian> {
             if (weight.size() != decay.size()) {
-                throw std::invalid_argument("[Atom] The weight and decay vectors must have the same size.");
+                throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
             }
 
             ContractedGaussian cg_xx{};
@@ -109,14 +140,17 @@ class Atom {
         }
 
         /**
-         * @brief Add a contracted gaussian orbital (f type) to the atom.
+         * @brief Add a contracted gaussian orbital (f type ie l = 3) to the atom.
+         *
          * The contracted gaussian orbital will be a linear combination of weight.size() primitive gaussians.
+         *
+         * Throws an invalid_argument exception if (weight.size() != decay.size())
          * @param weight Coefficient of the primitive gaussians in the linear combination.
          * @param decay Exponential decay rate of the primitive gaussians.
          */
         void add_gaussian_orbital_ftype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<T, ContractedGaussian> {
             if (weight.size() != decay.size()) {
-                throw std::invalid_argument("[Atom] The weight and decay vectors must have the same size.");
+                throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
             }
 
             ContractedGaussian cg_xxx{};
@@ -147,10 +181,14 @@ class Atom {
         }
 
         inline int Z() const { return m_Z; }
-        inline Eigen::Vector3f position() const { return m_position; }
+        inline Eigen::Vector3d position() const { return m_position; }
+
+        inline const int n_orbitals() const { return m_orbital.size(); }
+        inline const T& get_orbital(size_t i) const { return m_orbital[i]; }
+        inline const T& operator()(size_t i) const { return m_orbital[i]; }
 
     private:
         int m_Z;
-        Eigen::Vector3f m_position;
+        Eigen::Vector3d m_position;
         std::vector<T> m_orbital;
 };
