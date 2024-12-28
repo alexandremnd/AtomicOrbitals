@@ -4,17 +4,19 @@
 #include <vector>
 #include <iostream>
 
-template <typename T>
-class Yoshimine {
-public:
-    /**
-     * @brief Container using Yoshimine sorting.
+/**
+ * @brief Container using Yoshimine sorting.
      * For electron electron integrals denoted (ij|kl), we have an 8-fold symmetry:
      * (ij|kl) = (ji|kl) = (ij|lk) = (ji|lk) = (kl|ij) = (lk|ij) = (kl|ji) = (lk|ji)
      *
      * For an unordered set of indices (i, j, k, l), index(i, j, k, l) = index(j, i, k, l) = ...
      * For a basis set of size N, Yoshimine container requires N(N+1)(N² + N + 2)/8 elements instead of N⁴ elements.
      * Memory space is still of order N⁴ but the number of elements is  still reduced.
+ */
+template <typename T>
+class Yoshimine {
+public:
+    /**
      * @param size Size of the Yoshimine container
      */
     Yoshimine(int size) {
