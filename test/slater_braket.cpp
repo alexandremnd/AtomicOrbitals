@@ -124,3 +124,94 @@ TEST(SlaterBraketTest, AngularIntegralTest) {
     EXPECT_NEAR(result, 0.214561, 1e-6);
 
 }
+
+TEST(SlaterBraketTest, Radial_LNegative) {
+    SlaterPrimitive orbital1(2, 1, 1, 1);
+    SlaterPrimitive orbital2(3, 1, 1, 1);
+    SlaterPrimitive orbital3(2, 1, 1, 1);
+    SlaterPrimitive orbital4(2, 1, 1, 1);
+
+    EXPECT_DEATH(radial_integral(orbital1, orbital2, orbital3, orbital4, -1), ".*");
+
+    EXPECT_EXIT({
+        radial_integral(orbital1, orbital2, orbital3, orbital4, 0);
+        exit(0);
+    }, ::testing::ExitedWithCode(0), ".*");
+
+    EXPECT_EXIT({
+        radial_integral(orbital1, orbital2, orbital3, orbital4, 1);
+        exit(0);
+    }, ::testing::ExitedWithCode(0), ".*");
+}
+
+TEST(SlaterBraketTest, Angular_LNegative) {
+    SlaterPrimitive orbital1(2, 1, 1, 1);
+    SlaterPrimitive orbital2(3, 1, 1, 1);
+    SlaterPrimitive orbital3(2, 1, 1, 1);
+    SlaterPrimitive orbital4(2, 1, 1, 1);
+
+    EXPECT_DEATH(angular_integral(orbital1, orbital2, -1, 0), ".*");
+
+    EXPECT_EXIT({
+        angular_integral(orbital1, orbital2, 0, 0);
+        exit(0);
+    }, ::testing::ExitedWithCode(0), ".*");
+
+    EXPECT_EXIT({
+        angular_integral(orbital1, orbital2, 1, 0);
+        exit(0);
+    }, ::testing::ExitedWithCode(0), ".*");
+}
+
+TEST(SlaterBraketTest, Radial_LTooLarge) {
+    SlaterPrimitive orbital1(2, 1, 1, 1);
+    SlaterPrimitive orbital2(3, 1, 1, 1);
+    SlaterPrimitive orbital3(2, 1, 1, 1);
+    SlaterPrimitive orbital4(2, 1, 1, 1);
+
+    EXPECT_DEATH(radial_integral(orbital1, orbital2, orbital3, orbital4, 4), ".*");
+    EXPECT_DEATH(radial_integral(orbital1, orbital2, orbital3, orbital4, 3), ".*");
+
+    EXPECT_EXIT({
+        radial_integral(orbital1, orbital2, orbital3, orbital4, 2);
+        exit(0);
+    }, ::testing::ExitedWithCode(0), ".*");
+
+    EXPECT_EXIT({
+        radial_integral(orbital1, orbital2, orbital3, orbital4, 1);
+        exit(0);
+    }, ::testing::ExitedWithCode(0), ".*");
+
+    EXPECT_EXIT({
+        radial_integral(orbital1, orbital2, orbital3, orbital4, 0);
+        exit(0);
+    }, ::testing::ExitedWithCode(0), ".*");
+}
+
+
+TEST(SlaterBraketTest, Angular_MTooLarge) {
+    SlaterPrimitive orbital1(2, 1, 1, 1);
+    SlaterPrimitive orbital2(3, 1, 1, 1);
+
+    EXPECT_DEATH(angular_integral(orbital1, orbital2, 1, 2), ".*");
+
+    EXPECT_EXIT({
+        angular_integral(orbital1, orbital2, 0, 0);
+        exit(0);
+    }, ::testing::ExitedWithCode(0), ".*");
+
+    EXPECT_EXIT({
+        angular_integral(orbital1, orbital2, 1, 0);
+        exit(0);
+    }, ::testing::ExitedWithCode(0), ".*");
+
+    EXPECT_EXIT({
+        angular_integral(orbital1, orbital2, 1, -1);
+        exit(0);
+    }, ::testing::ExitedWithCode(0), ".*");
+
+    EXPECT_EXIT({
+        angular_integral(orbital1, orbital2, 1, 1);
+        exit(0);
+    }, ::testing::ExitedWithCode(0), ".*");
+}

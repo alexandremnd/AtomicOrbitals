@@ -40,8 +40,7 @@ To install dependencies in your Fedora-based distribution:
 ```
 2. Build the project without tests:
 ```bash
-    mkdir build
-    cd build
+    mkdir build && cd build
     cmake ..
     make
 ```

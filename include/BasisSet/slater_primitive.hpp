@@ -8,7 +8,7 @@
 /**
  * @brief Slater type orbital (STO) representation
 
-    It is the braket representation \f$  | R_n^\alpha l m \rangle \f$ where :
+    It is the braket representation \f$ | R_n^\alpha l m \rangle \f$ where :
     \f[
         R_n^\alpha (r) = r^{n-1}  e^{-\alpha r}
     \f]
