@@ -12,8 +12,8 @@
 # Getting started
 ## Prerequisites
 1. A C++ compiler (this project is tested on g++ and clang++) supporting C++20 standard
-2. CMake (version at least 3.12)
-3. Boost
+2. [CMake](https://cmake.org/) (version at least 3.12, checks using ```cmake --version```)
+3. [Boost](https://www.boost.org/)
 4. (Optional) [Doxygen](https://www.doxygen.nl)
 5. (Optional) [GoogleTest](https://github.com/google/googletest)
 
@@ -64,5 +64,13 @@ To generate test cases, [GoogleTest](https://github.com/google/googletest) is re
     cmake --build build --target test --output-on-failure
 ```
 
-# License
-GPL 3.0. See the LICENSE file for details.
+## Generate documentation
+
+This project uses Doxygen to generate documentation. Make sure you have [Doxygen](https://www.doxygen.nl) installed.
+
+1. ```cd``` into the root folder.
+2. Run doxygen to create the documentation files:
+   ```bash
+   doxygen
+   ```
+3. After the build, the generated documentation will be available in ```build/docs/html/index.html```
