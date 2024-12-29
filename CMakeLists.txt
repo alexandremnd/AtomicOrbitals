@@ -7,11 +7,21 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native -flto")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
+
+message(STATUS "=========== Configuration ===========")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Tests: ${ENABLE_TESTS}")
+message(STATUS "Compiler: ${CMAKE_CXX_COMPILER}")
+message(STATUS "C++ standard: ${CMAKE_CXX_STANDARD}")
+message(STATUS "Source directory: ${PROJECT_SOURCE_DIR}")
+message(STATUS "Binary directory: ${PROJECT_BINARY_DIR}")
+message(STATUS "=========== End Configuration ===========")
 
 # ======== Dependencies ========
 include_directories(include)
@@ -24,11 +34,11 @@ include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
 # ======== Build ========
-file(GLOB_RECURSE SRC_FILES src/*.cpp)
+file(GLOB_RECURSE SRC_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 list(FILTER SRC_FILES EXCLUDE REGEX ".*main.cpp$")
 add_library(AtomicOrbitalsObjects OBJECT ${SRC_FILES})
 
-add_executable(AtomicOrbitals src/main.cpp $<TARGET_OBJECTS:AtomicOrbitalsObjects>)
+add_executable(AtomicOrbitals "${PROJECT_SOURCE_DIR}/src/main.cpp" $<TARGET_OBJECTS:AtomicOrbitalsObjects>)
 target_link_libraries(AtomicOrbitals ${Boost_LIBRARIES} ${Python3_LIBRARIES})
 target_compile_options(AtomicOrbitals PRIVATE -w)
 
@@ -40,11 +50,32 @@ if (ENABLE_TESTS)
     find_package(GTest REQUIRED)
     include_directories(${GTest_INCLUDE_DIRS})
 
-    file(GLOB_RECURSE TEST_FILES test/*.cpp)
+    file(GLOB_RECURSE TEST_FILES "${PROJECT_SOURCE_DIR}/test/*.cpp")
     foreach(TEST_FILE ${TEST_FILES})
         get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
         add_executable(${TEST_NAME} ${TEST_FILE} $<TARGET_OBJECTS:AtomicOrbitalsObjects>)
         target_link_libraries(${TEST_NAME} ${Boost_LIBRARIES} ${Python3_LIBRARIES} GTest::GTest GTest::Main)
         add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
     endforeach()
+endif()
+
+# ======== Documentation ========
+option(ENABLE_DOCS "Enable building documentation" ON)
+
+if (ENABLE_DOCS)
+    find_package(Doxygen REQUIRED)
+
+    set(DOXYGEN_GENERATE_HTML YES)
+    set(DOXYGEN_CONFIG_FILE ${PROJECT_SOURCE_DIR}/docs/Doxyfile)
+    set(DOXYGEN_OUTPUT_CONFIG_FILE ${PROJECT_BINARY_DIR}/Doxyfile)
+    set(DOXYGEN_INPUT_DIRS "${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src")
+
+    configure_file(${DOXYGEN_CONFIG_FILE} ${DOXYGEN_OUTPUT_CONFIG_FILE} @ONLY)
+
+    add_custom_target(docs ALL
+        COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen" VERBATIM
+    )
+
 endif()
