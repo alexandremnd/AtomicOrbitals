@@ -63,14 +63,3 @@ To generate test cases, [GoogleTest](https://github.com/google/googletest) is re
 ```bash
     cmake --build build --target test --output-on-failure
 ```
-
-## Generate documentation
-
-This project uses Doxygen to generate documentation. Make sure you have [Doxygen](https://www.doxygen.nl) installed.
-
-1. ```cd``` into the root folder.
-2. Run doxygen to create the documentation files:
-   ```bash
-   doxygen
-   ```
-3. After the build, the generated documentation will be available in ```build/docs/html/index.html```
