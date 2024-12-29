@@ -2,9 +2,14 @@ cmake_minimum_required(VERSION 3.12)
 project(AtomicOrbitals)
 
 # cmake_policy(SET CMP0167 NEW)
+option(ENABLE_TESTS "Enable building tests" OFF)
+option(ENABLE_DOCS "Enable building documentation" OFF)
 
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
+# ======== Configuration ========
+
+# Tests require a Debug build type to keep assertions enabled
+if (ENABLE_TESTS)
+    set(CMAKE_BUILD_TYPE Debug)
 endif()
 
 
@@ -13,15 +18,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native -flto")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
-
-message(STATUS "=========== Configuration ===========")
-message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
-message(STATUS "Tests: ${ENABLE_TESTS}")
-message(STATUS "Compiler: ${CMAKE_CXX_COMPILER}")
-message(STATUS "C++ standard: ${CMAKE_CXX_STANDARD}")
-message(STATUS "Source directory: ${PROJECT_SOURCE_DIR}")
-message(STATUS "Binary directory: ${PROJECT_BINARY_DIR}")
-message(STATUS "=========== End Configuration ===========")
 
 # ======== Dependencies ========
 include_directories(include)
@@ -43,8 +39,6 @@ target_link_libraries(AtomicOrbitals ${Boost_LIBRARIES} ${Python3_LIBRARIES})
 target_compile_options(AtomicOrbitals PRIVATE -w)
 
 # ======== Tests ========
-option(ENABLE_TESTS "Enable building tests" OFF)
-
 if (ENABLE_TESTS)
     enable_testing()
     find_package(GTest REQUIRED)
@@ -55,13 +49,12 @@ if (ENABLE_TESTS)
         get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
         add_executable(${TEST_NAME} ${TEST_FILE} $<TARGET_OBJECTS:AtomicOrbitalsObjects>)
         target_link_libraries(${TEST_NAME} ${Boost_LIBRARIES} ${Python3_LIBRARIES} GTest::GTest GTest::Main)
+        set_target_properties(${TEST_NAME} PROPERTIES COMPILE_FLAGS "-DDEBUG")
         add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
     endforeach()
 endif()
 
 # ======== Documentation ========
-option(ENABLE_DOCS "Enable building documentation" ON)
-
 if (ENABLE_DOCS)
     find_package(Doxygen REQUIRED)
 
@@ -79,3 +72,13 @@ if (ENABLE_DOCS)
     )
 
 endif()
+
+message(STATUS "=========== Configuration ===========")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Tests: ${ENABLE_TESTS}")
+message(STATUS "Documentation: ${ENABLE_DOCS}")
+message(STATUS "Compiler: ${CMAKE_CXX_COMPILER}")
+message(STATUS "C++ standard: ${CMAKE_CXX_STANDARD}")
+message(STATUS "Source directory: ${PROJECT_SOURCE_DIR}")
+message(STATUS "Binary directory: ${PROJECT_BINARY_DIR}")
+message(STATUS "=========== End Configuration ===========")

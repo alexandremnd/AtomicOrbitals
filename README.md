@@ -20,13 +20,13 @@
 You may install Doxygen and GoogleTest with your package manager (apt/dnf/yum/pacman/... for Linux, chocolatey for Windows, Homebrew for MacOS).
 
 ### Ubuntu
-To install dependencies in your Ubuntu-bases distribution:
+To install dependencies on your Ubuntu-bases distribution:
 ```bash
     sudo apt install cmake libgtest-dev doxygen
 ```
 
 ### Fedora
-To install dependencies in your Fedora-based distribution:
+To install dependencies on your Fedora-based distribution:
 ```bash
     sudo dnf install cmake gtest-devel doxygen g++
 ```
@@ -40,39 +40,29 @@ To install dependencies in your Fedora-based distribution:
 ```
 2. Build the project without tests:
 ```bash
-    mkdir build && cd build
-    cmake ..
-    make
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_DOCS=OFF -DENABLE_TESTS=OFF
+    cmake --build build --config release
+    ./build/AtomicOrbitals
 ```
 
-3. Compiled project is in ```build/AtomicOrbitals```.
+*Note:* You can switch ```ENABLE_DOCS``` and ```ENABLE_TESTS``` if you want to build the documentation and test cases.
+When setting ```ENABLE_TESTS```, ```CMAKE_BUILD_TYPE``` is set to Debug for every future build, do not forget to add ```-DCMAKE_BUILD_TYPE=Release``` and ```-DENABLE_TESTS=OFF``` to reset cache file !
 
-## Generate test cases
-To generate test cases, Google Test is required.
-1. Build the project with ```-DENABLE_TESTS=ON```:
+1. Compiled project is located in ```build/AtomicOrbitals``` and (optionnaly) generated documentation in ```build/docs/html/index.html```
+
+## Generating and running test cases
+To generate test cases, [GoogleTest](https://github.com/google/googletest) is required.
+
+1. Build the project with ```-DENABLE_TESTS=ON``` (build type will be set to Debug automatically):
 ```bash
-    mkdir build
-    cd build
-    cmake .. -DENABLE_TESTS=ON
-    make
+    cmake -B build -DENABLE_TESTS=ON
+    cmake --build build --config debug
 ```
 
-2. Execute test with either:
+2. Execute test with:
 ```bash
-    ctest
-```
-or
-```bash
-    make test
+    cmake --build build --target test --output-on-failure
 ```
 
-## Generate documentation
-
-This project uses Doxygen to generate documentation. Make sure you have [Doxygen](https://www.doxygen.nl) installed.
-
-1. ```cd``` into the root folder.
-2. Run doxygen to create the documentation files:
-   ```bash
-   doxygen
-   ```
-3. After the build, the generated documentation will be available in ```build/docs/html/index.html```
+# License
+GPL 3.0.See the LICENSE file for details.
