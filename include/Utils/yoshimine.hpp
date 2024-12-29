@@ -24,6 +24,8 @@ public:
         m_yoshimine.resize(size);
     }
 
+    Yoshimine() = default;
+
     inline T operator()(int a, int b, int c, int d) const {
         return this->operator()(a, b, c, d);
     }

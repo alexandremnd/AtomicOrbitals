@@ -104,7 +104,9 @@ class Atom {
                 cg_z.add_primitive(weight[i], decay[i], 0, 0, 1);
             }
 
-            m_orbital.insert(m_orbital.end(), {cg_x, cg_y, cg_z});
+            m_orbital.push_back(cg_x);
+            m_orbital.push_back(cg_y);
+            m_orbital.push_back(cg_z);
         }
 
         /**
@@ -137,7 +139,12 @@ class Atom {
                 cg_yz.add_primitive(weight[i], decay[i], 0, 1, 1);
             }
 
-            m_orbital.insert(m_orbital.end(), {cg_xx, cg_yy, cg_zz, cg_xy, cg_xz, cg_yz});
+            m_orbital.push_back(cg_xx);
+            m_orbital.push_back(cg_yy);
+            m_orbital.push_back(cg_zz);
+            m_orbital.push_back(cg_xy);
+            m_orbital.push_back(cg_xz);
+            m_orbital.push_back(cg_yz);
         }
 
         /**
@@ -178,7 +185,16 @@ class Atom {
                 cg_xyz.add_primitive(weight[i], decay[i], 1, 1, 1);
             }
 
-            m_orbital.insert(m_orbital.end(), {cg_xxx, cg_yyy, cg_zzz, cg_xxy, cg_xxz, cg_xyy, cg_yyz, cg_xzz, cg_yzz, cg_xyz});
+            m_orbital.push_back(cg_xxx);
+            m_orbital.push_back(cg_yyy);
+            m_orbital.push_back(cg_zzz);
+            m_orbital.push_back(cg_xxy);
+            m_orbital.push_back(cg_xxz);
+            m_orbital.push_back(cg_xyy);
+            m_orbital.push_back(cg_yyz);
+            m_orbital.push_back(cg_xzz);
+            m_orbital.push_back(cg_yzz);
+            m_orbital.push_back(cg_xyz);
         }
 
         inline int Z() const { return m_Z; }
