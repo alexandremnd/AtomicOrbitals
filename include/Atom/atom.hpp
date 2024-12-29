@@ -37,7 +37,8 @@ class Atom {
          */
         Atom(int Z, float x, float y, float z) : Atom(Z, Eigen::Vector3d{x, y, z}) {};
 
-        Atom(Atom& atom) : Atom(atom.Z(), atom.position()) {};
+        Atom(Atom& atom) : m_Z(atom.Z()), m_position(atom.m_position) {};
+        Atom(Atom&& atom) : m_Z(atom.Z()), m_position(atom.m_position), m_orbital(std::move(atom.m_orbital)) {};
 
         /**
          * @param orbital The orbital to add to the atom.
@@ -184,6 +185,7 @@ class Atom {
         inline Eigen::Vector3d position() const { return m_position; }
 
         inline const int n_orbitals() const { return m_orbital.size(); }
+        inline const std::vector<T>& get_orbitals() const { return m_orbital; }
         inline const T& get_orbital(size_t i) const { return m_orbital[i]; }
         inline const T& operator()(size_t i) const { return m_orbital[i]; }
 
