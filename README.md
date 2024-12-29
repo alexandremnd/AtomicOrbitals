@@ -20,7 +20,7 @@
 You may install Doxygen and GoogleTest with your package manager (apt/dnf/yum/pacman/... for Linux, chocolatey for Windows, Homebrew for MacOS).
 
 ### Ubuntu
-To install dependencies on your Ubuntu-bases distribution:
+To install dependencies on your Ubuntu-based distribution:
 ```bash
     sudo apt install cmake libgtest-dev doxygen
 ```
