@@ -21,6 +21,7 @@ public:
      * @param size Size of the Yoshimine container
      */
     Yoshimine(int size) {
+        size = (size*(size+1)*(size*size+size+2))/8;
         m_yoshimine.resize(size);
     }
 
