@@ -17,5 +17,6 @@ double overlap_integral(const SlaterPrimitive& orbital1, const SlaterPrimitive& 
         return 0.;
     }
 
-    return boost::math::tgamma(orbital1.n() + orbital2.n() + n_offset + 1) * std::pow(orbital1.alpha() + orbital2.alpha(), -orbital1.n() - orbital2.n() - n_offset - 1);
+    return boost::math::tgamma(orbital1.n() + orbital2.n() + n_offset + 1)
+    * std::pow(orbital1.alpha() + orbital2.alpha(), -orbital1.n() - orbital2.n() - n_offset - 1);
 }

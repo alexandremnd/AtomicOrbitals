@@ -16,36 +16,28 @@ class HartreeFock
 {
 private:
     inline void setup_system(const Atom<T>& atom) {
-        m_positions.push_back(atom.position());
-        m_charges.push_back(atom.Z());
+        m_nucleus_positions.push_back(atom.position());
+        m_nucleus_charges.push_back(atom.Z());
+
+        for (const T& orbital : atom.get_orbitals()) {
+            m_orbital_basis.push_back(orbital);
+        }
     }
 
     void setup_system(const std::vector<Atom<T>>& atoms) {
-        m_positions.resize(atoms.size());
-        m_charges.resize(atoms.size());
+        m_nucleus_positions.reserve(atoms.size());
+        m_nucleus_charges.reserve(atoms.size());
 
         for(const Atom<T>& atom : atoms) {
             setup_system(atom);
         }
     }
 
-    inline void setup_basis(const Atom<T>& atom) {
-        for (const T& orbital : atom.get_orbitals()) {
-            m_orbital_basis.push_back(orbital);
-        }
-    }
-
-    void setup_basis(const std::vector<Atom<T>>& atoms) {
-        for (const Atom<T>& atom : atoms) {
-            setup_basis(atom);
-        }
-    }
-
     void setup_overlap_matrix() {
-        m_overlap_matrix = Eigen::MatrixXd::Zero(m_orbital_basis.size(), m_orbital_basis.size());
+        m_overlap_matrix = Eigen::MatrixXd::Zero(orbitals_count(), orbitals_count());
 
-        for (size_t j = 0; j < m_orbital_basis.size(); j++) {
-            for (size_t i = j; i < m_orbital_basis.size(); i++) {
+        for (size_t j = 0; j < orbitals_count(); j++) {
+            for (size_t i = j; i < orbitals_count(); i++) {
                 const T& orbital_i = this->orbital(i);
                 const T& orbital_j = this->orbital(j);
 
@@ -56,17 +48,17 @@ private:
     }
 
     void setup_one_body_integrals() {
-        m_one_body_matrix = Eigen::MatrixXd::Zero(m_orbital_basis.size(), m_orbital_basis.size());
+        m_one_body_matrix = Eigen::MatrixXd::Zero(orbitals_count(), orbitals_count());
 
-        for (size_t j = 0; j < m_orbital_basis.size(); j++) {
-            for (size_t i = j; i < m_orbital_basis.size(); i++) {
+        for (size_t j = 0; j < orbitals_count(); j++) {
+            for (size_t i = j; i < orbitals_count(); i++) {
                 const T& orbital_j = this->orbital(j);
                 const T& orbital_i = this->orbital(i);
 
                 m_one_body_matrix(i, j) += -0.5 * laplacian_integral(orbital_i, orbital_j);
 
                 for (size_t k = 0; k < atoms_count(); k++) {
-                    m_one_body_matrix(i, j) -= m_charges[k] * electron_nucleus_integral(orbital_i, orbital_j, m_positions[k]);
+                    m_one_body_matrix(i, j) -= m_nucleus_charges[k] * electron_nucleus_integral(orbital_i, orbital_j, m_nucleus_positions[k]);
                 }
 
                 m_one_body_matrix(j, i) = m_one_body_matrix(i, j);
@@ -104,10 +96,10 @@ private:
         m_transformation_matrix = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().cwiseInverse().asDiagonal();
     }
 
-    // virtual void setup_fock_matrix() = 0;
-    // virtual void diagonalize_fock_matrix() = 0;
-    // virtual void compute_density_matrix() = 0;
-    // virtual void compute_hf_energy() = 0;
+    virtual void setup_fock_matrix() = 0;
+    virtual void diagonalize_fock_matrix() = 0;
+    virtual void compute_density_matrix() = 0;
+    virtual void compute_hf_energy() = 0;
 
 protected:
     inline T& orbital(size_t i) { return m_orbital_basis[i]; }
@@ -119,28 +111,30 @@ protected:
     std::vector<T> m_orbital_basis;
     Eigen::MatrixXd m_transformation_matrix;
 
-    std::vector<Eigen::Vector3d> m_positions;
-    std::vector<double> m_charges;
+    std::vector<Eigen::Vector3d> m_nucleus_positions;
+    std::vector<double> m_nucleus_charges;
 
 public:
     HartreeFock(const Atom<T>& atom) {
         setup_system(atom);
-        setup_basis(atom);
+
         setup_overlap_matrix();
         diagonalize_overlap_matrix();
+
         setup_one_body_integrals();
         setup_two_body_integrals();
     }
 
     HartreeFock(const Molecule<T>& molecule) {
         setup_system(molecule.atoms());
-        setup_basis(molecule.atoms());
+
         setup_overlap_matrix();
         diagonalize_overlap_matrix();
+
         setup_one_body_integrals();
         setup_two_body_integrals();
     }
 
-    inline int atoms_count() const { return m_positions.size(); }
+    inline int atoms_count() const { return m_nucleus_positions.size(); }
     inline int orbitals_count() const { return m_orbital_basis.size(); }
 };
