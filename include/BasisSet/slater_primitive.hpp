@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <cassert>
 
+#include "BasisSet/orbital.hpp"
+
 
 /**
  * @brief Slater type orbital (STO) representation
@@ -14,8 +16,11 @@
     \f]
     and \f$ | l m \rangle \f$ are angular part of the wavefunction which are the spherical harmonics.
  **/
-class SlaterPrimitive {
+class SlaterPrimitive : public Orbital {
 public:
+    SlaterPrimitive() = default;
+    ~SlaterPrimitive() = default;
+
     /**
      * Throws an exception (std::invalid_argument) if one or more parameters are invalid.
      *
@@ -81,14 +86,10 @@ public:
         m_m = m;
     }
 
-    void increment_n() { set_n(m_n + 1); }
-    void decrement_n() { set_n(m_n - 1); }
-
     inline int n() const { return m_n; }
     inline int l() const { return m_l; }
     inline int m() const { return m_m; }
     inline double alpha() const { return m_alpha; }
-    inline double normalization() const { return m_normalization_constant; }
 
 private:
     void check_parameters(const int n, const int l, const int m, const double alpha) {
@@ -112,5 +113,4 @@ private:
 
     int m_n, m_l, m_m;
     double m_alpha;
-    double m_normalization_constant;
 };

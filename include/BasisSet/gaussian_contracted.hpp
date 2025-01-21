@@ -2,8 +2,9 @@
 
 #include <vector>
 #include "BasisSet/gaussian_primitive.hpp"
+#include "BasisSet/orbital.hpp"
 
-class ContractedGaussian {
+class ContractedGaussian : public Orbital {
 public:
     ContractedGaussian(const std::vector<double>& coefficients,
                        const std::vector<GaussianPrimitive>& primitives)

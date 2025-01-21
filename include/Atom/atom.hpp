@@ -2,11 +2,12 @@
 
 #include "BasisSet/gaussian_contracted.hpp"
 #include "BasisSet/slater_primitive.hpp"
+#include "BasisSet/orbital.hpp"
 #include "Eigen/Dense"
 #include <stdexcept>
+#include <memory>
 #include <vector>
 
-template <typename T>
 class Atom {
     public:
         /**
@@ -38,13 +39,13 @@ class Atom {
         Atom(int Z, float x, float y, float z) : Atom(Z, Eigen::Vector3d{x, y, z}) {};
 
         Atom(Atom& atom) : m_Z(atom.Z()), m_position(atom.m_position) {};
-        Atom(Atom&& atom) : m_Z(atom.Z()), m_position(atom.m_position), m_orbital(std::move(atom.m_orbital)) {};
+        Atom(Atom&& atom) : m_Z(atom.Z()), m_position(atom.m_position), m_orbitals(std::move(atom.m_orbitals)) {};
 
         /**
          * @param orbital The orbital to add to the atom.
          */
-        void add_orbital(const T& orbital) {
-            m_orbital.push_back(orbital);
+        void add_orbital(Orbital&& orbital) {
+            m_orbitals.push_back(std::make_unique<Orbital>(orbital));
         }
 
         /**
@@ -53,8 +54,8 @@ class Atom {
          * @param m The magnetic quantum number. (-l <= m <= l)
          * @param alpha The radial exponential decay rate. (alpha > 0)
          */
-        void add_slater_orbital(const int n, const int l, const int m, const double alpha) requires std::is_same_v<T, SlaterPrimitive> {
-            m_orbital.push_back(SlaterPrimitive(n, l, m, alpha));
+        void add_slater_orbital(const int n, const int l, const int m, const double alpha) {
+            m_orbitals.push_back(std::make_unique<SlaterPrimitive>(n, l, m, alpha));
         }
 
         /**
@@ -67,7 +68,7 @@ class Atom {
          * @param weight Coefficient of the primitive gaussians in the linear combination.
          * @param decay Exponential decay rate of the primitive gaussians.
          */
-        void add_gaussian_orbital_stype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<T, ContractedGaussian> {
+        void add_gaussian_orbital_stype(const std::vector<double>& weight, const std::vector<double>& decay) {
             if (weight.size() != decay.size()) {
                 throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
             }
@@ -77,7 +78,7 @@ class Atom {
                 cg.add_primitive(weight[i], decay[i], 0, 0, 0);
             }
 
-            m_orbital.push_back(cg);
+            m_orbitals.push_back(std::make_unique<ContractedGaussian>(cg));
         }
 
         /**
@@ -89,7 +90,7 @@ class Atom {
          * @param weight Coefficient of the primitive gaussians in the linear combination.
          * @param decay Exponential decay rate of the primitive gaussians.
          */
-        void add_gaussian_orbital_ptype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<T, ContractedGaussian> {
+        void add_gaussian_orbital_ptype(const std::vector<double>& weight, const std::vector<double>& decay) {
             if (weight.size() != decay.size()) {
                 throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
             }
@@ -104,9 +105,9 @@ class Atom {
                 cg_z.add_primitive(weight[i], decay[i], 0, 0, 1);
             }
 
-            m_orbital.push_back(cg_x);
-            m_orbital.push_back(cg_y);
-            m_orbital.push_back(cg_z);
+            m_orbitals.push_back(cg_x);
+            m_orbitals.push_back(cg_y);
+            m_orbitals.push_back(cg_z);
         }
 
         /**
@@ -118,7 +119,7 @@ class Atom {
          * @param weight Coefficient of the primitive gaussians in the linear combination.
          * @param decay Exponential decay rate of the primitive gaussians.
          */
-        void add_gaussian_orbital_dtype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<T, ContractedGaussian> {
+        void add_gaussian_orbital_dtype(const std::vector<double>& weight, const std::vector<double>& decay) {
             if (weight.size() != decay.size()) {
                 throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
             }
@@ -139,12 +140,12 @@ class Atom {
                 cg_yz.add_primitive(weight[i], decay[i], 0, 1, 1);
             }
 
-            m_orbital.push_back(cg_xx);
-            m_orbital.push_back(cg_yy);
-            m_orbital.push_back(cg_zz);
-            m_orbital.push_back(cg_xy);
-            m_orbital.push_back(cg_xz);
-            m_orbital.push_back(cg_yz);
+            m_orbitals.push_back(cg_xx);
+            m_orbitals.push_back(cg_yy);
+            m_orbitals.push_back(cg_zz);
+            m_orbitals.push_back(cg_xy);
+            m_orbitals.push_back(cg_xz);
+            m_orbitals.push_back(cg_yz);
         }
 
         /**
@@ -156,7 +157,7 @@ class Atom {
          * @param weight Coefficient of the primitive gaussians in the linear combination.
          * @param decay Exponential decay rate of the primitive gaussians.
          */
-        void add_gaussian_orbital_ftype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<T, ContractedGaussian> {
+        void add_gaussian_orbital_ftype(const std::vector<double>& weight, const std::vector<double>& decay) {
             if (weight.size() != decay.size()) {
                 throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
             }
@@ -185,28 +186,28 @@ class Atom {
                 cg_xyz.add_primitive(weight[i], decay[i], 1, 1, 1);
             }
 
-            m_orbital.push_back(cg_xxx);
-            m_orbital.push_back(cg_yyy);
-            m_orbital.push_back(cg_zzz);
-            m_orbital.push_back(cg_xxy);
-            m_orbital.push_back(cg_xxz);
-            m_orbital.push_back(cg_xyy);
-            m_orbital.push_back(cg_yyz);
-            m_orbital.push_back(cg_xzz);
-            m_orbital.push_back(cg_yzz);
-            m_orbital.push_back(cg_xyz);
+            m_orbitals.push_back(cg_xxx);
+            m_orbitals.push_back(cg_yyy);
+            m_orbitals.push_back(cg_zzz);
+            m_orbitals.push_back(cg_xxy);
+            m_orbitals.push_back(cg_xxz);
+            m_orbitals.push_back(cg_xyy);
+            m_orbitals.push_back(cg_yyz);
+            m_orbitals.push_back(cg_xzz);
+            m_orbitals.push_back(cg_yzz);
+            m_orbitals.push_back(cg_xyz);
         }
 
         inline int Z() const { return m_Z; }
         inline Eigen::Vector3d position() const { return m_position; }
 
-        inline const int n_orbitals() const { return m_orbital.size(); }
-        inline const std::vector<T>& get_orbitals() const { return m_orbital; }
-        inline const T& get_orbital(size_t i) const { return m_orbital[i]; }
-        inline const T& operator()(size_t i) const { return m_orbital[i]; }
+        inline const int n_orbitals() const { return m_orbitals.size(); }
+        inline const std::vector<std::unique_ptr<Orbital>>& get_orbitals() const { return m_orbitals; }
+        inline const Orbital& get_orbital(size_t i) const { return m_orbitals[i]; }
+        inline const Orbital& operator()(size_t i) const { return m_orbitals[i]; }
 
     private:
         int m_Z;
         Eigen::Vector3d m_position;
-        std::vector<T> m_orbital;
+        std::vector<std::unique_ptr<Orbital>> m_orbitals;
 };
