@@ -37,5 +37,5 @@ double electron_electron_integral(const SlaterPrimitive &orbital1, const SlaterP
         matrix_element += value;
     }
 
-    return matrix_element;
+    return matrix_element * orbital1.normalization() * orbital2.normalization() * orbital3.normalization() * orbital4.normalization();
 }

@@ -61,5 +61,5 @@ To generate test cases, [GoogleTest](https://github.com/google/googletest) is re
 
 2. Execute test with:
 ```bash
-    cmake --build build --target test --output-on-failure
+    cmake --build build --target test
 ```
