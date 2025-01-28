@@ -1,4 +1,4 @@
-#pragma once // Quite unusual, but you will thank me later.
+#pragma once
 
 #include "Atom/atom.interface.hpp"
 #include "BasisSet/gaussian_contracted.hpp"
