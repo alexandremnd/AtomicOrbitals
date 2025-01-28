@@ -8,7 +8,6 @@
 #include "BasisSet/orbital.hpp"
 #include "BasisSet/slater_primitive.hpp"
 #include "BasisSet/slater_contracted.hpp"
-#include "BasisSet/gaussian_primitive.hpp"
 #include "BasisSet/gaussian_contracted.hpp"
 
 #include "concepts.hpp"
@@ -48,9 +47,16 @@ public:
     Atom(Atom&& atom) : m_Z(atom.Z()), m_position(atom.m_position), m_orbitals(std::move(atom.m_orbitals)) {};
 
     /**
-        * @param orbital The orbital to add to the atom.
+    * @param orbital The orbital to add to the atom.
+    * @note The orbital will be copied in this case.
     */
     void add_orbital(const OrbitalType& orbital);
+
+    /**
+    * @param orbital The orbital to add to the atom.
+    * @note The orbital will be moved in this case. The instance will own the orbital.
+    */
+    void add_orbital(OrbitalType&& orbital);
 
     /**
     * @param n The principal quantum number. (0 < n)
@@ -60,11 +66,18 @@ public:
     */
     void add_slater_orbital(const int n, const int l, const int m, const double alpha) requires std::is_same_v<OrbitalType, SlaterPrimitive>;
 
-    void add_contracted_slater(const std::vector<double>& weight,
+    /**
+    * @param weight The principal quantum number. (0 < n)
+    * @param n The principal quantum number. (0 < n)
+    * @param l The azimuthal quantum number. (0 <= l < n)
+    * @param m The magnetic quantum number. (-l <= m <= l)
+    * @param decay The exponential decay rate of the primitive gaussians (alpha > 0)
+    */
+    void add_contracted_slater(const std::vector<double> &weight,
                                const std::vector<double> &n,
                                const std::vector<double> &l,
                                const std::vector<double> &m,
-                               const std::vector<double>& decay) requires std::is_same_v<OrbitalType, ContractedSlater>;
+                               const std::vector<double> &decay) requires std::is_same_v<OrbitalType, ContractedSlater>;
 
     /**
     * @brief Adds a contracted gaussian orbital (s type) to the atom.
