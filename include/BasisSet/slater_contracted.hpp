@@ -6,7 +6,7 @@
 #include "BasisSet/orbital.hpp"
 #include "BasisSet/slater_primitive.hpp"
 
-class ContractedSlater : public Orbital {
+class ContractedSlater final : public Orbital {
 public:
     ContractedSlater() = default;
     ContractedSlater(std::size_t size) : m_coefficients(size), m_primitives(size) {}

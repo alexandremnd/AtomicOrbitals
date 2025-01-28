@@ -12,7 +12,7 @@
     \f]
     and \f$ | l m \rangle \f$ are angular part of the wavefunction which are the spherical harmonics.
  **/
-class SlaterPrimitive : public Orbital {
+class SlaterPrimitive final : public Orbital {
 public:
     SlaterPrimitive() = default;
     ~SlaterPrimitive() = default;
