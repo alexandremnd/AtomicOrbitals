@@ -41,10 +41,13 @@ public:
     * Throws an invalid_argument exception if Z < 1.
     *
     * @param Z Number of protons in the nucleus.
+    * @note Orbitals are not copied. Only pointers are copied.
     */
     Atom(int Z, float x, float y, float z) : Atom(Z, Eigen::Vector3d{x, y, z}) {};
-    Atom(Atom& atom) : m_Z(atom.Z()), m_position(atom.m_position) {};
+    Atom(Atom& atom) : m_Z(atom.Z()), m_position(atom.m_position), m_orbitals(atom.m_orbitals) {};
     Atom(Atom&& atom) : m_Z(atom.Z()), m_position(atom.m_position), m_orbitals(std::move(atom.m_orbitals)) {};
+
+    void print_info() const;
 
     /**
     * @param orbital The orbital to add to the atom.
@@ -57,6 +60,15 @@ public:
     * @note The orbital will be moved in this case. The instance will own the orbital.
     */
     void add_orbital(OrbitalType&& orbital);
+
+    /**
+     * @brief Constructs an orbital with T constructor
+     * @param args
+     */
+    template <typename... Args>
+    void add_orbital(Args&&... args) requires std::is_constructible_v<OrbitalType, Args...> {
+        m_orbitals->emplace_back(std::forward<Args>(args)...);
+    }
 
     /**
     * @param n The principal quantum number. (0 < n)
@@ -124,16 +136,19 @@ public:
     */
     void add_gaussian_orbital_ftype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<OrbitalType, ContractedGaussian>;
 
-    inline int Z() const { return m_Z; }
-    inline Eigen::Vector3d position() const { return m_position; }
+    inline int Z() { return m_Z; }
+    inline Eigen::Vector3d position() { return m_position; }
 
-    inline const int orbitals_count() const { return m_orbitals.size(); }
-    inline const std::vector<std::unique_ptr<Orbital>>& get_orbitals() const { return m_orbitals; }
+    inline int orbitals_count() { return m_orbitals.size(); }
+    inline const std::vector<std::shared_ptr<Orbital>>& get_orbitals() const { return m_orbitals; }
     inline const Orbital& get_orbital(size_t i) const { return *m_orbitals[i]; }
     inline const Orbital& operator()(size_t i) const { return *m_orbitals[i]; }
 
 private:
     int m_Z;
     Eigen::Vector3d m_position;
-    std::vector<std::unique_ptr<OrbitalType>> m_orbitals;
+    // std::vector<std::shared_ptr<OrbitalType>> m_orbitals;
+    std::unique_ptr<std::vector<OrbitalType>> m_orbitals;
 };
+
+DECLARE_EXTERN_TEMPLATE(Atom)

@@ -1,17 +1,28 @@
 #pragma once
 
+#include <memory>
+#include <iostream>
+
 #include "Atom/atom.interface.hpp"
 #include "BasisSet/gaussian_contracted.hpp"
 #include "BasisSet/slater_primitive.hpp"
 #include "BasisSet/slater_contracted.hpp"
 #include "concepts.hpp"
-#include <memory>
 
-DECLARE_EXTERN_TEMPLATE(Atom)
+DECLARE_TEMPLATE(Atom)
+
+template <DerivedFromOrbital OrbitalType>
+void Atom<OrbitalType>::print_info() const {
+    std::cout << "============= Atom Configuration =============" << std::endl;
+    std::cout << "Atomic number: " << m_Z << std::endl;
+    std::cout << "Position: " << m_position.transpose() << std::endl;
+    std::cout << "Orbitals count: " << m_orbitals.size() << std::endl;
+    std::cout << "==============================================" << std::endl;
+}
 
 template <DerivedFromOrbital OrbitalType>
 void Atom<OrbitalType>::add_orbital(const OrbitalType& orbital) {
-    m_orbitals.push_back(std::make_unique<OrbitalType>(orbital));
+    m_orbitals.push_back(std::make_shared<OrbitalType>(orbital));
 }
 
 template <DerivedFromOrbital OrbitalType>
@@ -21,7 +32,7 @@ void Atom<OrbitalType>::add_orbital(OrbitalType&& orbital) {
 
 template <DerivedFromOrbital OrbitalType>
 void Atom<OrbitalType>::add_slater_orbital(const int n, const int l, const int m, const double alpha) requires std::is_same_v<OrbitalType, SlaterPrimitive>{
-    m_orbitals.push_back(std::make_unique<SlaterPrimitive>(n, l, m, alpha));
+    m_orbitals.push_back(std::make_shared<SlaterPrimitive>(n, l, m, alpha));
 }
 
 template <DerivedFromOrbital OrbitalType>
@@ -35,7 +46,7 @@ void Atom<OrbitalType>::add_contracted_slater(const std::vector<double>& weight,
         throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
     }
 
-    auto cs = std::make_unique<ContractedSlater>();
+    auto cs = std::make_shared<ContractedSlater>();
     cs->reserve(weight.size());
 
     for (size_t i = 0; i < weight.size(); i++) {
@@ -51,7 +62,7 @@ void Atom<OrbitalType>::add_gaussian_orbital_stype(const std::vector<double>& we
         throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
     }
 
-    auto cg = std::make_unique<ContractedGaussian>();
+    auto cg = std::make_shared<ContractedGaussian>();
     for (size_t i = 0; i < weight.size(); i++) {
         cg->add_primitive(weight[i], decay[i], 0, 0, 0);
     }
@@ -65,9 +76,9 @@ void Atom<OrbitalType>::add_gaussian_orbital_ptype(const std::vector<double>& we
         throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
     }
 
-    auto cg_x = std::make_unique<ContractedGaussian>();
-    auto cg_y = std::make_unique<ContractedGaussian>();
-    auto cg_z = std::make_unique<ContractedGaussian>();
+    auto cg_x = std::make_shared<ContractedGaussian>();
+    auto cg_y = std::make_shared<ContractedGaussian>();
+    auto cg_z = std::make_shared<ContractedGaussian>();
 
     for (size_t i = 0; i < weight.size(); i++) {
         cg_x->add_primitive(weight[i], decay[i], 1, 0, 0);
@@ -86,12 +97,12 @@ void Atom<OrbitalType>::add_gaussian_orbital_dtype(const std::vector<double>& we
         throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
     }
 
-    auto cg_xx = std::make_unique<ContractedGaussian>();
-    auto cg_yy = std::make_unique<ContractedGaussian>();
-    auto cg_zz = std::make_unique<ContractedGaussian>();
-    auto cg_xy = std::make_unique<ContractedGaussian>();
-    auto cg_xz = std::make_unique<ContractedGaussian>();
-    auto cg_yz = std::make_unique<ContractedGaussian>();
+    auto cg_xx = std::make_shared<ContractedGaussian>();
+    auto cg_yy = std::make_shared<ContractedGaussian>();
+    auto cg_zz = std::make_shared<ContractedGaussian>();
+    auto cg_xy = std::make_shared<ContractedGaussian>();
+    auto cg_xz = std::make_shared<ContractedGaussian>();
+    auto cg_yz = std::make_shared<ContractedGaussian>();
 
     for (size_t i = 0; i < weight.size(); i++) {
         cg_xx->add_primitive(weight[i], decay[i], 2, 0, 0);
@@ -116,16 +127,16 @@ void Atom<OrbitalType>::add_gaussian_orbital_ftype(const std::vector<double>& we
         throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
     }
 
-    auto cg_xxx = std::make_unique<ContractedSlater>();
-    auto cg_yyy = std::make_unique<ContractedSlater>();
-    auto cg_zzz = std::make_unique<ContractedSlater>();
-    auto cg_xxy = std::make_unique<ContractedSlater>();
-    auto cg_xxz = std::make_unique<ContractedSlater>();
-    auto cg_xyy = std::make_unique<ContractedSlater>();
-    auto cg_yyz = std::make_unique<ContractedSlater>();
-    auto cg_xzz = std::make_unique<ContractedSlater>();
-    auto cg_yzz = std::make_unique<ContractedSlater>();
-    auto cg_xyz = std::make_unique<ContractedSlater>();
+    auto cg_xxx = std::make_shared<ContractedSlater>();
+    auto cg_yyy = std::make_shared<ContractedSlater>();
+    auto cg_zzz = std::make_shared<ContractedSlater>();
+    auto cg_xxy = std::make_shared<ContractedSlater>();
+    auto cg_xxz = std::make_shared<ContractedSlater>();
+    auto cg_xyy = std::make_shared<ContractedSlater>();
+    auto cg_yyz = std::make_shared<ContractedSlater>();
+    auto cg_xzz = std::make_shared<ContractedSlater>();
+    auto cg_yzz = std::make_shared<ContractedSlater>();
+    auto cg_xyz = std::make_shared<ContractedSlater>();
 
     for (size_t i = 0; i < weight.size(); i++) {
         cg_xxx->add_primitive(weight[i], decay[i], 3, 0, 0);
