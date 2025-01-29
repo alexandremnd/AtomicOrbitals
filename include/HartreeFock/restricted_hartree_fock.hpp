@@ -7,8 +7,6 @@
 
 #include "HartreeFock/restricted_hartree_fock.interface.hpp"
 
-DECLARE_TEMPLATE(RestrictedHartreeFock)
-
 template <DerivedFromOrbital OrbitalType>
 RestrictedHartreeFock<OrbitalType>::RestrictedHartreeFock(const Atom<OrbitalType>& atom) : HartreeFock<OrbitalType>(atom) {
     int N = this->electrons_count();

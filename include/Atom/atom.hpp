@@ -9,8 +9,6 @@
 #include "BasisSet/slater_contracted.hpp"
 #include "concepts.hpp"
 
-DECLARE_TEMPLATE(Atom)
-
 template <DerivedFromOrbital OrbitalType>
 void Atom<OrbitalType>::print_info() const {
     std::cout << "============= Atom Configuration =============" << std::endl;
