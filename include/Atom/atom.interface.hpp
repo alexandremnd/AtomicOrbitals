@@ -147,8 +147,7 @@ public:
 private:
     int m_Z;
     Eigen::Vector3d m_position;
-    // std::vector<std::shared_ptr<OrbitalType>> m_orbitals;
-    std::unique_ptr<std::vector<OrbitalType>> m_orbitals;
+    std::vector<std::shared_ptr<OrbitalType>> m_orbitals;
 };
 
 DECLARE_EXTERN_TEMPLATE(Atom)

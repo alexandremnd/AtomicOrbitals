@@ -10,7 +10,7 @@ public:
                        const std::vector<GaussianPrimitive>& primitives)
         : m_coefficients(coefficients), m_primitives(primitives) {}
 
-    ContractedGaussian(const int contraction_size) : m_coefficients(contraction_size), m_primitives(contraction_size) {}
+    ContractedGaussian(const int size) : m_coefficients(size), m_primitives(size) {}
 
     ContractedGaussian() = default;
 
@@ -25,9 +25,9 @@ public:
      * @param y_exponent y exponent of the primitive.
      * @param z_exponent z exponent of the primitive.
      */
-    void add_primitive(double coefficient, double decay, int x_exponent, int y_exponent, int z_exponent) {
+    void add_primitive(double coefficient, double decay, int x_exponent, int y_exponent, int z_exponent, Eigen::Vector3d position = {0, 0, 0}) {
         m_coefficients.push_back(coefficient);
-        m_primitives.push_back(GaussianPrimitive(x_exponent, y_exponent, z_exponent, decay));
+        m_primitives.push_back(GaussianPrimitive(x_exponent, y_exponent, z_exponent, decay, position));
     }
 
     /**
