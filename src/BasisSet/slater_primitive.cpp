@@ -5,12 +5,12 @@
 
 #include "BasisSet/slater_primitive.hpp"
 
-SlaterPrimitive::SlaterPrimitive(const int n, const int l, const int m, const double alpha) : m_n(n), m_l(l), m_m(m), m_alpha(alpha) {
+SlaterPrimitive::SlaterPrimitive(int n, int l, int m, double alpha) : m_n(n), m_l(l), m_m(m), m_alpha(alpha) {
     check_parameters(n, l, m, alpha);
     update_normalization_constant();
 }
 
-void SlaterPrimitive::set_alpha(const double alpha) {
+void SlaterPrimitive::set_alpha(double alpha) {
     check_parameters(m_n, m_l, m_m, alpha);
 
     m_alpha = alpha;
@@ -18,7 +18,7 @@ void SlaterPrimitive::set_alpha(const double alpha) {
 }
 
 
-void SlaterPrimitive::set_n(const int n) {
+void SlaterPrimitive::set_n(int n) {
     check_parameters(n, m_l, m_m, m_alpha);
 
     m_n = n;
@@ -30,7 +30,7 @@ void SlaterPrimitive::set_n(const int n) {
     *
     * @param l Azimuthal quantum number (0 < l < n)
     */
-void SlaterPrimitive::set_l(const int l) {
+void SlaterPrimitive::set_l(int l) {
     check_parameters(m_n, l, m_m, m_alpha);
     m_l = l;
 }
@@ -40,12 +40,12 @@ void SlaterPrimitive::set_l(const int l) {
     *
     * @param m Magnetic quantum number (-l <= m <= l)
     */
-void SlaterPrimitive::set_m(const int m) {
+void SlaterPrimitive::set_m(int m) {
     check_parameters(m_n, m_l, m, m_alpha);
     m_m = m;
 }
 
-void SlaterPrimitive::check_parameters(const int n, const int l, const int m, const double alpha) {
+void SlaterPrimitive::check_parameters(int n, int l, int m, double alpha) {
     if (n < 1) {
         throw std::invalid_argument("SlaterPrimitive: n must be a positive integer greater than 0");
     }

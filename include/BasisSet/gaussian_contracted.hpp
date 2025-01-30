@@ -10,13 +10,13 @@ public:
                        const std::vector<GaussianPrimitive>& primitives)
         : m_coefficients(coefficients), m_primitives(primitives) {}
 
-    ContractedGaussian(const int size) : m_coefficients(size), m_primitives(size) {}
+    ContractedGaussian(int size) : m_coefficients(size), m_primitives(size) {}
 
     ContractedGaussian() = default;
 
     inline double evaluate(double x, double y, double z) const;
 
-    /**
+     /**
      * @brief Add a primitive to the contracted gaussian orbital.
      *
      * @param coefficient Coefficient of the primitive in the linear combination.

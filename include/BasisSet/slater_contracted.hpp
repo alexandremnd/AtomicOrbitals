@@ -24,8 +24,8 @@ public:
 
 
     void reserve(std::size_t size);
-    void add_primitive(const double coefficient, const SlaterPrimitive &primitive);
-    void add_primitive(double coefficient, const int n, const int l, const int m, const double alpha);
+    void add_primitive(double coefficient, SlaterPrimitive &primitive);
+    void add_primitive(double coefficient, int n, int l, int m, double alpha);
     void update_normalization();
 
 private:

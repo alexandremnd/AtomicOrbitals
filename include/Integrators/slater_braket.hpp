@@ -29,7 +29,7 @@
  * @param L Legendre polynomial order of coulomb repulsion (1/r is expanded as Σ_L P_L(cos γ))
  * @return double Evaluation of the radial integral
  */
-inline double radial_integral(const SlaterPrimitive &orbital_i, const SlaterPrimitive &orbital_j, const SlaterPrimitive &orbital_k, const SlaterPrimitive &orbital_l, const int L) {
+inline double radial_integral(const SlaterPrimitive &orbital_i, const SlaterPrimitive &orbital_j, const SlaterPrimitive &orbital_k, const SlaterPrimitive &orbital_l, int L) {
     assert(L >= 0);
     assert(L <= std::min({orbital_i.l() + orbital_k.l(), orbital_j.l() + orbital_l.l()}));
 
@@ -65,7 +65,7 @@ inline double radial_integral(const SlaterPrimitive &orbital_i, const SlaterPrim
  * @param M Expansion order of a Legendre polynomial of order L on the spherical harmonics. (|M| <= L
  * @return double Evaluation of the angular integral
  */
-inline double angular_integral(const SlaterPrimitive &orbital_i, const SlaterPrimitive &orbital_k, const int L, const int M) {
+inline double angular_integral(const SlaterPrimitive &orbital_i, const SlaterPrimitive &orbital_k, int L, int M) {
     assert(L >= 0);
     assert(std::abs(M) <= L);
 

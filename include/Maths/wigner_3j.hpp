@@ -19,7 +19,7 @@ namespace Math
      * @param m3 Projection of the third angular momentum quantum number
      * @return double The Wigner's 3-j symbol value
      */
-    inline double wigner_3j(const int j1, const int j2, const int j3, const int m1, const int m2, const int m3) {
+    inline double wigner_3j(int j1, int j2, int j3, int m1, int m2, int m3) {
         if (m1 + m2 + m3 != 0) {
             return 0.0;
         }

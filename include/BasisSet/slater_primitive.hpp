@@ -29,7 +29,7 @@ public:
      * @param m Magnetic quantum number (-l <= m <= l)
      * @param alpha Exponential decay constant (alpha > 0)
      */
-    SlaterPrimitive(const int n, const int l, const int m, const double alpha);
+    SlaterPrimitive(int n, int l, int m, double alpha);
 
     /**
      * Throws an exception (std::invalid_argument) if the parameter is invalid.
@@ -38,7 +38,7 @@ public:
      *
      * @param alpha Exponential decay constant (alpha > 0)
      */
-    void set_alpha(const double alpha);
+    void set_alpha(double alpha);
 
     /**
      * Throws an exception (std::invalid_argument) if the parameter is invalid.
@@ -47,14 +47,14 @@ public:
      *
      * @param n Principal quantum number (n > 0)
      */
-    void set_n(const int n);
+    void set_n(int n);
 
     /**
      * Throws an exception (std::invalid_argument) if the parameter is invalid.
      *
      * @param l Azimuthal quantum number (0 < l < n)
      */
-    void set_l(const int l);
+    void set_l(int l);
 
     /**
      * Throws an exception (std::invalid_argument) if the parameter is invalid.

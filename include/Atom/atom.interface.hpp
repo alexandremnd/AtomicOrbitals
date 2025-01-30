@@ -76,7 +76,7 @@ public:
     * @param m The magnetic quantum number. (-l <= m <= l)
     * @param alpha The radial exponential decay rate. (alpha > 0)
     */
-    void add_slater_orbital(const int n, const int l, const int m, const double alpha) requires std::is_same_v<OrbitalType, SlaterPrimitive>;
+    void add_slater_orbital(int n, int l, int m, double alpha) requires std::is_same_v<OrbitalType, SlaterPrimitive>;
 
     /**
     * @param weight The principal quantum number. (0 < n)
@@ -139,7 +139,7 @@ public:
     inline int Z() { return m_Z; }
     inline Eigen::Vector3d position() { return m_position; }
 
-    inline int orbitals_count() { return m_orbitals.size(); }
+    inline int orbitals_count() const { return m_orbitals.size(); }
     inline const std::vector<std::shared_ptr<Orbital>>& get_orbitals() const { return m_orbitals; }
     inline const Orbital& get_orbital(size_t i) const { return *m_orbitals[i]; }
     inline const Orbital& operator()(size_t i) const { return *m_orbitals[i]; }
