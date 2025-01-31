@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstddef>
 #include <vector>
 
 #include "BasisSet/orbital.hpp"
@@ -9,7 +8,7 @@
 class ContractedSlater final : public Orbital {
 public:
     ContractedSlater() = default;
-    ContractedSlater(std::size_t size) : m_coefficients(size), m_primitives(size) {}
+    ContractedSlater(size_t size) : m_coefficients(size), m_primitives(size) {}
     ContractedSlater(std::vector<double> &coefficients, std::vector<SlaterPrimitive> &primitives) : m_coefficients(coefficients), m_primitives(primitives) {
         update_normalization();
     }
@@ -24,9 +23,17 @@ public:
 
 
     void reserve(std::size_t size);
-    void add_primitive(double coefficient, SlaterPrimitive &primitive);
+    void add_primitive(double coefficient, const SlaterPrimitive &primitive);
     void add_primitive(double coefficient, int n, int l, int m, double alpha);
     void update_normalization();
+
+    inline const SlaterPrimitive& get_primitive(int i) const {
+        return m_primitives[i];
+    }
+
+    inline double get_coefficient(int i) const {
+        return m_coefficients[i];
+    }
 
 private:
     std::vector<double> m_coefficients;
