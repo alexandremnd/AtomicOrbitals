@@ -34,7 +34,7 @@ public:
     /**
      * Throws an exception (std::invalid_argument) if the parameter is invalid.
      *
-     * Updates the normalization constant if parameter is accepted.
+     * @note Updates the normalization constant if parameter is accepted.
      *
      * @param alpha Exponential decay constant (alpha > 0)
      */
@@ -43,7 +43,7 @@ public:
     /**
      * Throws an exception (std::invalid_argument) if the parameter is invalid.
      *
-     * Updates the normalization constant if parameter is accepted.
+     * @note Updates the normalization constant if parameter is accepted.
      *
      * @param n Principal quantum number (n > 0)
      */
@@ -52,6 +52,8 @@ public:
     /**
      * Throws an exception (std::invalid_argument) if the parameter is invalid.
      *
+     * @note Updates the normalization constant if parameter is accepted.
+     *
      * @param l Azimuthal quantum number (0 < l < n)
      */
     void set_l(int l);
@@ -59,9 +61,11 @@ public:
     /**
      * Throws an exception (std::invalid_argument) if the parameter is invalid.
      *
+     * @note Updates the normalization constant if parameter is accepted.
+     *
      * @param m Magnetic quantum number (-l <= m <= l)
      */
-    void set_m(const int m);
+    void set_m(int m);
 
     inline int n() const { return m_n; }
     inline int l() const { return m_l; }

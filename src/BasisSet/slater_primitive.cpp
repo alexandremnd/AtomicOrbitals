@@ -25,21 +25,11 @@ void SlaterPrimitive::set_n(int n) {
     update_normalization_constant();
 }
 
-/**
-    * Throws an exception (std::invalid_argument) if the parameter is invalid.
-    *
-    * @param l Azimuthal quantum number (0 < l < n)
-    */
 void SlaterPrimitive::set_l(int l) {
     check_parameters(m_n, l, m_m, m_alpha);
     m_l = l;
 }
 
-/**
-    * Throws an exception (std::invalid_argument) if the parameter is invalid.
-    *
-    * @param m Magnetic quantum number (-l <= m <= l)
-    */
 void SlaterPrimitive::set_m(int m) {
     check_parameters(m_n, m_l, m, m_alpha);
     m_m = m;
