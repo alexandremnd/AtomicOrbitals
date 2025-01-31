@@ -24,11 +24,6 @@ void Atom<OrbitalType>::add_orbital(const OrbitalType& orbital) {
 }
 
 template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_orbital(OrbitalType&& orbital) {
-    m_orbitals.push_back(std::move(orbital));
-}
-
-template <DerivedFromOrbital OrbitalType>
 void Atom<OrbitalType>::add_slater_orbital(int n, int l, int m, double alpha) requires std::is_same_v<OrbitalType, SlaterPrimitive>{
     m_orbitals.push_back(std::make_shared<SlaterPrimitive>(n, l, m, alpha));
 }

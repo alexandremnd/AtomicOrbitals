@@ -56,18 +56,12 @@ public:
     void add_orbital(const OrbitalType& orbital);
 
     /**
-    * @param orbital The orbital to add to the atom.
-    * @note The orbital will be moved in this case. The instance will own the orbital.
-    */
-    void add_orbital(OrbitalType&& orbital);
-
-    /**
      * @brief Constructs an orbital with T constructor
      * @param args
      */
     template <typename... Args>
     void add_orbital(Args&&... args) requires std::is_constructible_v<OrbitalType, Args...> {
-        m_orbitals->emplace_back(std::forward<Args>(args)...);
+        m_orbitals.push_back(std::make_shared<OrbitalType>(std::forward<Args>(args)...));
     }
 
     /**
@@ -140,7 +134,7 @@ public:
     inline Eigen::Vector3d position() { return m_position; }
 
     inline int orbitals_count() const { return m_orbitals.size(); }
-    inline const std::vector<std::shared_ptr<Orbital>>& get_orbitals() const { return m_orbitals; }
+    inline const std::vector<std::shared_ptr<OrbitalType>>& get_orbitals() const { return m_orbitals; }
     inline const Orbital& get_orbital(size_t i) const { return *m_orbitals[i]; }
     inline const Orbital& operator()(size_t i) const { return *m_orbitals[i]; }
 
