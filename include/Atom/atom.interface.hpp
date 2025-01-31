@@ -56,6 +56,12 @@ public:
     void add_orbital(const OrbitalType& orbital);
 
     /**
+     * @param orbital The orbital to add to the atom.
+     * @note The orbital will be moved in this case. Passed orbital will be invalid after this call.
+     */
+    void add_orbital(OrbitalType&& orbital);
+
+    /**
      * @brief Constructs an orbital with T constructor
      * @param args
      */
