@@ -1,6 +1,10 @@
 #include <stdexcept>
+
 #include "Integrators/electron_electron_integral.hpp"
 #include "Integrators/slater_braket.hpp"
+#include "BasisSet/gaussian_primitive.hpp"
+#include "BasisSet/contracted_orbital.hpp"
+#include "BasisSet/slater_primitive.hpp"
 
 double electron_electron_integral(const GaussianPrimitive &orbital1, const GaussianPrimitive &orbital2, const GaussianPrimitive &orbital3, const GaussianPrimitive &orbital4)
 {

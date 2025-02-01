@@ -1,8 +1,8 @@
 #pragma once
 
-#include "BasisSet/gaussian_primitive.hpp"
-#include "BasisSet/gaussian_contracted.hpp"
 #include "BasisSet/slater_primitive.hpp"
+#include "BasisSet/gaussian_primitive.hpp"
+#include "BasisSet/contracted_orbital.hpp"
 
 
 double electron_electron_integral(const GaussianPrimitive& orbital1,

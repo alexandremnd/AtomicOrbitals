@@ -1,9 +1,8 @@
 #pragma once
 
-#include "BasisSet/gaussian_primitive.hpp"
-#include "BasisSet/gaussian_contracted.hpp"
 #include "BasisSet/slater_primitive.hpp"
-
+#include "BasisSet/gaussian_primitive.hpp"
+#include "BasisSet/contracted_orbital.hpp"
 #include "Eigen/Dense"
 
 double electron_nucleus_integral(const GaussianPrimitive& orbital1,

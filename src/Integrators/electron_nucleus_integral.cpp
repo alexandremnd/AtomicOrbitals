@@ -1,4 +1,6 @@
 #include "Integrators/electron_nucleus_integral.hpp"
+#include "BasisSet/gaussian_primitive.hpp"
+#include "BasisSet/contracted_orbital.hpp"
 #include "BasisSet/slater_primitive.hpp"
 #include "Integrators/overlap_integral.hpp"
 #include <stdexcept>
