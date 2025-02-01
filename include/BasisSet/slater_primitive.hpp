@@ -18,11 +18,11 @@ public:
     ~SlaterPrimitive() = default;
 
     /**
-     * Throws an exception (std::invalid_argument) if one or more parameters are invalid.
-     *
-     * Note: The normalization constant only normalize the radial part of the wavefunction as
+     * @note The normalization constant only normalize the radial part of the wavefunction as
      * we expressed braket STO without normalization constant.
      * The angular part is normalized in the spherical harmonics.
+     *
+     * @throws std::invalid_argument if one or more parameters are invalid.
      *
      * @param n Principal quantum number (n > 0)
      * @param l Secondary quantum number (0 < l < n)
@@ -32,36 +32,36 @@ public:
     SlaterPrimitive(int n, int l, int m, double alpha);
 
     /**
-     * Throws an exception (std::invalid_argument) if the parameter is invalid.
-     *
      * @note Updates the normalization constant if parameter is accepted.
+     *
+     * @throws std::invalid_argument if one or more parameters are invalid.
      *
      * @param alpha Exponential decay constant (alpha > 0)
      */
     void set_alpha(double alpha);
 
     /**
-     * Throws an exception (std::invalid_argument) if the parameter is invalid.
-     *
      * @note Updates the normalization constant if parameter is accepted.
+     *
+     * @throws std::invalid_argument if one or more parameters are invalid.
      *
      * @param n Principal quantum number (n > 0)
      */
     void set_n(int n);
 
     /**
-     * Throws an exception (std::invalid_argument) if the parameter is invalid.
-     *
      * @note Updates the normalization constant if parameter is accepted.
+     *
+     * @throws std::invalid_argument if one or more parameters are invalid.
      *
      * @param l Azimuthal quantum number (0 < l < n)
      */
     void set_l(int l);
 
     /**
-     * Throws an exception (std::invalid_argument) if the parameter is invalid.
-     *
      * @note Updates the normalization constant if parameter is accepted.
+     *
+     * @throws std::invalid_argument if one or more parameters are invalid.
      *
      * @param m Magnetic quantum number (-l <= m <= l)
      */

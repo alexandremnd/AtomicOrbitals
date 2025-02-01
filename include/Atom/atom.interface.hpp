@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <type_traits>
 #include <vector>
 #include <stdexcept>
@@ -17,10 +16,10 @@ template <DerivedFromOrbital OrbitalType>
 class Atom {
 public:
     /**
-    * Throws an invalid_argument exception if Z < 1.
-    *
+    * @brief Builds an atom at the given position.
     * @param Z Number of protons in the nucleus.
     * @param position Position of the nucleus.
+    * @throw std::invalid_argument if Z < 1.
     */
     Atom(int Z, Eigen::Vector3d position) : m_Z(Z), m_position(position) {
         if (Z < 1) {
@@ -30,20 +29,21 @@ public:
 
     /**
     * @brief Builds an atom at the origin.
-    *
-    * Throws an invalid_argument exception if Z < 1.
-    *
     * @param Z Number of protons in the nucleus.
+    * @throw std::invalid_argument if Z < 1.
     */
     Atom(int Z) : Atom(Z, Eigen::Vector3d{0., 0., 0.}) {};
 
     /**
-    * Throws an invalid_argument exception if Z < 1.
-    *
+    * @brief Builds an atom at the given position.
     * @param Z Number of protons in the nucleus.
-    * @note Orbitals are not copied. Only pointers are copied.
+    * @param x X coordinate of the nucleus.
+    * @param y Y coordinate of the nucleus.
+    * @param z Z coordinate of the nucleus.
+    * @throw std::invalid_argument if Z < 1.
     */
     Atom(int Z, float x, float y, float z) : Atom(Z, Eigen::Vector3d{x, y, z}) {};
+
     Atom(Atom& atom) : m_Z(atom.Z()), m_position(atom.m_position), m_orbitals(atom.m_orbitals) {};
     Atom(Atom&& atom) : m_Z(atom.Z()), m_position(atom.m_position), m_orbitals(std::move(atom.m_orbitals)) {};
 
@@ -63,11 +63,11 @@ public:
 
     /**
      * @brief Constructs an orbital with T constructor
-     * @param args
+     * @param args Arguments to pass to the constructor of the orbital.
      */
     template <typename... Args>
     void add_orbital(Args&&... args) requires std::is_constructible_v<OrbitalType, Args...> {
-        m_orbitals.push_back(std::make_shared<OrbitalType>(std::forward<Args>(args)...));
+        m_orbitals.emplace_back(std::forward<Args>(args)...);
     }
 
     /**
@@ -96,7 +96,7 @@ public:
     *
     * The contracted gaussian orbital will be a linear combination of weight.size() primitive gaussians.
     *
-    * Throws an invalid_argument exception if (weight.size() != decay.size())
+    * @throw std::invalid_argument if (weight.size() != decay.size())
     *
     * @param weight Coefficient of the primitive gaussians in the linear combination.
     * @param decay Exponential decay rate of the primitive gaussians.
@@ -108,7 +108,7 @@ public:
     *
     * The contracted gaussian orbital will be a linear combination of weight.size() primitive gaussians.
     *
-    * Throws an invalid_argument exception if (weight.size() != decay.size())
+    * @throw std::invalid_argument if (weight.size() != decay.size())
     * @param weight Coefficient of the primitive gaussians in the linear combination.
     * @param decay Exponential decay rate of the primitive gaussians.
     */
@@ -119,7 +119,7 @@ public:
     *
     * The contracted gaussian orbital will be a linear combination of weight.size() primitive gaussians.
     *
-    * Throws an invalid_argument exception if (weight.size() != decay.size())
+    * @throw std::invalid_argument if (weight.size() != decay.size())
     * @param weight Coefficient of the primitive gaussians in the linear combination.
     * @param decay Exponential decay rate of the primitive gaussians.
     */
@@ -130,7 +130,7 @@ public:
     *
     * The contracted gaussian orbital will be a linear combination of weight.size() primitive gaussians.
     *
-    * Throws an invalid_argument exception if (weight.size() != decay.size())
+    * @throw std::invalid_argument if (weight.size() != decay.size())
     * @param weight Coefficient of the primitive gaussians in the linear combination.
     * @param decay Exponential decay rate of the primitive gaussians.
     */
@@ -140,14 +140,14 @@ public:
     inline Eigen::Vector3d position() { return m_position; }
 
     inline int orbitals_count() const { return m_orbitals.size(); }
-    inline const std::vector<std::shared_ptr<OrbitalType>>& get_orbitals() const { return m_orbitals; }
-    inline const Orbital& get_orbital(size_t i) const { return *m_orbitals[i]; }
-    inline const Orbital& operator()(size_t i) const { return *m_orbitals[i]; }
+    inline const std::vector<OrbitalType>& get_orbitals() const { return m_orbitals; }
+    inline const Orbital& get_orbital(size_t i) const { return m_orbitals[i]; }
+    inline const Orbital& operator()(size_t i) const { return m_orbitals[i]; }
 
 private:
     int m_Z;
     Eigen::Vector3d m_position;
-    std::vector<std::shared_ptr<OrbitalType>> m_orbitals;
+    std::vector<OrbitalType> m_orbitals;
 };
 
 DECLARE_EXTERN_TEMPLATE(Atom)
