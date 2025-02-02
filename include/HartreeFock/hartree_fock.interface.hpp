@@ -7,7 +7,6 @@
 template <DerivedFromOrbital OrbitalType>
 class HartreeFock {
 private:
-
     void diagonalize_overlap_matrix();
 
     void print_info();
@@ -21,9 +20,9 @@ private:
     virtual void self_consistent_field_iteration() = 0;
 
 protected:
-    std::reference_wrapper<Eigen::MatrixXd> m_overlap;
-    std::reference_wrapper<Eigen::MatrixXd> m_core_hamiltonian;
-    std::reference_wrapper<Yoshimine<double>> m_electron_repulsion;
+    Eigen::MatrixXd m_overlap;
+    Eigen::MatrixXd m_core_hamiltonian;
+    Yoshimine<double> m_electron_repulsion;
 
     Eigen::MatrixXd m_transformation_matrix;
 
@@ -32,8 +31,7 @@ protected:
     double m_hf_energy = 0.0;
 
 public:
-    HartreeFock(unsigned int no_electrons, Eigen::MatrixXd &overlap, Eigen::MatrixXd &core_hamiltonian, Yoshimine<double> &electron_repulsion) {
-        m_overlap = overlap;
+    HartreeFock() {
         diagonalize_overlap_matrix();
 
         print_info();

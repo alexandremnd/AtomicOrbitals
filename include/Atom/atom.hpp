@@ -4,6 +4,7 @@
 
 #include "Atom/atom.interface.hpp"
 #include "BasisSet/gaussian_contracted.hpp"
+#include "BasisSet/orbital.hpp"
 #include "BasisSet/slater_primitive.hpp"
 #include "BasisSet/slater_contracted.hpp"
 #include "concepts.hpp"
@@ -158,4 +159,13 @@ void Atom<OrbitalType>::add_gaussian_orbital_ftype(const std::vector<double>& we
     m_orbitals.push_back(std::move(cg_xzz));
     m_orbitals.push_back(std::move(cg_yzz));
     m_orbitals.push_back(std::move(cg_xyz));
+}
+
+template <DerivedFromOrbital OrbitalType>
+void Atom<OrbitalType>::set_position(const Eigen::Vector3d &position) {
+    m_position = position;
+
+    for (OrbitalType& orbital : m_orbitals) {
+        orbital.set_position(m_position);
+    }
 }

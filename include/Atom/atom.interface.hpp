@@ -12,6 +12,14 @@
 #include "concepts.hpp"
 #include "Eigen/Dense"
 
+/**
+ * @brief Class representing an atom (if not obvious ...).
+ *
+ * This is the privileged class to build any system that may be forwarded to Hartree-Fock for computation.
+ * Molecules are built upon atoms.
+ *
+ * @tparam OrbitalType The type of the orbitals to use (SlaterPrimitive, ContractedSlater, ContractedGaussian, ...).
+ */
 template <DerivedFromOrbital OrbitalType>
 class Atom {
 public:
@@ -135,6 +143,14 @@ public:
     * @param decay Exponential decay rate of the primitive gaussians.
     */
     void add_gaussian_orbital_ftype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<OrbitalType, ContractedGaussian>;
+
+    /**
+     * @brief Set the position of the nucleus.
+     * @note This will also update the center of the orbitals if required.
+     *
+     * @param position New position of the nucleus.
+     */
+    void set_position(const Eigen::Vector3d &position);
 
     inline int Z() { return m_Z; }
     inline Eigen::Vector3d position() { return m_position; }

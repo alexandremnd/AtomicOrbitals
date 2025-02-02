@@ -10,7 +10,7 @@
 
 template <DerivedFromOrbital OrbitalType>
 void HartreeFock<OrbitalType>::diagonalize_overlap_matrix() {
-    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solver(m_overlap.get());
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solver(m_overlap);
 
     m_transformation_matrix = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().cwiseInverse().asDiagonal() * solver.eigenvectors().transpose();
 }

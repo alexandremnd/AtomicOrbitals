@@ -1,14 +1,17 @@
-#include "include/Atom/atom.hpp"
+#include "Atom/atom.hpp"
+#include "BasisSet/slater_primitive.hpp"
+#include "Eigen/Dense"
+#include <algorithm>
 #include <iostream>
+#include <memory>
+#include <vector>
 
-#ifdef __AVX__
-    #include <immintrin.h>
-#else
-    #warning AVX is not available. Code will not compile
-#endif
+int main() {
+    auto He = Atom<SlaterPrimitive>(2, Eigen::Vector3d(0, 0, 0));
+    He.add_orbital(2, 0, 0, 1.3);
 
-#ifdef __SSE2__
-    #include <emmintrin.h>
-#else
-    #warning SSE is not available
-#endif
+
+    // RestrictedHartreeFock<SlaterPrimitive> hf(atom);
+
+    return 0;
+}

@@ -3,6 +3,7 @@
 #include <concepts>
 #include "BasisSet/slater_primitive.hpp"
 #include "BasisSet/gaussian_primitive.hpp"
+#include "BasisSet/contracted_orbital.hpp"
 #include "BasisSet/orbital.hpp"
 
 // Declare the template class for all orbital type
