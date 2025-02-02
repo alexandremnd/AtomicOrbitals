@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "BasisSet/slater_primitive.hpp"
 #include "BasisSet/gaussian_primitive.hpp"
+#include "BasisSet/slater_primitive.hpp"
 #include "concepts.hpp"
 
 /**
@@ -12,14 +12,17 @@
     \f[
         \Psi = \sum_i c_i \phi_i
     \f]
-    where \f$ c_i \f$ are the coefficients and \f$ \phi_i \f$ are the primitive basis functions.
- * @note Coefficients do not need to be normalized, the normalization constant is calculated automatically when adding a primitive.
+    where \f$ c_i \f$ are the coefficients and \f$ \phi_i \f$ are the primitive
+ basis functions.
+ * @note Coefficients do not need to be normalized, the normalization constant
+ is calculated automatically when adding a primitive.
  *
- * @tparam PrimitiveType Type of primitive basis functions (e.g GaussianPrimitive, SlaterPrimitive).
+ * @tparam PrimitiveType Type of primitive basis functions (e.g
+ GaussianPrimitive, SlaterPrimitive).
  */
 template <DerivedFromOrbital PrimitiveType>
 class ContractedOrbital final : public Orbital {
-public:
+  public:
     ContractedOrbital() = default;
 
     /**
@@ -29,10 +32,12 @@ public:
 
     /**
      * @param coefficients Weights for each primitive in the linear combination.
-     * @param primitives Primitive basis functions.
-     * @throws std::length_error if the number of coefficients and primitives are not equal.
+     * @param primitives Primitives basis functions.
+     * @throws std::length_error if the number of coefficients and primitives
+     * are not equal.
      */
-    ContractedOrbital(std::vector<double> &coefficients, std::vector<PrimitiveType> &primitives);
+    ContractedOrbital(std::vector<double> &coefficients,
+                      std::vector<PrimitiveType> &primitives);
 
     ContractedOrbital(const ContractedOrbital<PrimitiveType> &other);
 
@@ -48,7 +53,7 @@ public:
     void add_primitive(double coefficient, const PrimitiveType &primitive);
 
     template <typename... Args>
-    void add_primitive(double coefficient, Args&&... args) {
+    void add_primitive(double coefficient, Args &&...args) {
         m_coefficients.push_back(coefficient);
         m_primitives.emplace_back(std::forward<Args>(args)...);
         update_normalization();
@@ -58,16 +63,17 @@ public:
 
     inline size_t size() const;
 
-    inline const PrimitiveType& get_primitive(int i) const;
+    inline const PrimitiveType &get_primitive(int i) const;
     inline double get_coefficient(int i) const;
 
     void set_position(Eigen::Vector3d position) override {
-        for (auto& primitive : m_primitives) {
+        m_position = position;
+        for (auto &primitive : m_primitives) {
             primitive.set_position(position);
+        }
     }
-}
 
-private:
+  private:
     std::vector<double> m_coefficients;
     std::vector<PrimitiveType> m_primitives;
 };
@@ -78,16 +84,21 @@ extern template class ContractedOrbital<SlaterPrimitive>;
 typedef ContractedOrbital<GaussianPrimitive> ContractedGaussian;
 typedef ContractedOrbital<SlaterPrimitive> ContractedSlater;
 
-
+template <DerivedFromOrbital PrimitiveType>
+double overlap_integral(const ContractedOrbital<PrimitiveType> &,
+                        const ContractedOrbital<PrimitiveType> &);
 
 template <DerivedFromOrbital PrimitiveType>
-double overlap_integral(const ContractedOrbital<PrimitiveType>&, const ContractedOrbital<PrimitiveType>&);
+double laplacian_integral(const ContractedOrbital<PrimitiveType> &,
+                          const ContractedOrbital<PrimitiveType> &);
 
 template <DerivedFromOrbital PrimitiveType>
-double laplacian_integral(const ContractedOrbital<PrimitiveType>&, const ContractedOrbital<PrimitiveType>&);
+double electron_nucleus_integral(const ContractedOrbital<PrimitiveType> &,
+                                 const ContractedOrbital<PrimitiveType> &,
+                                 const Eigen::Vector3d &);
 
 template <DerivedFromOrbital PrimitiveType>
-double electron_nucleus_integral(const ContractedOrbital<PrimitiveType>&, const ContractedOrbital<PrimitiveType>&, const Eigen::Vector3d&);
-
-template <DerivedFromOrbital PrimitiveType>
-double electron_electron_integral(const ContractedOrbital<PrimitiveType>&, const ContractedOrbital<PrimitiveType>&, const ContractedOrbital<PrimitiveType>&, const ContractedOrbital<PrimitiveType>&);
+double electron_electron_integral(const ContractedOrbital<PrimitiveType> &,
+                                  const ContractedOrbital<PrimitiveType> &,
+                                  const ContractedOrbital<PrimitiveType> &,
+                                  const ContractedOrbital<PrimitiveType> &);
