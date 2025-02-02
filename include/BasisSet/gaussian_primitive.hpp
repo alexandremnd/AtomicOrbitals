@@ -44,7 +44,7 @@ private:
     double m_alpha;
 };
 
-double overlap_integral(const GaussianPrimitive&, const GaussianPrimitive&, const int n_offset = 0);
+double overlap_integral(const GaussianPrimitive&, const GaussianPrimitive&);
 double laplacian_integral(const GaussianPrimitive&, const GaussianPrimitive&);
 double electron_nucleus_integral(const GaussianPrimitive&, const GaussianPrimitive&, const Eigen::Vector3d&);
 double electron_electron_integral(const GaussianPrimitive&, const GaussianPrimitive&, const GaussianPrimitive&, const GaussianPrimitive&);

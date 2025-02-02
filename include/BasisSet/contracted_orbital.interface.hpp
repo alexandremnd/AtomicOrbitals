@@ -81,7 +81,7 @@ typedef ContractedOrbital<SlaterPrimitive> ContractedSlater;
 
 
 template <DerivedFromOrbital PrimitiveType>
-double overlap_integral(const ContractedOrbital<PrimitiveType>&, const ContractedOrbital<PrimitiveType>&, const int n_offset = 0);
+double overlap_integral(const ContractedOrbital<PrimitiveType>&, const ContractedOrbital<PrimitiveType>&);
 
 template <DerivedFromOrbital PrimitiveType>
 double laplacian_integral(const ContractedOrbital<PrimitiveType>&, const ContractedOrbital<PrimitiveType>&);
