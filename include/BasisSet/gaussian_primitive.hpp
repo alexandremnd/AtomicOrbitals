@@ -3,6 +3,14 @@
 #include "Eigen/Dense"
 #include "BasisSet/orbital.hpp"
 
+/**
+ * @brief Gaussian type orbital (GTO) representation
+
+    It is the braket representation \f$ | G_{ijk}^\alpha \rangle \f$ where :
+    \f[
+        G_{ijk}^\alpha (\textbf{r}; \textbf{R}) = x^i y^j z^l e^{-\alpha || \textbf{r} - \textbf{R} ||^2}
+    \f]
+ **/
 class GaussianPrimitive final : public Orbital {
 public:
     GaussianPrimitive(int x_exponent, int y_exponent, int z_exponent, double alpha, Eigen::Vector3d position) :
@@ -35,3 +43,8 @@ private:
     int m_z_exponent;
     double m_alpha;
 };
+
+double overlap_integral(const GaussianPrimitive&, const GaussianPrimitive&, const int n_offset = 0);
+double laplacian_integral(const GaussianPrimitive&, const GaussianPrimitive&);
+double electron_nucleus_integral(const GaussianPrimitive&, const GaussianPrimitive&, const Eigen::Vector3d&);
+double electron_electron_integral(const GaussianPrimitive&, const GaussianPrimitive&, const GaussianPrimitive&, const GaussianPrimitive&);

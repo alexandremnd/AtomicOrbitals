@@ -79,3 +79,8 @@ private:
     int m_n, m_l, m_m;
     double m_alpha;
 };
+
+double overlap_integral(const SlaterPrimitive&, const SlaterPrimitive&, const int n_offset = 0);
+double laplacian_integral(const SlaterPrimitive&, const SlaterPrimitive&);
+double electron_nucleus_integral(const SlaterPrimitive&, const SlaterPrimitive&, const Eigen::Vector3d&);
+double electron_electron_integral(const SlaterPrimitive&, const SlaterPrimitive&, const SlaterPrimitive&, const SlaterPrimitive&);
