@@ -4,14 +4,9 @@
 
 #include "Integrators/overlap_integral.hpp"
 #include "BasisSet/gaussian_primitive.hpp"
-#include "BasisSet/contracted_orbital.hpp"
 #include "BasisSet/slater_primitive.hpp"
 
 double overlap_integral(const GaussianPrimitive& orbital1, const GaussianPrimitive& orbital2) {
-    throw std::logic_error("Not implemented");
-}
-
-double overlap_integral(const ContractedGaussian& orbital1, const ContractedGaussian& orbital2) {
     throw std::logic_error("Not implemented");
 }
 

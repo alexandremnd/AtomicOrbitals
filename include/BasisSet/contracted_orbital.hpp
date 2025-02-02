@@ -71,6 +71,10 @@ public:
         m_normalization_constant = 1.0 / std::sqrt(m_normalization_constant);
     }
 
+    inline size_t size() const {
+        return m_primitives.size();
+    }
+
     inline const PrimitiveType& get_primitive(int i) const {
         return m_primitives[i];
     }
@@ -92,7 +96,8 @@ private:
     std::vector<PrimitiveType> m_primitives;
 };
 
-DECLARE_EXTERN_PRIMITIVE(ContractedOrbital)
+extern template class ContractedOrbital<GaussianPrimitive>;
+extern template class ContractedOrbital<SlaterPrimitive>;
 
 typedef ContractedOrbital<GaussianPrimitive> ContractedGaussian;
 typedef ContractedOrbital<SlaterPrimitive> ContractedSlater;
