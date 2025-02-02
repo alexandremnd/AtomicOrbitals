@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include "BasisSet/slater_primitive.hpp"
-#include "Integrators/electron_electron_integral.hpp"
 
 TEST(ElectronElectronIntegralTest, SlaterPrimitive) {
     SlaterPrimitive orbital1(3, 2, 0, 1.5);
@@ -34,7 +33,7 @@ TEST(ElectronElectronIntegralTest, SlaterPrimitive) {
     orbital3 = SlaterPrimitive(1, 0, 0, 2);
     orbital4 = SlaterPrimitive(1, 0, 0, 2);
     result = electron_electron_integral(orbital1, orbital2, orbital3, orbital4);
-    EXPECT_NEAR(result, 1.25, 1e-6);
+    EXPECT_NEAR(result, 1.25, 1e-6); // The reference value already account for normalization !! Do not change
 
 
     orbital1 = SlaterPrimitive(2, 1, 0, 2);
