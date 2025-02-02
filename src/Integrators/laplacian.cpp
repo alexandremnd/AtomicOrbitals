@@ -1,7 +1,7 @@
-#include "Integrators/laplacian_integral.hpp"
+#include "Integrators/laplacian.hpp"
 #include "BasisSet/gaussian_primitive.hpp"
 #include "BasisSet/slater_primitive.hpp"
-#include "Integrators/overlap_integral.hpp"
+#include "Integrators/overlap_primitive.hpp"
 #include <stdexcept>
 
 double laplacian_integral(const GaussianPrimitive& orbital1, const GaussianPrimitive& orbital2) {

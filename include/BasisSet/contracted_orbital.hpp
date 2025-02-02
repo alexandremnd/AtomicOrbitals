@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "concepts.hpp"
+#include "Integrators/overlap_primitive.hpp"
 
 template <DerivedFromOrbital PrimitiveType>
 class ContractedOrbital final : public Orbital {
@@ -19,7 +20,7 @@ public:
      * @param primitives Primitive basis functions.
      * @throws std::length_error if the number of coefficients and primitives are not equal.
      */
-    ContractedOrbital(std::vector<double> &coefficients, std::vector<ContractedOrbital<PrimitiveType>> &primitives) : m_coefficients(coefficients), m_primitives(primitives) {
+    ContractedOrbital(std::vector<double> &coefficients, std::vector<PrimitiveType> &primitives) : m_coefficients(coefficients), m_primitives(primitives) {
         if (coefficients.size() != primitives.size()) {
             throw std::length_error("ContractedOrbital: The number of coefficients and primitives must be equal.");
         }
@@ -64,6 +65,11 @@ public:
 
         for (size_t i = 0; i < m_primitives.size(); i++) {
             for (size_t j = i; j < m_primitives.size(); j++) {
+                if (i == j) {
+                    m_normalization_constant += m_coefficients[i] * m_coefficients[j] * overlap_integral(m_primitives[i], m_primitives[j]);
+                    continue;
+                }
+
                 m_normalization_constant += 2 * m_coefficients[i] * m_coefficients[j] * overlap_integral(m_primitives[i], m_primitives[j]);
             }
         }

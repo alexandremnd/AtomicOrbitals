@@ -1,7 +1,7 @@
-#include "Integrators/electron_nucleus_integral.hpp"
+#include "Integrators/electron_nucleus.hpp"
 #include "BasisSet/gaussian_primitive.hpp"
 #include "BasisSet/slater_primitive.hpp"
-#include "Integrators/overlap_integral.hpp"
+#include "Integrators/overlap_primitive.hpp"
 #include <stdexcept>
 
 

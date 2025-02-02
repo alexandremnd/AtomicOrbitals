@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include "Integrators/electron_electron_integral.hpp"
+#include "Integrators/electron_electron.hpp"
 #include "Integrators/slater_braket.hpp"
 #include "BasisSet/gaussian_primitive.hpp"
 #include "BasisSet/slater_primitive.hpp"
