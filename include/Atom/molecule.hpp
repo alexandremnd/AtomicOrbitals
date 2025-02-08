@@ -1,5 +1,44 @@
-#include "Atom/molecule.interface.hpp"
+#pragma once
+
+#include <iostream>
+#include <memory>
+#include <vector>
+
+#include "Atom/atom.hpp"
+#include "BasisSet/contracted_orbital.hpp"
+#include "BasisSet/gaussian_primitive.hpp"
+#include "BasisSet/orbital.hpp"
+#include "BasisSet/slater_primitive.hpp"
 #include "concepts.hpp"
+
+/**
+ * @brief Provides a class to model molecule that can be used in Hartree-Fock.
+ * Provides many methods to easen iteration over bond length, orbital
+ * optimizations and many more.
+ *
+ * @tparam OrbitalType The type of orbitals to use (SlaterPrimitive,
+ * GaussianPrimitive, ...).
+ */
+template <DerivedFromOrbital OrbitalType> class Molecule {
+  public:
+    Molecule() = default;
+    Molecule(const Molecule &molecule) : m_atoms(molecule.m_atoms) {};
+    Molecule(Molecule &&molecule) : m_atoms(std::move(molecule.m_atoms)) {}
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const Molecule<OrbitalType> &molecule);
+
+    void add_atom(std::shared_ptr<Atom<OrbitalType>> atom) { m_atoms.push_back(atom); }
+
+    Atom<OrbitalType> &get_atom(size_t atom) const { return m_atoms[atom]; }
+
+    const double distance(size_t i, size_t j) const {
+        return (m_atoms[i].position() - m_atoms[j].position()).norm();
+    }
+
+  private:
+    std::vector<std::shared_ptr<Atom<OrbitalType>>> m_atoms;
+};
+
 
 template <DerivedFromOrbital OrbitalType>
 std::ostream &operator<<(std::ostream &os,
@@ -16,33 +55,4 @@ std::ostream &operator<<(std::ostream &os,
     os << "==================================================\n";
 }
 
-template <DerivedFromOrbital OrbitalType>
-void Molecule<OrbitalType>::add_atom(const Atom<OrbitalType> &atom) {
-    m_atoms.push_back(atom);
-    m_nucleus_charge.push_back(atom.Z());
-    m_positions.push_back(atom.position());
-
-    for (const auto &orbital : atom.get_orbitals()) {
-        m_orbitals.push_back(std::ref(orbital));
-    }
-}
-
-template <DerivedFromOrbital OrbitalType>
-void Molecule<OrbitalType>::add_atom(Atom<OrbitalType> &&atom) {
-    m_nucleus_charge.push_back(atom.Z());
-    m_positions.push_back(atom.position());
-
-    for (const auto &orbital : atom.get_orbitals()) {
-        m_orbitals.push_back(std::ref(orbital));
-    }
-
-    m_atoms.push_back(std::move(atom));
-}
-
-template <DerivedFromOrbital OrbitalType>
-void Molecule<OrbitalType>::add_atom(int nucleus_charge,
-                                     const Eigen::Vector3d &position) {
-    m_nucleus_charge.push_back(nucleus_charge);
-    m_positions.push_back(position);
-    m_atoms.emplace_back(nucleus_charge, position);
-}
+DECLARE_EXTERN_TEMPLATE(Molecule)
