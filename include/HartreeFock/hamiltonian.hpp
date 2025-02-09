@@ -76,6 +76,46 @@ class Hamiltonian {
 
     size_t size() const { return m_overlap.rows(); }
 
+    void print() const {
+        std::cout << "Overlap matrix:\n" << m_overlap << std::endl;
+        for (size_t i = 0; i < size(); i++) {
+            for (size_t j = 0; j < size(); j++) {
+                std::cout << i << " " << j << " " << m_overlap(i, j)
+                          << std::endl;
+            }
+        }
+
+        std::cout << "Kinetic energy matrix:\n";
+        for (size_t i = 0; i < size(); i++) {
+            for (size_t j = 0; j < size(); j++) {
+                std::cout << i << " " << j << " " << m_kinetic_energy(i, j)
+                          << std::endl;
+            }
+        }
+
+        std::cout << "Potential matrix \n";
+        for (size_t i = 0; i < size(); i++) {
+            for (size_t j = 0; j < size(); j++) {
+                std::cout << i << " " << j << " "
+                          << m_electron_nuclear_energy(i, j) << std::endl;
+            }
+        }
+
+        std::cout << "Electron-electron energy tensor\n";
+        for (size_t i = 0; i < size(); i++) {
+            for (size_t j = 0; j < size(); j++) {
+                for (size_t k = 0; k < size(); k++) {
+                    for (size_t l = 0; l < size(); l++) {
+                        std::cout << i << " " << j << " " << k << " " << l
+                                  << " "
+                                  << m_electron_electron_energy(i, j, k, l)
+                                  << std::endl;
+                    }
+                }
+            }
+        }
+    }
+
   private:
     void compute_one_body(const System &system);
     void compute_two_body(const System &system);

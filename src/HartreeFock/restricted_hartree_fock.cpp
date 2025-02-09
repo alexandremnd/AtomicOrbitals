@@ -1,7 +1,5 @@
 #include "HartreeFock/restricted_hartree_fock.hpp"
 #include "Eigen/Dense"
-#include "Eigen/src/Core/Map.h"
-#include "Eigen/src/Core/Matrix.h"
 
 RestrictedHartreeFock::RestrictedHartreeFock(const System &system,
                                              uint no_electrons)
