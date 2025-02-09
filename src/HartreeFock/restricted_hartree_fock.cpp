@@ -1,5 +1,7 @@
 #include "HartreeFock/restricted_hartree_fock.hpp"
 #include "Eigen/Dense"
+#include "Eigen/src/Core/Map.h"
+#include "Eigen/src/Core/Matrix.h"
 
 RestrictedHartreeFock::RestrictedHartreeFock(const System &system,
                                              uint no_electrons)
@@ -72,12 +74,16 @@ void RestrictedHartreeFock::compute_density_matrix() {
                        (1 - m_smoothing_factor) * m_density_matrix;
 }
 
-void RestrictedHartreeFock::self_consistent_field_iteration() {
+void RestrictedHartreeFock::self_consistent_field_iteration(size_t iteration) {
     setup_fock_matrix();
     diagonalize_fock_matrix();
     compute_density_matrix();
+
+    if (m_diis_size > 0) {
+        diis(iteration);
+    }
+
     compute_hf_energy();
-    std::cout << m_density_matrix << std::endl;
 }
 
 void RestrictedHartreeFock::compute_hf_energy() {
@@ -97,4 +103,46 @@ void RestrictedHartreeFock::compute_hf_energy() {
                 }
         }
     m_hf_energy += m_H.nuclear_repulsion();
+}
+
+void RestrictedHartreeFock::diis(size_t iteration) {
+    Eigen::MatrixXd error_vector =
+        m_fock_matrix * m_density_matrix - m_density_matrix * m_fock_matrix;
+    error_vector.resize(error_vector.size(), 1);
+
+    // We update the DIIS (direct inversion in iterative subspace) error history
+    size_t index = iteration % m_diis_size;
+    m_error_history.col(index) = error_vector;
+    m_fock_history[index] = m_fock_matrix;
+    m_density_history[index] = m_density_matrix;
+
+    if (iteration > m_diis_size) {
+        diis_compute();
+        return;
+    }
+}
+
+void RestrictedHartreeFock::diis_compute() {
+    Eigen::MatrixXd gram_matrix =
+        Eigen::MatrixXd::Zero(m_diis_size + 1, m_diis_size + 1);
+
+    gram_matrix.block(0, 0, m_diis_size, m_diis_size) =
+        m_error_history.transpose() * m_error_history;
+
+    gram_matrix.row(m_diis_size).setConstant(1);
+    gram_matrix.col(m_diis_size).setConstant(-1);
+    gram_matrix(m_diis_size, m_diis_size) = 0;
+
+    Eigen::VectorXd rhs = Eigen::VectorXd::Zero(m_diis_size + 1);
+    rhs(m_diis_size) = 1;
+
+    Eigen::VectorXd ci = gram_matrix.colPivHouseholderQr().solve(rhs);
+
+    m_fock_matrix = Eigen::MatrixXd::Zero(m_H.size(), m_H.size());
+    m_density_matrix = Eigen::MatrixXd::Zero(m_H.size(), m_H.size());
+
+    for (size_t i = 0; i < m_diis_size; i++) {
+        m_fock_matrix += ci(i) * m_fock_history[i];
+        m_density_matrix += ci(i) * m_density_history[i];
+    }
 }

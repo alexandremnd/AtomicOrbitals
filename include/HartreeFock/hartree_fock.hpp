@@ -12,7 +12,7 @@ class HartreeFock {
     virtual void diagonalize_fock_matrix() = 0;
     virtual void compute_density_matrix() = 0;
     virtual void compute_hf_energy() = 0;
-    virtual void self_consistent_field_iteration() = 0;
+    virtual void self_consistent_field_iteration(size_t iteration) = 0;
 
   protected:
     Eigen::MatrixXd m_transformation_matrix;
