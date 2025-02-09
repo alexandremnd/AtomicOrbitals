@@ -36,11 +36,7 @@ To install dependencies on your Arch-based distribution:
 ```bash
     sudo pacman -Syu boost doxygen gtest cmake
 ```
-
-If you prefer to use clang for compilation:
-```bash
-    sudo pacman -Syu clang
-```
+We assume that you already installed a C++ compiler supporting at least the C++20 standard such as G++/Clang.
 
 ## Cloning and building the project
 
@@ -74,3 +70,14 @@ To generate test cases, [GoogleTest](https://github.com/google/googletest) is re
 ```bash
     cmake --build build --target test
 ```
+
+# Authors
+- [Alexandre Menard](https://github.com/alexandremnd/)
+- Ewan Bataille
+- Jérémy Atané
+
+# Contributing
+Feel free to contribute for this project. Currently, we are still working on laying solid foundations for this project, so many design choice may change rapidly.
+
+# License
+This project is licensed under the GNU GPLv3 - see [LICENCE](LICENSE) file for details
