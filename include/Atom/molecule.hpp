@@ -25,8 +25,6 @@ template <DerivedFromOrbital OrbitalType> class Molecule : public System {
     Molecule() = default;
     Molecule(const Molecule &molecule) : m_atoms(molecule.m_atoms) {};
     Molecule(Molecule &&molecule) : m_atoms(std::move(molecule.m_atoms)) {}
-    friend std::ostream &operator<<(std::ostream &os,
-                                    const Molecule<OrbitalType> &molecule);
 
     void add_atom(std::shared_ptr<Atom<OrbitalType>> atom) {
         m_atoms.push_back(atom);
@@ -91,20 +89,5 @@ template <DerivedFromOrbital OrbitalType> class Molecule : public System {
     std::vector<std::shared_ptr<Atom<OrbitalType>>> m_atoms;
     std::vector<std::reference_wrapper<OrbitalType>> m_orbitals;
 };
-
-template <DerivedFromOrbital OrbitalType>
-std::ostream &operator<<(std::ostream &os,
-                         const Molecule<OrbitalType> &molecule) {
-    os << "============= Molecule Configuration =============\n";
-    os << "Number of atoms: " << molecule.m_atoms.size() << "\n";
-    os << "Number of orbitals: " << molecule.m_orbitals.size() << "\n";
-    os << "Atoms in molecule: " << "\n";
-    for (size_t i = 0; i < molecule.m_atoms.size(); i++) {
-        os << "\tAtom no." << i << " - Z = " << molecule.get_atom(i) << "\n";
-        os << "\t\t- Position: " << molecule.get_atom(i).position() << "\n";
-        // os << "\t\t- Orbitals: " << "\n";
-    }
-    os << "==================================================\n";
-}
 
 DECLARE_EXTERN_TEMPLATE(Molecule)
