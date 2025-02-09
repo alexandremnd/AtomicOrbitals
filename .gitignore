@@ -37,3 +37,4 @@
 /build
 .venv
 __pycache__
+.clocignore

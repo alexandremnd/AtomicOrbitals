@@ -1,44 +1,38 @@
 #pragma once
 
-#include <iomanip>
-#include <iostream>
-
+#include "Atom/system.hpp"
 #include "Eigen/Dense"
-#include "concepts.hpp"
+#include "HartreeFock/hamiltonian.hpp"
 
-#include "HartreeFock/hartree_fock.interface.hpp" // IWYU pragma: export
+class HartreeFock {
+  private:
+    void diagonalize_overlap_matrix();
 
-template <DerivedFromOrbital OrbitalType>
-void HartreeFock<OrbitalType>::diagonalize_overlap_matrix() {
-    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solver(m_overlap);
+    virtual void setup_fock_matrix() = 0;
+    virtual void diagonalize_fock_matrix() = 0;
+    virtual void compute_density_matrix() = 0;
+    virtual void compute_hf_energy() = 0;
+    virtual void self_consistent_field_iteration() = 0;
 
-    m_transformation_matrix =
-        solver.eigenvectors() *
-        solver.eigenvalues().cwiseSqrt().cwiseInverse().asDiagonal() *
-        solver.eigenvectors().transpose();
-}
+  protected:
+    Eigen::MatrixXd m_transformation_matrix;
+    Hamiltonian m_H;
 
-template <DerivedFromOrbital OrbitalType>
-void HartreeFock<OrbitalType>::print_info() {
-    std::cout << "============= Hartree-Fock Configuration ============="
-              << std::endl;
-    std::cout << "Number of electrons: " << electrons_count() << std::endl;
-    std::cout << "======================================================"
-              << std::endl;
-}
+    double m_hf_energy = 1000.0;
+    int m_no_electrons;
 
-template <DerivedFromOrbital OrbitalType>
-void HartreeFock<OrbitalType>::print_iteration_info(int n) {
-    std::cout << std::setprecision(8);
-    std::cout << "Iteration n°" << n << ": E(SCF) = " << m_hf_energy
-              << " (Hartree)\n";
-}
+  public:
+    HartreeFock(const System &system, uint no_electrons) {
+        set_system(system);
+        m_no_electrons = no_electrons;
 
-template <DerivedFromOrbital OrbitalType>
-void HartreeFock<OrbitalType>::print_result(int total_iterations) {
-    std::cout << "======================================================"
-              << std::endl;
-    std::cout << "SCF Iteration required: " << total_iterations << "\n";
-    std::cout << "Final energy: " << m_hf_energy << " (Hartree)\n";
-    std::cout << "Final energy: " << m_hf_energy * 27.2113 << " (eV)\n";
-}
+        print_info();
+    }
+
+    void set_system(const System &system);
+    void run();
+
+    void print_info();
+    void print_iteration_info(int n);
+    void print_result(int total_iterations);
+};

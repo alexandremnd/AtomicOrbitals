@@ -74,6 +74,8 @@ class Hamiltonian {
                0.5 * m_electron_electron_energy(i, l, k, j);
     }
 
+    size_t size() const { return m_overlap.rows(); }
+
   private:
     void compute_one_body(const System &system);
     void compute_two_body(const System &system);
