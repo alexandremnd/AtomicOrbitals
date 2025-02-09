@@ -30,7 +30,7 @@ class HartreeFock {
     }
 
     void set_system(const System &system);
-    void run();
+    void run(double convergence_threshold = 1e-6, int max_iterations = 1000);
 
     void print_info();
     void print_iteration_info(int n);

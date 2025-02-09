@@ -18,8 +18,7 @@ void HartreeFock::set_system(const System &system) {
     diagonalize_overlap_matrix();
 }
 
-void HartreeFock::run() {
-    const int max_iteration = 100;
+void HartreeFock::run(double convergence_threshold, int max_iterations) {
     int n = 0;
     double old_energy;
 
@@ -28,7 +27,8 @@ void HartreeFock::run() {
         self_consistent_field_iteration();
         print_iteration_info(n);
         n++;
-    } while (std::abs(m_hf_energy - old_energy) > 1e-6 && n < max_iteration);
+    } while (std::abs(m_hf_energy - old_energy) > convergence_threshold &&
+             n < max_iterations);
 
     print_result(n);
 }
