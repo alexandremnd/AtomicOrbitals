@@ -70,8 +70,8 @@ class Hamiltonian {
      * @return double
      */
     double as(size_t i, size_t j, size_t k, size_t l) const {
-        return m_electron_electron_energy(i, j, k, l) -
-               0.5 * m_electron_electron_energy(i, l, k, j);
+        return 2 * m_electron_electron_energy(i, j, k, l) -
+               m_electron_electron_energy(i, l, k, j);
     }
 
     size_t size() const { return m_overlap.rows(); }

@@ -20,6 +20,7 @@ class HartreeFock {
 
     double m_hf_energy = 1000.0;
     int m_no_electrons;
+    double m_smoothing_factor = 0.3;
 
   public:
     HartreeFock(const System &system, uint no_electrons) {
@@ -30,7 +31,9 @@ class HartreeFock {
     }
 
     void set_system(const System &system);
-    void run(double convergence_threshold = 1e-6, int max_iterations = 1000);
+    void set_smoothing_factor(double smoothing_factor);
+    void run(double convergence_threshold = 1e-6, int max_iterations = 1000,
+             bool silent = false);
 
     void print_info();
     void print_iteration_info(int n);

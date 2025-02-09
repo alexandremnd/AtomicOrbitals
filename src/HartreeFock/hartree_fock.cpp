@@ -18,14 +18,24 @@ void HartreeFock::set_system(const System &system) {
     diagonalize_overlap_matrix();
 }
 
-void HartreeFock::run(double convergence_threshold, int max_iterations) {
+void HartreeFock::set_smoothing_factor(double smoothing_factor) {
+    if (smoothing_factor < 0 || smoothing_factor > 1) {
+        throw std::invalid_argument("Smoothing factor must be between 0 and 1");
+    }
+    m_smoothing_factor = smoothing_factor;
+}
+
+void HartreeFock::run(double convergence_threshold, int max_iterations,
+                      bool silent) {
     int n = 0;
     double old_energy;
 
     do {
         old_energy = m_hf_energy;
         self_consistent_field_iteration();
-        print_iteration_info(n);
+        if (!silent) {
+            print_iteration_info(n);
+        }
         n++;
     } while (std::abs(m_hf_energy - old_energy) > convergence_threshold &&
              n < max_iterations);

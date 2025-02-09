@@ -15,6 +15,8 @@ class RestrictedHartreeFock : public HartreeFock {
     void self_consistent_field_iteration() override;
     void compute_hf_energy() override;
 
+    void normalizeCoefficientMatrix();
+
     Eigen::MatrixXd m_fock_matrix;
     Eigen::MatrixXd m_fock_matrix_tilde;
     Eigen::MatrixXd m_density_matrix;
