@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Eigen/Dense"
-#include "Utils/yoshimine.hpp"
 #include "concepts.hpp"
 
 template <DerivedFromOrbital OrbitalType> class HartreeFock {
@@ -29,6 +28,4 @@ template <DerivedFromOrbital OrbitalType> class HartreeFock {
 
         print_info();
     }
-
-    inline int orbitals_count() const { return m_overlap.cols(); }
 };
