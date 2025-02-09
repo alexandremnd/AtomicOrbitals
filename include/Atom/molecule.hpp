@@ -102,7 +102,7 @@ std::ostream &operator<<(std::ostream &os,
     for (size_t i = 0; i < molecule.m_atoms.size(); i++) {
         os << "\tAtom no." << i << " - Z = " << molecule.get_atom(i) << "\n";
         os << "\t\t- Position: " << molecule.get_atom(i).position() << "\n";
-        os << "\t\t- Orbitals: " << "\n";
+        // os << "\t\t- Orbitals: " << "\n";
     }
     os << "==================================================\n";
 }

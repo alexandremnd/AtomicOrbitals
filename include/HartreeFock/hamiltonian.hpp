@@ -6,22 +6,71 @@
 
 class Hamiltonian {
   public:
-    Hamiltonian(const System &system) { init_hamiltonian(system); }
+    Hamiltonian(const System &system) { compute_hamiltonian(system); }
 
-    void init_hamiltonian(const System &system) {
+    void compute_hamiltonian(const System &system) {
         m_nuclear_repulsion = system.nuclear_energy();
         compute_one_body(system);
         compute_two_body(system);
     }
 
+    /**
+     * @brief Compute the nuclear repulsion energy between all nuclei in the
+     * system.
+     */
     double nuclear_repulsion() const { return m_nuclear_repulsion; }
-    Eigen::MatrixXd overlap() const { return m_overlap; }
-    Eigen::MatrixXd kinetic_energy() const { return m_kinetic_energy; }
-    Eigen::MatrixXd electron_nuclear_energy() const {
-        return m_electron_nuclear_energy;
+
+    /**
+     * @brief Returns the overlap matrix.
+     *
+     * @return const Eigen::MatrixXd& Overlap matrix.
+     */
+    const Eigen::MatrixXd &S() const { return m_overlap; }
+
+    /**
+     * @brief Returns the kinetic energy matrix.
+     *
+     * @return const Eigen::MatrixXd& Kinetic energy matrix.
+     */
+    const Eigen::MatrixXd &T() const { return m_kinetic_energy; }
+
+    /**
+     * @brief Returns the electron-nucleus attraction matrix.
+     *
+     * @return const Eigen::MatrixXd& Electron-nucleus attraction matrix.
+     */
+    const Eigen::MatrixXd &V() const { return m_electron_nuclear_energy; }
+
+    /**
+     * @brief Returns the electron-electron repulsion tensor.
+     *
+     * @return const Yoshimine<double>& Electron-electron repulsion tensor.
+     */
+    const Yoshimine<double> &EE() const { return m_electron_electron_energy; }
+
+    /**
+     * @brief Returns the core Hamiltonian matrix.
+     *
+     * @param i i-th orbital
+     * @param j j-th orbital
+     * @return double One body term.
+     */
+    double core(size_t i, size_t j) const {
+        return m_kinetic_energy(i, j) + m_electron_nuclear_energy(i, j);
     }
-    Yoshimine<double> electron_electron_energy() const {
-        return m_electron_electron_energy;
+
+    /**
+     * @brief Returns the antisymmetric two-electron integral.
+     *
+     * @param i i-th orbital
+     * @param j j-th orbital
+     * @param k k-th orbital
+     * @param l l-th orbital
+     * @return double
+     */
+    double as(size_t i, size_t j, size_t k, size_t l) const {
+        return m_electron_electron_energy(i, j, k, l) -
+               0.5 * m_electron_electron_energy(i, l, k, j);
     }
 
   private:
