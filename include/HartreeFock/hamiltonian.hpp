@@ -6,6 +6,7 @@
 
 class Hamiltonian {
   public:
+    Hamiltonian() = default;
     Hamiltonian(const System &system) { compute_hamiltonian(system); }
 
     void compute_hamiltonian(const System &system) {
