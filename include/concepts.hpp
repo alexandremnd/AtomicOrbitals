@@ -1,8 +1,6 @@
 #pragma once
 
-#include "BasisSet/gaussian_primitive.hpp"
 #include "BasisSet/orbital.hpp"
-#include "BasisSet/slater_primitive.hpp"
 #include <concepts>
 
 // Declare the template class for all orbital type

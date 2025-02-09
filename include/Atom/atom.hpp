@@ -2,9 +2,8 @@
 
 #include <iostream>
 
-#include "Atom/atom.interface.hpp"
+#include "Atom/atom.interface.hpp" // IWYU pragma: export
 #include "BasisSet/contracted_orbital.hpp"
-#include "BasisSet/orbital.hpp"
 #include "BasisSet/slater_primitive.hpp"
 #include "concepts.hpp"
 

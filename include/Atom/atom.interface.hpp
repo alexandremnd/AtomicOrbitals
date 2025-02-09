@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <vector>
 
+#include "Atom/system.hpp"
 #include "BasisSet/contracted_orbital.hpp"
 #include "BasisSet/orbital.hpp"
 #include "BasisSet/slater_primitive.hpp"
@@ -20,7 +21,7 @@
  * @tparam OrbitalType The type of the orbitals to use (SlaterPrimitive,
  * ContractedSlater, ContractedGaussian, ...).
  */
-template <DerivedFromOrbital OrbitalType> class Atom {
+template <DerivedFromOrbital OrbitalType> class Atom : public System {
   public:
     /**
      * @brief Builds an atom at the given position.
@@ -182,12 +183,31 @@ template <DerivedFromOrbital OrbitalType> class Atom {
     inline int Z() { return m_Z; }
     inline Eigen::Vector3d position() { return m_position; }
 
-    inline size_t orbitals_count() const { return m_orbitals.size(); }
-    inline const std::vector<OrbitalType> &get_orbitals() const {
-        return m_orbitals;
+    inline std::vector<OrbitalType> &get_orbitals() { return m_orbitals; }
+    inline Orbital &get_orbital(size_t i) { return m_orbitals[i]; }
+
+    // System interface implementation
+    size_t size() const override { return m_orbitals.size(); }
+    double overlap(size_t i, size_t j) const override {
+        return overlap_integral(m_orbitals[i], m_orbitals[j]);
     }
-    inline const Orbital &get_orbital(size_t i) const { return m_orbitals[i]; }
-    inline const Orbital &operator()(size_t i) const { return m_orbitals[i]; }
+
+    double kinetic(size_t i, size_t j) const override {
+        return -0.5 * laplacian_integral(m_orbitals[i], m_orbitals[j]);
+    }
+
+    double electron_nucleus(size_t i, size_t j) const override {
+        return -m_Z * electron_nucleus_integral(m_orbitals[i], m_orbitals[j],
+                                                m_position);
+    }
+
+    double electron_electron(size_t i, size_t j, size_t k,
+                             size_t l) const override {
+        return electron_electron_integral(m_orbitals[i], m_orbitals[j],
+                                          m_orbitals[k], m_orbitals[l]);
+    }
+
+    double nuclear_energy() const override { return 0.; }
 
   private:
     int m_Z;

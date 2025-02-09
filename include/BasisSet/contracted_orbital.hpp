@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "BasisSet/contracted_orbital.interface.hpp"
+#include "BasisSet/contracted_orbital.interface.hpp" // IWYU pragma: export
 #include "BasisSet/gaussian_primitive.hpp"
 #include "BasisSet/slater_primitive.hpp"
 #include "concepts.hpp"
