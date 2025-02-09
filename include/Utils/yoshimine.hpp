@@ -30,7 +30,13 @@ template <typename T> class Yoshimine {
     Yoshimine() = default;
 
     inline T operator()(int a, int b, int c, int d) const {
-        return this->operator()(a, b, c, d);
+        int abcd = index(a, b, c, d);
+
+        if (abcd >= m_yoshimine.size()) {
+            throw std::out_of_range("Yoshimine index out of range");
+        }
+
+        return m_yoshimine[abcd];
     }
 
     inline T &operator()(int a, int b, int c, int d) {
@@ -43,7 +49,7 @@ template <typename T> class Yoshimine {
         return m_yoshimine[abcd];
     }
 
-    void print_content() {
+    void print_content() const {
         for (int i = 0; i < m_yoshimine.size(); i++) {
             std::cout << i << ": " << m_yoshimine[i] << std::endl;
         }
