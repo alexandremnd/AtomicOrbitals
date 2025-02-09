@@ -31,6 +31,17 @@ To install dependencies on your Fedora-based distribution:
     sudo dnf install cmake gtest-devel doxygen g++
 ```
 
+### Arch
+To install dependencies on your Arch-based distribution:
+```bash
+    sudo pacman -Syu boost doxygen gtest cmake
+```
+
+If you prefer to use clang for compilation:
+```bash
+    sudo pacman -Syu clang
+```
+
 ## Cloning and building the project
 
 1. Clone the repository in the directory of your choice:
