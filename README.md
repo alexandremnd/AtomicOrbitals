@@ -36,11 +36,7 @@ To install dependencies on your Arch-based distribution:
 ```bash
     sudo pacman -Syu boost doxygen gtest cmake
 ```
-
-If you prefer to use clang for compilation:
-```bash
-    sudo pacman -Syu clang
-```
+We assume that you already installed a C++ compiler supporting at least the C++20 standard such as G++/Clang.
 
 ## Cloning and building the project
 
