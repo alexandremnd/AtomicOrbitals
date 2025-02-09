@@ -184,7 +184,7 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
     inline Eigen::Vector3d position() { return m_position; }
 
     inline std::vector<OrbitalType> &get_orbitals() { return m_orbitals; }
-    inline Orbital &get_orbital(size_t i) { return m_orbitals[i]; }
+    inline OrbitalType &get_orbital(size_t i) { return m_orbitals[i]; }
 
     // System interface implementation
     size_t size() const override { return m_orbitals.size(); }
