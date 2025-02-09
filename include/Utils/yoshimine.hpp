@@ -1,27 +1,29 @@
 #pragma once
 
+#include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <iostream>
 
 /**
  * @brief Container using Yoshimine sorting.
  *
- * For electron electron integrals denoted (ij | kl), we have an 8-fold symmetry:
- * (ij | kl) = (ji | kl) = (ij | lk) = (ji | lk) = (kl | ij) = (lk | ij) = (kl | ji) = (lk | ji)
+ * For electron electron integrals denoted (ij | kl), we have an 8-fold
+ * symmetry: (ij | kl) = (ji | kl) = (ij | lk) = (ji | lk) = (kl | ij) = (lk |
+ * ij) = (kl | ji) = (lk | ji)
  *
- * For an unordered set of indices (i, j, k, l), index(i, j, k, l) = index(j, i, k, l) = ...
+ * For an unordered set of indices (i, j, k, l), index(i, j, k, l) = index(j, i,
+ * k, l) = ...
  *
- * For a basis set of size N, Yoshimine container requires N(N+1)(N² + N + 2)/8 elements instead of N⁴ elements.
+ * For a basis set of size N, Yoshimine container requires N(N+1)(N² + N + 2)/8
+ * elements instead of N⁴ elements.
  */
-template <typename T>
-class Yoshimine {
-public:
+template <typename T> class Yoshimine {
+  public:
     /**
      * @param size Size of the Yoshimine container
      */
     Yoshimine(int size) {
-        size = (size*(size+1)*(size*size+size+2))/8;
+        size = (size * (size + 1) * (size * size + size + 2)) / 8;
         m_yoshimine.resize(size);
     }
 
@@ -31,7 +33,7 @@ public:
         return this->operator()(a, b, c, d);
     }
 
-    inline T& operator()(int a, int b, int c, int d) {
+    inline T &operator()(int a, int b, int c, int d) {
         int abcd = index(a, b, c, d);
 
         if (abcd >= m_yoshimine.size()) {
@@ -49,26 +51,26 @@ public:
 
     inline int size() const { return m_yoshimine.size(); }
 
-private:
+  private:
     inline int index(int a, int b, int c, int d) const {
         int ab, cd, abcd;
 
         if (a > b) {
-            ab = (a*(a+1))/2 + b;
+            ab = (a * (a + 1)) / 2 + b;
         } else {
-            ab = (b*(b+1))/2 + a;
+            ab = (b * (b + 1)) / 2 + a;
         }
 
         if (c > d) {
-            cd = (c*(c+1))/2 + d;
+            cd = (c * (c + 1)) / 2 + d;
         } else {
-            cd = (d*(d+1))/2 + c;
+            cd = (d * (d + 1)) / 2 + c;
         }
 
         if (ab > cd) {
-            abcd = (ab*(ab+1))/2 + cd;
+            abcd = (ab * (ab + 1)) / 2 + cd;
         } else {
-            abcd = (cd*(cd+1))/2 + ab;
+            abcd = (cd * (cd + 1)) / 2 + ab;
         }
 
         return abcd;

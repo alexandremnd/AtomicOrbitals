@@ -2,10 +2,9 @@
 
 #include <iostream>
 
-#include "Atom/atom.interface.hpp"
-#include "BasisSet/gaussian_contracted.hpp"
+#include "Atom/atom.interface.hpp" // IWYU pragma: export
+#include "BasisSet/contracted_orbital.hpp"
 #include "BasisSet/slater_primitive.hpp"
-#include "BasisSet/slater_contracted.hpp"
 #include "concepts.hpp"
 
 template <DerivedFromOrbital OrbitalType>
@@ -18,29 +17,33 @@ void Atom<OrbitalType>::print_info() const {
 }
 
 template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_orbital(const OrbitalType& orbital) {
+void Atom<OrbitalType>::add_orbital(const OrbitalType &orbital) {
     m_orbitals.push_back(orbital);
 }
 
 template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_orbital(OrbitalType&& orbital) {
+void Atom<OrbitalType>::add_orbital(OrbitalType &&orbital) {
     m_orbitals.push_back(std::move(orbital));
 }
 
 template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_slater_orbital(int n, int l, int m, double alpha) requires std::is_same_v<OrbitalType, SlaterPrimitive>{
+void Atom<OrbitalType>::add_slater_orbital(int n, int l, int m, double alpha)
+    requires std::is_same_v<OrbitalType, SlaterPrimitive>
+{
     m_orbitals.emplace_back(n, l, m, alpha);
 }
 
 template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_contracted_slater(const std::vector<double>& weight,
-                                                const std::vector<double> &n,
-                                                const std::vector<double> &l,
-                                                const std::vector<double> &m,
-                                                const std::vector<double>& decay) requires std::is_same_v<OrbitalType, ContractedSlater>
+void Atom<OrbitalType>::add_contracted_slater(const std::vector<double> &weight,
+                                              const std::vector<double> &n,
+                                              const std::vector<double> &l,
+                                              const std::vector<double> &m,
+                                              const std::vector<double> &decay)
+    requires std::is_same_v<OrbitalType, ContractedSlater>
 {
     if (weight.size() != decay.size()) {
-        throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
+        throw std::invalid_argument(
+            "Atom: The weight and decay vectors must have the same size.");
     }
 
     auto cs = ContractedSlater();
@@ -54,9 +57,13 @@ void Atom<OrbitalType>::add_contracted_slater(const std::vector<double>& weight,
 }
 
 template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_gaussian_orbital_stype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<OrbitalType, ContractedGaussian> {
+void Atom<OrbitalType>::add_gaussian_orbital_stype(
+    const std::vector<double> &weight, const std::vector<double> &decay)
+    requires std::is_same_v<OrbitalType, ContractedGaussian>
+{
     if (weight.size() != decay.size()) {
-        throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
+        throw std::invalid_argument(
+            "Atom: The weight and decay vectors must have the same size.");
     }
 
     auto cg = ContractedGaussian();
@@ -68,9 +75,13 @@ void Atom<OrbitalType>::add_gaussian_orbital_stype(const std::vector<double>& we
 }
 
 template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_gaussian_orbital_ptype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<OrbitalType, ContractedGaussian> {
+void Atom<OrbitalType>::add_gaussian_orbital_ptype(
+    const std::vector<double> &weight, const std::vector<double> &decay)
+    requires std::is_same_v<OrbitalType, ContractedGaussian>
+{
     if (weight.size() != decay.size()) {
-        throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
+        throw std::invalid_argument(
+            "Atom: The weight and decay vectors must have the same size.");
     }
 
     auto cg_x = ContractedGaussian();
@@ -89,9 +100,13 @@ void Atom<OrbitalType>::add_gaussian_orbital_ptype(const std::vector<double>& we
 }
 
 template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_gaussian_orbital_dtype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<OrbitalType, ContractedGaussian> {
+void Atom<OrbitalType>::add_gaussian_orbital_dtype(
+    const std::vector<double> &weight, const std::vector<double> &decay)
+    requires std::is_same_v<OrbitalType, ContractedGaussian>
+{
     if (weight.size() != decay.size()) {
-        throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
+        throw std::invalid_argument(
+            "Atom: The weight and decay vectors must have the same size.");
     }
 
     auto cg_xx = ContractedGaussian();
@@ -119,9 +134,13 @@ void Atom<OrbitalType>::add_gaussian_orbital_dtype(const std::vector<double>& we
 }
 
 template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_gaussian_orbital_ftype(const std::vector<double>& weight, const std::vector<double>& decay) requires std::is_same_v<OrbitalType, ContractedGaussian> {
+void Atom<OrbitalType>::add_gaussian_orbital_ftype(
+    const std::vector<double> &weight, const std::vector<double> &decay)
+    requires std::is_same_v<OrbitalType, ContractedGaussian>
+{
     if (weight.size() != decay.size()) {
-        throw std::invalid_argument("Atom: The weight and decay vectors must have the same size.");
+        throw std::invalid_argument(
+            "Atom: The weight and decay vectors must have the same size.");
     }
 
     auto cg_xxx = ContractedGaussian();
@@ -158,4 +177,13 @@ void Atom<OrbitalType>::add_gaussian_orbital_ftype(const std::vector<double>& we
     m_orbitals.push_back(std::move(cg_xzz));
     m_orbitals.push_back(std::move(cg_yzz));
     m_orbitals.push_back(std::move(cg_xyz));
+}
+
+template <DerivedFromOrbital OrbitalType>
+void Atom<OrbitalType>::set_position(const Eigen::Vector3d &position) {
+    m_position = position;
+
+    for (OrbitalType &orbital : m_orbitals) {
+        orbital.set_position(m_position);
+    }
 }

@@ -1,25 +1,110 @@
 #pragma once
 
-#include "Atom/atom.hpp"
+#include <functional>
+#include <iostream>
+#include <memory>
 #include <vector>
 
-template <typename T>
-class Molecule {
-    public:
-        Molecule() {};
-        Molecule(std::vector<Atom<T>>& atoms) : m_atoms(atoms) {};
-        Molecule(const Molecule& molecule) : m_atoms(molecule.m_atoms) {};
-        Molecule(const Molecule&& molecule) : m_atoms(std::move(molecule.m_atoms)) {};
+#include "Atom/atom.hpp"
+#include "Atom/system.hpp"
+#include "BasisSet/contracted_orbital.hpp"
+#include "BasisSet/gaussian_primitive.hpp"
+#include "BasisSet/slater_primitive.hpp"
+#include "concepts.hpp"
 
-        void add_atom(const Atom<T>& atom) {
-            m_atoms.emplace_back(atom);
+/**
+ * @brief Provides a class to model molecule that can be used in Hartree-Fock.
+ * Provides many methods to easen iteration over bond length, orbital
+ * optimizations and many more.
+ *
+ * @tparam OrbitalType The type of orbitals to use (SlaterPrimitive,
+ * GaussianPrimitive, ...).
+ */
+template <DerivedFromOrbital OrbitalType> class Molecule : public System {
+  public:
+    Molecule() = default;
+    Molecule(const Molecule &molecule) : m_atoms(molecule.m_atoms) {};
+    Molecule(Molecule &&molecule) : m_atoms(std::move(molecule.m_atoms)) {}
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const Molecule<OrbitalType> &molecule);
+
+    void add_atom(std::shared_ptr<Atom<OrbitalType>> atom) {
+        m_atoms.push_back(atom);
+
+        for (OrbitalType &orbital : atom->get_orbitals()) {
+            m_orbitals.emplace_back(orbital);
+        }
+    }
+
+    Atom<OrbitalType> &get_atom(size_t i) { return *m_atoms[i]; }
+    OrbitalType &get_orbital(size_t i) { return m_orbitals[i]; }
+
+    const double distance(size_t i, size_t j) const {
+        return (m_atoms[i]->position() - m_atoms[j]->position()).norm();
+    }
+
+    // System interface implementation
+    size_t size() const override { return m_orbitals.size(); }
+
+    double overlap(size_t i, size_t j) const override {
+        return overlap_integral(m_orbitals[i].get(), m_orbitals[j].get());
+    }
+
+    double kinetic(size_t i, size_t j) const override {
+        return -0.5 *
+               laplacian_integral(m_orbitals[i].get(), m_orbitals[j].get());
+    }
+
+    double electron_nucleus(size_t i, size_t j) const override {
+        double attraction = 0.0;
+
+        for (size_t k = 0; k < m_atoms.size(); k++) {
+            attraction += -m_atoms[k]->Z() *
+                          electron_nucleus_integral(m_orbitals[i].get(),
+                                                    m_orbitals[j].get(),
+                                                    m_atoms[k]->position());
         }
 
-        inline const int n_atoms() const { return m_atoms.size(); }
-        inline const std::vector<Atom<T>>& atoms() const { return m_atoms; }
-        inline const Atom<T>& atom(size_t i) const { return m_atoms[i]; }
-        inline const Atom<T>& operator()(size_t i) const { return m_atoms[i]; }
+        return attraction;
+    }
 
-    private:
-        std::vector<Atom<T>> m_atoms;
+    double electron_electron(size_t i, size_t j, size_t k,
+                             size_t l) const override {
+        return electron_electron_integral(
+            m_orbitals[i].get(), m_orbitals[j].get(), m_orbitals[k].get(),
+            m_orbitals[l].get());
+    }
+
+    double nuclear_energy() const override {
+        double repulsion = 0.0;
+
+        for (size_t i = 0; i < m_atoms.size(); i++) {
+            for (size_t j = i + 1; j < m_atoms.size(); j++) {
+                repulsion += m_atoms[i]->Z() * m_atoms[j]->Z() / distance(i, j);
+            }
+        }
+
+        return repulsion;
+    }
+
+  private:
+    std::vector<std::shared_ptr<Atom<OrbitalType>>> m_atoms;
+    std::vector<std::reference_wrapper<OrbitalType>> m_orbitals;
 };
+
+template <DerivedFromOrbital OrbitalType>
+std::ostream &operator<<(std::ostream &os,
+                         const Molecule<OrbitalType> &molecule) {
+    os << "============= Molecule Configuration =============\n";
+    os << "Number of atoms: " << molecule.m_atoms.size() << "\n";
+    os << "Number of orbitals: " << molecule.m_orbitals.size() << "\n";
+    os << "Atoms in molecule: " << "\n";
+    for (size_t i = 0; i < molecule.m_atoms.size(); i++) {
+        os << "\tAtom no." << i << " - Z = " << molecule.get_atom(i) << "\n";
+        os << "\t\t- Position: " << molecule.get_atom(i).position() << "\n";
+        os << "\t\t- Orbitals: " << "\n";
+    }
+    os << "==================================================\n";
+}
+
+DECLARE_EXTERN_TEMPLATE(Molecule)

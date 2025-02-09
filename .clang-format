@@ -1,0 +1,8 @@
+---
+BasedOnStyle: LLVM
+AllowShortBlocksOnASingleLine: 'true'
+IndentWidth: '4'
+Language: Cpp
+PointerAlignment: Right
+TabWidth: '4'
+UseTab: Never
