@@ -38,8 +38,8 @@ int main() {
     RestrictedHartreeFock hf(He2, 2);
 
     hf.set_smoothing_factor(0.3);
-    hf.set_diis_size(8);
-    hf.run(1e-8, 1000, false);
+    hf.set_diis_size(0);
+    hf.run(1e-5, 1000, 1, false);
 
     return 0;
 };

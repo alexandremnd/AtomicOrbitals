@@ -32,7 +32,7 @@ class HartreeFock {
 
     void set_system(const System &system);
     void set_smoothing_factor(double smoothing_factor);
-    void run(double convergence_threshold = 1e-6, int max_iterations = 1000,
+    void run(double convergence_threshold = 1e-6, uint max_iterations = 1000, uint converged_iteration = 5,
              bool silent = false);
 
     void print_info();

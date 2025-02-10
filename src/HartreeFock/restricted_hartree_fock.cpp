@@ -118,6 +118,10 @@ void RestrictedHartreeFock::diis(size_t iteration) {
         diis_compute();
         return;
     }
+
+    if (iteration % (2 * m_diis_size) == 0) {
+        reset_diis_subspace();
+    }
 }
 
 void RestrictedHartreeFock::diis_compute() {

@@ -12,10 +12,15 @@ class RestrictedHartreeFock : public HartreeFock {
 
     void set_diis_size(uint size) {
         m_diis_size = size;
+        reset_diis_subspace();
+    }
+
+    void reset_diis_subspace() {
+        m_fock_history.clear();
+        m_density_history.clear();
+        m_error_history = Eigen::MatrixXd::Zero(m_H.size() * m_H.size(), m_diis_size);
         m_fock_history.resize(m_diis_size);
         m_density_history.resize(m_diis_size);
-        m_error_history =
-            Eigen::MatrixXd::Zero(m_H.size() * m_H.size(), m_diis_size);
     }
 
   private:

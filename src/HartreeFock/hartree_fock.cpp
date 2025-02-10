@@ -25,19 +25,27 @@ void HartreeFock::set_smoothing_factor(double smoothing_factor) {
     m_smoothing_factor = smoothing_factor;
 }
 
-void HartreeFock::run(double convergence_threshold, int max_iterations,
+void HartreeFock::run(double convergence_threshold, uint max_iterations, uint converged_iteration,
                       bool silent) {
     size_t n = 0;
-    double old_energy;
+    std::vector<double> old_energy(converged_iteration);
+    double mean_old_energy = 0;
 
     do {
-        old_energy = m_hf_energy;
+        old_energy[n % converged_iteration] = m_hf_energy;
         self_consistent_field_iteration(n);
         if (!silent) {
             print_iteration_info(n);
         }
         n++;
-    } while (std::abs(m_hf_energy - old_energy) > convergence_threshold &&
+
+        mean_old_energy = 0;
+        for(auto E : old_energy) {
+            mean_old_energy += E;
+        }
+        mean_old_energy /= converged_iteration;
+
+    } while (std::abs(mean_old_energy - m_hf_energy) > convergence_threshold &&
              n < max_iterations);
 
     print_result(n);
