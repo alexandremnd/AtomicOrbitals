@@ -23,24 +23,24 @@ class GaussianPrimitive : public Orbital {
             fact_x_exponent = 1.;
             fact_2x_exponent = 1.;
         } else {
-            fact_x_exponent = boost::math::tgamma(m_x_exponent);
-            fact_2x_exponent = boost::math::tgamma(2 * m_x_exponent);
+            fact_x_exponent = boost::math::tgamma(m_x_exponent + 1);
+            fact_2x_exponent = boost::math::tgamma(2 * m_x_exponent + 1);
         }
 
         if (m_y_exponent == 0) {
             fact_y_exponent = 1.;
             fact_2y_exponent = 1.;
         } else {
-            fact_y_exponent = boost::math::tgamma(m_y_exponent);
-            fact_2y_exponent = boost::math::tgamma(2 * m_y_exponent);
+            fact_y_exponent = boost::math::tgamma(m_y_exponent + 1);
+            fact_2y_exponent = boost::math::tgamma(2 * m_y_exponent + 1);
         }
 
         if (m_z_exponent == 0) {
             fact_z_exponent = 1.;
             fact_2z_exponent = 1.;
         } else {
-            fact_z_exponent = boost::math::tgamma(m_z_exponent);
-            fact_2z_exponent = boost::math::tgamma(2 * m_z_exponent);
+            fact_z_exponent = boost::math::tgamma(m_z_exponent + 1);
+            fact_2z_exponent = boost::math::tgamma(2 * m_z_exponent + 1);
         }
         m_normalization =
             std::pow(2 * m_alpha / M_PI, 3. / 4) *
@@ -99,3 +99,13 @@ class GaussianPrimitive : public Orbital {
     int m_z_exponent;
     double m_alpha, m_normalization;
 };
+
+double overlap_integral(const GaussianPrimitive &, const GaussianPrimitive &);
+double laplacian_integral(const GaussianPrimitive &, const GaussianPrimitive &);
+double electron_nucleus_integral(const GaussianPrimitive &,
+                                 const GaussianPrimitive &,
+                                 const Eigen::Vector3d &);
+double electron_electron_integral(const GaussianPrimitive &,
+                                  const GaussianPrimitive &,
+                                  const GaussianPrimitive &,
+                                  const GaussianPrimitive &);

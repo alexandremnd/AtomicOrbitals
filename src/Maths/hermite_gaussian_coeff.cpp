@@ -1,6 +1,6 @@
 #include "Maths/hermite_gaussian_coeff.hpp"
 #include "BasisSet/gaussian_primitive.hpp"
-#include "Eigen/src/Core/Matrix.h"
+#include "Eigen/Dense"
 
 #include <cmath>
 

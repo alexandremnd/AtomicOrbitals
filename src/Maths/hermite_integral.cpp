@@ -1,5 +1,5 @@
 #include "Maths/hermite_integral.hpp"
-#include "Eigen/src/Core/Matrix.h"
+#include "Eigen/Dense"
 #include "Maths/tensor4D.hpp"
 #include "Maths/the_boys.hpp"
 
@@ -19,8 +19,6 @@ Tensor4D<double> HermiteIntegral(const GaussianPrimitive &orbital1,
     int k = orbital1.z_exponent(), n = orbital2.z_exponent();
     int ijkMax = i + l + j + m + k + n + 1;
     int loop_limit[] = {i + l + 1, j + m + 1, k + n + 1};
-
-    std::cout << "LÃ" << std::endl;
 
     Tensor4D<double> Rntuv(ijkMax, loop_limit[0], loop_limit[1],
                            loop_limit[2]); // Define the 4 dimension tensor
@@ -105,6 +103,6 @@ Tensor4D<double> HermiteIntegral(const GaussianPrimitive &orbital1,
             }
         }
     }
-    Rntuv.dim();
+    // Rntuv.dim();
     return Rntuv;
 }

@@ -28,7 +28,7 @@ GaussianPrimitive operator*(
 
     int i = orbital1.x_exponent(), l = orbital2.x_exponent();
     int j = orbital1.y_exponent(), m = orbital2.y_exponent();
-    int k = orbital1.y_exponent(), n = orbital2.y_exponent();
+    int k = orbital1.z_exponent(), n = orbital2.z_exponent();
 
     GaussianPrimitive orbital3;
     if (A_position == B_position) {
@@ -57,13 +57,13 @@ double overlap_integral(const GaussianPrimitive &orbital1,
 
     int i = orbital1.x_exponent(), l = orbital2.x_exponent();
     int j = orbital1.y_exponent(), m = orbital2.y_exponent();
-    int k = orbital1.y_exponent(), n = orbital2.y_exponent();
+    int k = orbital1.z_exponent(), n = orbital2.z_exponent();
 
     double Eil0 = Hermite_coeff[0](i, l, 0), Ejm0 = Hermite_coeff[1](j, m, 0),
            Ekn0 = Hermite_coeff[2](k, n, 0);
     double overlap_value =
         std::pow(M_PI / (alpha + beta), 3. / 2) * Eil0 * Ejm0 * Ekn0;
-    return overlap_value;
+    return overlap_value * orbital1.normalization() * orbital2.normalization();
 }
 
 double laplacian_integral(const GaussianPrimitive &orbital1,
@@ -72,15 +72,15 @@ double laplacian_integral(const GaussianPrimitive &orbital1,
 
     int i = orbital1.x_exponent(), l = orbital2.x_exponent();
     int j = orbital1.y_exponent(), m = orbital2.y_exponent();
-    int k = orbital1.y_exponent(), n = orbital2.y_exponent();
+    int k = orbital1.z_exponent(), n = orbital2.z_exponent();
 
     std::vector<Tensor3D<double>> Hermite_coeff =
         HermiteCoefficient(orbital1, orbital2);
     Tensor3D Coeff_xaxis = Hermite_coeff[0], Coeff_yaxis = Hermite_coeff[1],
              Coeff_zaxis = Hermite_coeff[2];
 
-    double Eil0 = Coeff_xaxis(i, l, 0), Ejm0 = Coeff_xaxis(j, m, 0),
-           Ekn0 = Coeff_xaxis(k, n, 0),
+    double Eil0 = Coeff_xaxis(i, l, 0), Ejm0 = Coeff_yaxis(j, m, 0),
+           Ekn0 = Coeff_zaxis(k, n, 0),
            Til = 4 * beta * beta * Coeff_xaxis(i, l + 2, 0) -
                  2 * beta * (2 * l + 1) * Eil0 +
                  l * (l - 1) * Coeff_xaxis(i, l - 2, 0),
@@ -92,11 +92,11 @@ double laplacian_integral(const GaussianPrimitive &orbital1,
                  k * (k - 1) * Coeff_zaxis(k, n - 2, 0),
 
            laplacian_value =
-               -(1. / 2) *
                (Til * Ejm0 * Ekn0 + Eil0 * Tjm * Ekn0 + Eil0 * Ejm0 * Tkn) *
                std::pow(M_PI / (alpha + beta), 3. / 2);
 
-    return laplacian_value;
+    return laplacian_value * orbital1.normalization() *
+           orbital2.normalization();
 }
 
 double electron_nucleus_integral(const GaussianPrimitive &orbital1,
@@ -114,7 +114,7 @@ double electron_nucleus_integral(const GaussianPrimitive &orbital1,
 
     int i = orbital1.x_exponent(), l = orbital2.x_exponent();
     int j = orbital1.y_exponent(), m = orbital2.y_exponent();
-    int k = orbital1.y_exponent(), n = orbital2.y_exponent();
+    int k = orbital1.z_exponent(), n = orbital2.z_exponent();
     int ijkMax = i + l + j + m + k + n;
 
     // Initialize variables for Hermite coefficients and Hermite integrals
@@ -141,7 +141,8 @@ double electron_nucleus_integral(const GaussianPrimitive &orbital1,
     }
 
     electron_nucleus_value *= 2 * M_PI / p;
-    return electron_nucleus_value;
+    return electron_nucleus_value * orbital1.normalization() *
+           orbital2.normalization();
 }
 
 double electron_electron_integral(const GaussianPrimitive &orbital1,
@@ -162,7 +163,7 @@ double electron_electron_integral(const GaussianPrimitive &orbital1,
 
     int i = orbital12.x_exponent(), l = orbital34.x_exponent();
     int j = orbital12.y_exponent(), m = orbital34.y_exponent();
-    int k = orbital12.y_exponent(), n = orbital34.y_exponent();
+    int k = orbital12.z_exponent(), n = orbital34.z_exponent();
 
     int list_x_indices[] = {orbital1.x_exponent(), orbital2.x_exponent(),
                             orbital3.x_exponent(), orbital4.x_exponent()};
@@ -210,5 +211,7 @@ double electron_electron_integral(const GaussianPrimitive &orbital1,
 
     electron_electron_value *=
         2 * std::pow(M_PI, 5. / 2) / (p * q * std::sqrt(p + q));
-    return electron_electron_value;
+    return electron_electron_value * orbital1.normalization() *
+           orbital2.normalization() * orbital3.normalization() *
+           orbital4.normalization();
 }
