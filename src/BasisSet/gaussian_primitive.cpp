@@ -119,7 +119,8 @@ double laplacian_integral(const GaussianPrimitive &orbital1,
     double laplacian_value =
         Til * Ejm * Ekn + Eil * Tjm * Ekn + Eil * Ejm * Tkn;
 
-    return std::pow(M_PI / (alpha + beta), 3. / 2) * laplacian_value;
+    return std::pow(M_PI / (alpha + beta), 3. / 2) * laplacian_value *
+           orbital1.normalization() * orbital2.normalization();
 }
 
 double electron_nucleus_integral(const GaussianPrimitive &orbital1,
