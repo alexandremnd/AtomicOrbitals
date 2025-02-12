@@ -74,29 +74,52 @@ double laplacian_integral(const GaussianPrimitive &orbital1,
     int j = orbital1.y_exponent(), m = orbital2.y_exponent();
     int k = orbital1.z_exponent(), n = orbital2.z_exponent();
 
-    std::vector<Tensor3D<double>> Hermite_coeff =
-        HermiteCoefficient(orbital1, orbital2);
-    Tensor3D Coeff_xaxis = Hermite_coeff[0], Coeff_yaxis = Hermite_coeff[1],
-             Coeff_zaxis = Hermite_coeff[2];
+    GaussianPrimitive orbital2_plus2(orbital2);
+    orbital2_plus2.set_x_exponent(orbital2.x_exponent() + 2);
+    orbital2_plus2.set_y_exponent(orbital2.y_exponent() + 2);
+    orbital2_plus2.set_z_exponent(orbital2.z_exponent() + 2);
 
-    double Eil0 = Coeff_xaxis(i, l, 0), Ejm0 = Coeff_yaxis(j, m, 0),
-           Ekn0 = Coeff_zaxis(k, n, 0),
-           Til = 4 * beta * beta * Coeff_xaxis(i, l + 2, 0) -
-                 2 * beta * (2 * l + 1) * Eil0 +
-                 l * (l - 1) * Coeff_xaxis(i, l - 2, 0),
-           Tjm = 4 * beta * beta * Coeff_yaxis(j, m + 2, 0) -
-                 2 * beta * (2 * m + 1) * Ejm0 +
-                 m * (m - 1) * Coeff_yaxis(j, m - 2, 0),
-           Tkn = 4 * beta * beta * Coeff_zaxis(k, n + 2, 0) -
-                 2 * beta * (2 * k + 1) * Ekn0 +
-                 k * (k - 1) * Coeff_zaxis(k, n - 2, 0),
+    std::vector<Tensor3D<double>> Hermite_coeff_plus2 =
+        HermiteCoefficient(orbital1, orbital2_plus2);
+    Tensor3D<double> Herm_x = Hermite_coeff_plus2[0],
+                     Herm_y = Hermite_coeff_plus2[1],
+                     Herm_z = Hermite_coeff_plus2[2];
 
-           laplacian_value =
-               (Til * Ejm0 * Ekn0 + Eil0 * Tjm * Ekn0 + Eil0 * Ejm0 * Tkn) *
-               std::pow(M_PI / (alpha + beta), 3. / 2);
+    double Til;
+    if (l >= 2) {
+        Til = 4 * beta * beta * Herm_x(i, l + 2, 0) -
+              2 * beta * (2 * l + 1) * Herm_x(i, l, 0) +
+              l * (l - 1) * Herm_x(i, l - 2, 0);
+    } else {
+        Til = 4 * beta * beta * Herm_x(i, l + 2, 0) -
+              2 * beta * (2 * l + 1) * Herm_x(i, l, 0);
+    }
 
-    return laplacian_value * orbital1.normalization() *
-           orbital2.normalization();
+    double Tjm;
+    if (m >= 2) {
+        Tjm = 4 * beta * beta * Herm_y(j, m + 2, 0) -
+              2 * beta * (2 * m + 1) * Herm_y(j, m, 0) +
+              m * (m - 1) * Herm_y(j, m - 2, 0);
+    } else {
+        Tjm = 4 * beta * beta * Herm_y(j, m + 2, 0) -
+              2 * beta * (2 * m + 1) * Herm_y(j, m, 0);
+    }
+
+    double Tkn;
+    if (k >= 2) {
+        Tkn = 4 * beta * beta * Herm_z(k, n + 2, 0) -
+              2 * beta * (2 * n + 1) * Herm_z(k, n, 0) +
+              n * (n - 1) * Herm_z(k, n - 2, 0);
+    } else {
+        Tkn = 4 * beta * beta * Herm_z(k, n + 2, 0) -
+              2 * beta * (2 * n + 1) * Herm_z(k, n, 0);
+    }
+
+    double Eil = Herm_x(i, l, 0), Ejm = Herm_y(j, m, 0), Ekn = Herm_z(k, n, 0);
+    double laplacian_value =
+        Til * Ejm * Ekn + Eil * Tjm * Ekn + Eil * Ejm * Tkn;
+
+    return std::pow(M_PI / (alpha + beta), 3. / 2) * laplacian_value;
 }
 
 double electron_nucleus_integral(const GaussianPrimitive &orbital1,
