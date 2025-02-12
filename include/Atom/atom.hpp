@@ -68,7 +68,7 @@ void Atom<OrbitalType>::add_gaussian_orbital_stype(
 
     auto cg = ContractedGaussian();
     for (size_t i = 0; i < weight.size(); i++) {
-        cg.add_primitive(weight[i], decay[i], 0, 0, 0, m_position);
+        cg.add_primitive(weight[i], 0, 0, 0, decay[i], m_position);
     }
 
     m_orbitals.push_back(std::move(cg));
@@ -89,9 +89,9 @@ void Atom<OrbitalType>::add_gaussian_orbital_ptype(
     auto cg_z = ContractedGaussian();
 
     for (size_t i = 0; i < weight.size(); i++) {
-        cg_x.add_primitive(weight[i], decay[i], 1, 0, 0, m_position);
-        cg_y.add_primitive(weight[i], decay[i], 0, 1, 0, m_position);
-        cg_z.add_primitive(weight[i], decay[i], 0, 0, 1, m_position);
+        cg_x.add_primitive(weight[i], 1, 0, 0, decay[i], m_position);
+        cg_y.add_primitive(weight[i], 0, 1, 0, decay[i], m_position);
+        cg_z.add_primitive(weight[i], 0, 0, 1, decay[i], m_position);
     }
 
     m_orbitals.push_back(std::move(cg_x));
@@ -117,12 +117,12 @@ void Atom<OrbitalType>::add_gaussian_orbital_dtype(
     auto cg_yz = ContractedGaussian();
 
     for (size_t i = 0; i < weight.size(); i++) {
-        cg_xx.add_primitive(weight[i], decay[i], 2, 0, 0, m_position);
-        cg_yy.add_primitive(weight[i], decay[i], 0, 2, 0, m_position);
-        cg_zz.add_primitive(weight[i], decay[i], 0, 0, 2, m_position);
-        cg_xy.add_primitive(weight[i], decay[i], 1, 1, 0, m_position);
-        cg_xz.add_primitive(weight[i], decay[i], 1, 0, 1, m_position);
-        cg_yz.add_primitive(weight[i], decay[i], 0, 1, 1, m_position);
+        cg_xx.add_primitive(weight[i], 2, 0, 0, decay[i], m_position);
+        cg_yy.add_primitive(weight[i], 0, 2, 0, decay[i], m_position);
+        cg_zz.add_primitive(weight[i], 0, 0, 2, decay[i], m_position);
+        cg_xy.add_primitive(weight[i], 1, 1, 0, decay[i], m_position);
+        cg_xz.add_primitive(weight[i], 1, 0, 1, decay[i], m_position);
+        cg_yz.add_primitive(weight[i], 0, 1, 1, decay[i], m_position);
     }
 
     m_orbitals.push_back(std::move(cg_xx));
@@ -155,16 +155,16 @@ void Atom<OrbitalType>::add_gaussian_orbital_ftype(
     auto cg_xyz = ContractedGaussian();
 
     for (size_t i = 0; i < weight.size(); i++) {
-        cg_xxx.add_primitive(weight[i], decay[i], 3, 0, 0, m_position);
-        cg_yyy.add_primitive(weight[i], decay[i], 0, 3, 0, m_position);
-        cg_zzz.add_primitive(weight[i], decay[i], 0, 0, 3, m_position);
-        cg_xxy.add_primitive(weight[i], decay[i], 2, 1, 0, m_position);
-        cg_xxz.add_primitive(weight[i], decay[i], 2, 0, 1, m_position);
-        cg_xyy.add_primitive(weight[i], decay[i], 1, 2, 0, m_position);
-        cg_yyz.add_primitive(weight[i], decay[i], 0, 2, 1, m_position);
-        cg_xzz.add_primitive(weight[i], decay[i], 1, 0, 2, m_position);
-        cg_yzz.add_primitive(weight[i], decay[i], 0, 1, 2, m_position);
-        cg_xyz.add_primitive(weight[i], decay[i], 1, 1, 1, m_position);
+        cg_xxx.add_primitive(weight[i], 3, 0, 0, decay[i], m_position);
+        cg_yyy.add_primitive(weight[i], 0, 3, 0, decay[i], m_position);
+        cg_zzz.add_primitive(weight[i], 0, 0, 3, decay[i], m_position);
+        cg_xxy.add_primitive(weight[i], 2, 1, 0, decay[i], m_position);
+        cg_xxz.add_primitive(weight[i], 2, 0, 1, decay[i], m_position);
+        cg_xyy.add_primitive(weight[i], 1, 2, 0, decay[i], m_position);
+        cg_yyz.add_primitive(weight[i], 0, 2, 1, decay[i], m_position);
+        cg_xzz.add_primitive(weight[i], 1, 0, 2, decay[i], m_position);
+        cg_yzz.add_primitive(weight[i], 0, 1, 2, decay[i], m_position);
+        cg_xyz.add_primitive(weight[i], 1, 1, 1, decay[i], m_position);
     }
 
     m_orbitals.push_back(std::move(cg_xxx));
