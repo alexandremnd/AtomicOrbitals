@@ -26,7 +26,7 @@ HermiteCoefficient(const GaussianPrimitive &orbital1,
 
     const int i1 = orbital1.x_exponent(), i2 = orbital2.x_exponent();
     const int j1 = orbital1.y_exponent(), j2 = orbital2.y_exponent();
-    const int k1 = orbital1.y_exponent(), k2 = orbital2.y_exponent();
+    const int k1 = orbital1.z_exponent(), k2 = orbital2.z_exponent();
 
     const int iA_loopLimit[] = {i1 + 1, j1 + 1, k1 + 1};
     const int iB_loopLimit[] = {i2 + 1, j2 + 1, k2 + 1};
