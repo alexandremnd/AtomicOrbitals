@@ -19,11 +19,11 @@ template <typename T> class Tensor3D {
           m_size_3index(other.m_size_3index), m_values(other.m_values) {}
 
     T operator()(int i, int j, int k) const {
-        return m_values[m_size_3index * (j + m_size_2index * i) + k];
+        return m_values.at(m_size_3index * (j + m_size_2index * i) + k);
     };
 
     T &operator()(int i, int j, int k) {
-        return m_values[m_size_3index * (j + m_size_2index * i) + k];
+        return m_values.at(m_size_3index * (j + m_size_2index * i) + k);
     };
 
     void dim() {

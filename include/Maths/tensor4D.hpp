@@ -20,15 +20,13 @@ template <typename T> class Tensor4D {
           m_size_4index(other.m_size_4index), m_values(other.m_values) {}
 
     T operator()(int i, int j, int k, int l) const {
-        return m_values[m_size_4index *
-                            (k + m_size_3index * (j + m_size_2index * i)) +
-                        l];
+        return m_values.at(
+            m_size_4index * (k + m_size_3index * (j + m_size_2index * i)) + l);
     };
 
     T &operator()(int i, int j, int k, int l) {
-        return m_values[m_size_4index *
-                            (k + m_size_3index * (j + m_size_2index * i)) +
-                        l];
+        return m_values.at(
+            m_size_4index * (k + m_size_3index * (j + m_size_2index * i)) + l);
     };
 
     void dim() {
