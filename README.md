@@ -14,29 +14,29 @@
 1. A C++ compiler (this project is tested on g++ and clang++) supporting C++20 standard
 2. [CMake](https://cmake.org/) (version at least 3.12, checks using ```cmake --version```)
 3. [Boost](https://www.boost.org/)
-4. (Optional) [Doxygen](https://www.doxygen.nl)
-5. (Optional) [GoogleTest](https://github.com/google/googletest)
+4. [Python](https://www.python.org/)
+5. (Optional) [Doxygen](https://www.doxygen.nl)
+6. (Optional) [GoogleTest](https://github.com/google/googletest)
 
-You may install Doxygen and GoogleTest with your package manager (apt/dnf/yum/pacman/... for Linux, chocolatey for Windows, Homebrew for MacOS).
+We assume that you already installed a C++ compiler supporting at least the C++20 standard such as [g++](https://gcc.gnu.org/)/[clang](https://clang.llvm.org/).
 
-### Ubuntu
+### Ubuntu (tested on Ubuntu 24.04.01 LTS)
 To install dependencies on your Ubuntu-based distribution:
 ```bash
-    sudo apt install cmake libgtest-dev doxygen
+    sudo apt install cmake python3-dev libboost-all-dev libgtest-dev doxygen
 ```
 
-### Fedora
+### Fedora (tested on Fedora 40 and 41)
 To install dependencies on your Fedora-based distribution:
 ```bash
-    sudo dnf install cmake gtest-devel doxygen g++
+    sudo dnf install cmake python3-devel boost-devel gtest-devel doxygen
 ```
 
-### Arch
+### Arch (tested on rolling release of February)
 To install dependencies on your Arch-based distribution:
 ```bash
-    sudo pacman -Syu boost doxygen gtest cmake
+    sudo pacman -Syu cmake base-devel python3 boost doxygen gtest
 ```
-We assume that you already installed a C++ compiler supporting at least the C++20 standard such as G++/Clang.
 
 ## Cloning and building the project
 
