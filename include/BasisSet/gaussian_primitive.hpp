@@ -8,7 +8,7 @@
 
 class GaussianPrimitive : public Orbital {
   public:
-    GaussianPrimitive() {};
+    GaussianPrimitive(){};
 
     GaussianPrimitive(int x_exponent, int y_exponent, int z_exponent,
                       double alpha)
@@ -43,7 +43,7 @@ class GaussianPrimitive : public Orbital {
     double evaluate(double r) const;
 
     // Setters & Getters
-    void update_normalisation(){
+    void update_normalisation() {
         double fact_x_exponent, fact_y_exponent, fact_z_exponent;
         double fact_2x_exponent, fact_2y_exponent, fact_2z_exponent;
 
@@ -90,6 +90,21 @@ class GaussianPrimitive : public Orbital {
 
     friend GaussianPrimitive operator*(const GaussianPrimitive &orbital1,
                                        const GaussianPrimitive &orbital2);
+
+    GaussianPrimitive &operator=(const GaussianPrimitive &rhs) {
+        if (this == &rhs) {
+            return *this;
+        }
+
+        m_x_exponent = rhs.m_x_exponent;
+        m_y_exponent = rhs.m_y_exponent;
+        m_z_exponent = rhs.m_z_exponent;
+        m_alpha = rhs.m_alpha;
+        m_position = rhs.m_position;
+        m_normalization_constant = rhs.m_normalization_constant;
+
+        return *this;
+    }
 
   private:
     int m_x_exponent;

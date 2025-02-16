@@ -31,22 +31,23 @@ GaussianPrimitive operator*(
     int j = orbital1.y_exponent(), m = orbital2.y_exponent();
     int k = orbital1.z_exponent(), n = orbital2.z_exponent();
 
-    GaussianPrimitive orbital3;
-    if (A_position == B_position) { orbital3.set_position(A_position);}
-    else { orbital3.set_position((alpha*A_position + beta*B_position) / (alpha + beta));}
-    orbital3.m_normalization_constant = norm1 * norm2 * std::exp(-((alpha*beta)/(alpha+beta)) * AB_position.norm() * AB_position.norm());
-    orbital3.set_alpha(alpha + beta);
-    orbital3.set_x_exponent(i + l);
-    orbital3.set_y_exponent(j + m);
-    orbital3.set_z_exponent(k + n);
+    Eigen::Vector3d new_position =
+        (alpha * A_position + beta * B_position) / (alpha + beta);
+
+    GaussianPrimitive orbital3 =
+        GaussianPrimitive(i + l, j + m, k + n, alpha + beta, new_position);
+
+    orbital3.m_normalization_constant =
+        norm1 * norm2 *
+        std::exp(-((alpha * beta) / (alpha + beta)) * AB_position.norm() *
+                 AB_position.norm());
 
     return orbital3;
 }
 
-// ===============================================================================================
-// ============================ Matrix element for Gaussian Primitive
-// ============================
-// ===============================================================================================
+// ==============================================================================================
+// ========================== Matrix element for Gaussian Primitive
+// ==============================================================================================
 
 double overlap_integral(const GaussianPrimitive &orbital1,
                         const GaussianPrimitive &orbital2) {
@@ -63,7 +64,7 @@ double overlap_integral(const GaussianPrimitive &orbital1,
            Ekn0 = Hermite_coeff[2](k, n, 0);
     double overlap_value =
         std::pow(M_PI / (alpha + beta), 3. / 2) * Eil0 * Ejm0 * Ekn0;
-    return overlap_value * orbital1.normalization() * orbital2.normalization();
+    return overlap_value;
 }
 
 double laplacian_integral(const GaussianPrimitive &orbital1,
@@ -106,7 +107,7 @@ double laplacian_integral(const GaussianPrimitive &orbital1,
     }
 
     double Tkn;
-    if (k >= 2) {
+    if (n >= 2) {
         Tkn = 4 * beta * beta * Herm_z(k, n + 2, 0) -
               2 * beta * (2 * n + 1) * Herm_z(k, n, 0) +
               n * (n - 1) * Herm_z(k, n - 2, 0);
@@ -119,7 +120,7 @@ double laplacian_integral(const GaussianPrimitive &orbital1,
     double laplacian_value =
         Til * Ejm * Ekn + Eil * Tjm * Ekn + Eil * Ejm * Tkn;
 
-    return std::pow(M_PI / (alpha + beta), 3. / 2) * laplacian_value * orbital1.normalization() * orbital2.normalization();
+    return std::pow(M_PI / (alpha + beta), 3. / 2) * laplacian_value;
 }
 
 double electron_nucleus_integral(const GaussianPrimitive &orbital1,
@@ -144,7 +145,9 @@ double electron_nucleus_integral(const GaussianPrimitive &orbital1,
         HermiteCoefficient(orbital1, orbital2);
     Tensor3D E_xaxis = Hermite_coeff[0], E_yaxis = Hermite_coeff[1],
              E_zaxis = Hermite_coeff[2];
-    Tensor4D Rntuv = HermiteIntegral(orbital1, orbital2, p, PNucleus_position); // Define the 4 dimension tensor
+    Tensor4D Rntuv =
+        HermiteIntegral(orbital1, orbital2, p,
+                        PNucleus_position); // Define the 4 dimension tensor
 
     double Eilt, Ejmu, Eknv, R0tuv;
     double electron_nucleus_value = 0;
@@ -161,7 +164,7 @@ double electron_nucleus_integral(const GaussianPrimitive &orbital1,
     }
 
     electron_nucleus_value *= 2 * M_PI / p;
-    return electron_nucleus_value * orbital1.normalization() * orbital2.normalization();
+    return electron_nucleus_value;
 }
 
 double electron_electron_integral(const GaussianPrimitive &orbital1,
@@ -172,14 +175,16 @@ double electron_electron_integral(const GaussianPrimitive &orbital1,
                                   E34 = HermiteCoefficient(orbital3, orbital4);
 
     GaussianPrimitive orbital12 = orbital1 * orbital2,
-                        orbital34 = orbital3 * orbital4;
+                      orbital34 = orbital3 * orbital4;
 
     double p = orbital12.alpha(), q = orbital34.alpha();
 
     double zeta = p * q / (p + q);
 
-    Eigen::Vector3d position_12_34 = orbital12.position() - orbital34.position();
-    Tensor4D R_12_34 = HermiteIntegral(orbital12, orbital34, zeta, position_12_34);
+    Eigen::Vector3d position_12_34 =
+        orbital12.position() - orbital34.position();
+    Tensor4D R_12_34 =
+        HermiteIntegral(orbital12, orbital34, zeta, position_12_34);
 
     int i = orbital12.x_exponent(), l = orbital34.x_exponent();
     int j = orbital12.y_exponent(), m = orbital34.y_exponent();
@@ -206,7 +211,8 @@ double electron_electron_integral(const GaussianPrimitive &orbital1,
                     for (int mu = 0; mu <= m; mu++) {
                         E34y = E34[1](list_y_indices[2], list_y_indices[3], mu);
                         for (int nu = 0; nu <= n; nu++) {
-                            E34z = E34[2](list_z_indices[2], list_z_indices[3], nu);
+                            E34z = E34[2](list_z_indices[2], list_z_indices[3],
+                                          nu);
                             E_product = 1;
                             E_product *= E12x;
                             E_product *= E12y;
@@ -219,7 +225,9 @@ double electron_electron_integral(const GaussianPrimitive &orbital1,
                             R0_12_34 = R_12_34(0, t + tau, u + mu, v + nu);
 
                             // std::cout << R0_12_34 << std::endl;
-                            electron_electron_value += std::pow(-1,tau+mu+nu) * E_product * R0_12_34;
+                            electron_electron_value +=
+                                std::pow(-1, tau + mu + nu) * E_product *
+                                R0_12_34;
                         }
                     }
                 }
@@ -227,6 +235,7 @@ double electron_electron_integral(const GaussianPrimitive &orbital1,
         }
     }
 
-    electron_electron_value *= 2 * std::pow(M_PI, 5. / 2) / (p * q * std::sqrt(p + q));
-    return electron_electron_value * orbital12.normalization() * orbital34.normalization();
+    electron_electron_value *=
+        2 * std::pow(M_PI, 5. / 2) / (p * q * std::sqrt(p + q));
+    return electron_electron_value;
 }

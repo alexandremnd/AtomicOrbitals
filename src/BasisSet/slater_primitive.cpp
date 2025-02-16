@@ -71,8 +71,7 @@ double overlap_integral(const SlaterPrimitive &orbital1,
         return 0.;
     }
 
-    return orbital1.normalization() * orbital2.normalization() *
-           boost::math::tgamma(orbital1.n() + orbital2.n() + n_offset + 1) *
+    return boost::math::tgamma(orbital1.n() + orbital2.n() + n_offset + 1) *
            std::pow(orbital1.alpha() + orbital2.alpha(),
                     -orbital1.n() - orbital2.n() - n_offset - 1);
 }
@@ -129,7 +128,5 @@ double electron_electron_integral(const SlaterPrimitive &orbital1,
         matrix_element += value;
     }
 
-    return matrix_element * orbital1.normalization() *
-           orbital2.normalization() * orbital3.normalization() *
-           orbital4.normalization();
+    return matrix_element;
 }

@@ -1,6 +1,5 @@
 #include "BasisSet/gaussian_primitive.hpp"
 #include "./gaussian_tabulated_values.hpp"
-#include "BasisSet/slater_primitive.hpp"
 #include "Eigen/src/Core/Matrix.h"
 #include <gtest/gtest.h>
 
@@ -41,8 +40,7 @@ TEST(OverlapIntegral, GaussianPrimitive) {
         for (int j = 0; j < 10; j++) {
             double abs_err = std::max(
                 std::abs(m_exactOverlap(i, j) * relative_err), minimal_err);
-            EXPECT_NEAR(overlap_integral(cgp_1[i], cgp_1[j]) /
-                            cgp_1[i].normalization() / cgp_1[j].normalization(),
+            EXPECT_NEAR(overlap_integral(cgp_1[i], cgp_1[j]),
                         m_exactOverlap(i, j), abs_err);
         }
     }
@@ -79,9 +77,7 @@ TEST(LaplacianIntegral, GaussianPrimitive) {
         for (int j = 0; j < 10; j++) {
             double abs_err = std::max(
                 std::abs(m_exactKinetic(i, j) * relative_err), minimal_err);
-            std::cout << "i: " << i << " j: " << j << std::endl;
-            EXPECT_NEAR(-0.5 * laplacian_integral(cgp_1[i], cgp_1[j]) /
-                            cgp_1[i].normalization() / cgp_1[j].normalization(),
+            EXPECT_NEAR(-0.5 * laplacian_integral(cgp_1[i], cgp_1[j]),
                         m_exactKinetic(i, j), abs_err);
         }
     }
@@ -125,10 +121,154 @@ TEST(ElectronNucleus, GaussianPrimitive) {
 
             double abs_err = std::max(
                 std::abs(m_exactElecNuc(i, j) * relative_err), minimal_err);
-            EXPECT_NEAR(
-                electron_nucleus_integral(cgp_1[i], cgp_1[j], position) /
-                    cgp_1[i].normalization() / cgp_1[j].normalization(),
-                m_exactElecNuc(i, j), abs_err);
+            std::cout << "i: " << i << " j: " << j << " atom: " << atom
+                      << std::endl;
+            EXPECT_NEAR(electron_nucleus_integral(cgp_1[i], cgp_1[j], position),
+                        m_exactElecNuc(i, j), abs_err);
         }
+    }
+}
+
+TEST(ElectronElectron, GaussianPrimitive) {
+    auto m_elecElec = setupExactElectronElectronVector();
+
+    for (int testIndex = 1; testIndex < 10; testIndex++) {
+        double integral = 0;
+        double difference = 0;
+
+        Eigen::Vector3d posA;
+        Eigen::Vector3d posC;
+        Eigen::Vector3d posD;
+        Eigen::Vector3d posB;
+
+        GaussianPrimitive primitiveA;
+        GaussianPrimitive primitiveB;
+        GaussianPrimitive primitiveC;
+        GaussianPrimitive primitiveD;
+
+        switch (testIndex) {
+        case 1:
+            posA = {-0.5, 0, 0};
+            posB = {-0.5, 0, 0};
+            posC = {-0.5, 0, 0};
+            posD = {-0.5, 0, 0};
+
+            primitiveA = GaussianPrimitive(0, 0, 0, 13.0077, posA);
+            primitiveB = GaussianPrimitive(0, 0, 0, 13.0077, posB);
+            primitiveC = GaussianPrimitive(0, 0, 0, 13.0077, posC);
+            primitiveD = GaussianPrimitive(0, 0, 0, 13.0077, posD);
+            break;
+
+        case 2:
+            posA = {0.5, 0, 0};
+            posB = {-0.5, 0, 0};
+            posC = {-0.5, 0, 0};
+            posD = {0.5, 0, 0};
+
+            primitiveA = GaussianPrimitive(0, 0, 0, 13.0077, posA);
+            primitiveB = GaussianPrimitive(0, 0, 0, 0.121949, posB);
+            primitiveC = GaussianPrimitive(0, 0, 0, 0.444529, posC);
+            primitiveD = GaussianPrimitive(0, 0, 0, 13.0077, posD);
+            break;
+
+        case 3:
+            posA = {0.5, 0, 0};
+            posB = {-0.5, 0, 0};
+            posC = {-0.5, 0, 0};
+            posD = {0.5, 0, 0};
+
+            primitiveA = GaussianPrimitive(0, 0, 0, 13.0077, posA);
+            primitiveB = GaussianPrimitive(0, 1, 0, 0.121949, posB);
+            primitiveC = GaussianPrimitive(0, 1, 0, 0.444529, posC);
+            primitiveD = GaussianPrimitive(0, 0, 0, 13.0077, posD);
+            break;
+
+        case 4:
+            posA = {0.55, 1, 3};
+            posB = {-0.52, 5, 6};
+            posC = {-0.53, 1, 2};
+            posD = {0.45, 2, 4};
+
+            primitiveA = GaussianPrimitive(1, 0, 0, 13.0077, posA);
+            primitiveB = GaussianPrimitive(0, 1, 0, 0.121949, posB);
+            primitiveC = GaussianPrimitive(0, 1, 0, 0.444529, posC);
+            primitiveD = GaussianPrimitive(0, 1, 0, 10.0077, posD);
+            break;
+
+        case 5:
+            posA = {1.2, 2.3, 3.4};
+            posB = {-1.3, 1.4, -2.4};
+            posC = {2.3, 0.9, 3.2};
+            posD = {5.0, 1.9, 1.2};
+
+            primitiveA = GaussianPrimitive(0, 0, 0, 0.2, posA);
+            primitiveB = GaussianPrimitive(0, 0, 0, 0.3, posB);
+            primitiveC = GaussianPrimitive(0, 0, 0, 0.4, posC);
+            primitiveD = GaussianPrimitive(0, 0, 0, 0.1, posD);
+            break;
+
+        case 6:
+            posA = {1.2, 2.3, 3.4};
+            posB = {-1.3, 1.4, -2.4};
+            posC = {2.3, 0.9, 3.2};
+            posD = {5.0, 1.9, 1.2};
+
+            primitiveA = GaussianPrimitive(0, 0, 0, 0.2, posA);
+            primitiveB = GaussianPrimitive(1, 0, 0, 0.3, posB);
+            primitiveC = GaussianPrimitive(0, 0, 0, 0.4, posC);
+            primitiveD = GaussianPrimitive(0, 0, 1, 0.1, posD);
+            break;
+
+        case 7:
+            posA = {1.2, 2.3, 3.4};
+            posB = {-1.3, 1.4, -2.4};
+            posC = {2.3, 0.9, 3.2};
+            posD = {5.0, 1.9, 1.2};
+
+            primitiveA = GaussianPrimitive(0, 0, 0, 0.2, posA);
+            primitiveB = GaussianPrimitive(1, 0, 0, 0.3, posB);
+            primitiveC = GaussianPrimitive(0, 2, 0, 0.4, posC);
+            primitiveD = GaussianPrimitive(0, 0, 1, 0.1, posD);
+            break;
+
+        case 8:
+            posA = {1.2, 2.3, 3.4};
+            posB = {-1.3, 1.4, -2.4};
+            posC = {2.3, 0.9, 3.2};
+            posD = {5.0, 1.9, 1.2};
+
+            primitiveA = GaussianPrimitive(1, 1, 0, 0.2, posA);
+            primitiveB = GaussianPrimitive(2, 0, 0, 0.3, posB);
+            primitiveC = GaussianPrimitive(2, 0, 0, 0.4, posC);
+            primitiveD = GaussianPrimitive(2, 0, 0, 0.1, posD);
+            break;
+
+        case 9:
+            posA = {1.2, 2.3, 3.4};
+            posB = {-1.3, 1.4, -2.4};
+            posC = {2.3, 0.9, 3.2};
+            posD = {5.0, 1.9, 1.2};
+
+            primitiveA = GaussianPrimitive(1, 1, 0, 0.2, posA);
+            primitiveB = GaussianPrimitive(0, 2, 0, 0.3, posB);
+            primitiveC = GaussianPrimitive(0, 2, 0, 0.4, posC);
+            primitiveD = GaussianPrimitive(2, 0, 0, 0.1, posD);
+            break;
+
+        default:
+            break;
+        }
+
+        double abs_err =
+            std::max(std::abs(std::abs(
+                         electron_electron_integral(primitiveA, primitiveB,
+                                                    primitiveC, primitiveD) *
+                         relative_err)),
+                     minimal_err);
+
+        std::cout << "Test index: " << testIndex << std::endl;
+        EXPECT_NEAR(electron_electron_integral(primitiveA, primitiveB,
+                                               primitiveC, primitiveD),
+                    m_elecElec(testIndex), minimal_err);
     }
 }

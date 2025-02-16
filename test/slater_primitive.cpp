@@ -74,15 +74,11 @@ TEST(OverlapIntegralTest, SlaterPrimitiveValue) {
     SlaterPrimitive orbital1(1, 0, 0, 0.5);
     SlaterPrimitive orbital2(5, 0, 0, 1.3);
 
-    EXPECT_NEAR(overlap_integral(orbital1, orbital2) /
-                    orbital1.normalization() / orbital2.normalization(),
-                11.76047764474325, 1e-5);
+    EXPECT_NEAR(overlap_integral(orbital1, orbital2), 11.76047764474325, 1e-5);
 
     orbital1.set_n(3);
     orbital2.set_n(8);
-    EXPECT_NEAR(overlap_integral(orbital1, orbital2) /
-                    orbital1.normalization() / orbital2.normalization(),
-                34505.28801422153, 1e-3);
+    EXPECT_NEAR(overlap_integral(orbital1, orbital2), 34505.28801422153, 1e-3);
 }
 
 TEST(OverlapIntegralTest, SlaterPrimitiveOffsetThrow) {
@@ -150,9 +146,7 @@ TEST(LaplacianIntegral, SlaterPrimitiveZero) {
     SlaterPrimitive orbital1(2, 0, 0, 0.5);
     SlaterPrimitive orbital2(2, 1, 0, 0.5);
 
-    EXPECT_NEAR(laplacian_integral(orbital1, orbital2) /
-                    orbital1.normalization() / orbital2.normalization(),
-                0., 1e-6);
+    EXPECT_NEAR(laplacian_integral(orbital1, orbital2), 0., 1e-6);
 
     orbital1.set_l(1);
     orbital1.set_m(1);
@@ -163,29 +157,21 @@ TEST(LaplacianIntegral, SlaterPrimitiveValue) {
     SlaterPrimitive orbital1(1, 0, 0, 0.5);
     SlaterPrimitive orbital2(5, 0, 0, 1.3);
 
-    EXPECT_NEAR(laplacian_integral(orbital1, orbital2) /
-                    orbital1.normalization() / orbital2.normalization(),
-                -0.588023882237, 1e-6);
+    EXPECT_NEAR(laplacian_integral(orbital1, orbital2), -0.588023882237, 1e-6);
 
     orbital1.set_n(5);
     orbital2.set_n(3);
     orbital1.set_l(1);
     orbital2.set_l(1);
-    EXPECT_NEAR(laplacian_integral(orbital1, orbital2) /
-                    orbital1.normalization() / orbital2.normalization(),
-                33.8295221138913, 1e-6);
+    EXPECT_NEAR(laplacian_integral(orbital1, orbital2), 33.8295221138913, 1e-6);
 
     orbital1.set_m(1);
     orbital2.set_m(1);
-    EXPECT_NEAR(laplacian_integral(orbital1, orbital2) /
-                    orbital1.normalization() / orbital2.normalization(),
-                33.8295221138913, 1e-6);
+    EXPECT_NEAR(laplacian_integral(orbital1, orbital2), 33.8295221138913, 1e-6);
 
     orbital1.set_l(2);
     orbital2.set_l(2);
-    EXPECT_NEAR(laplacian_integral(orbital1, orbital2) /
-                    orbital1.normalization() / orbital2.normalization(),
-                -13.212388465, 1e-6);
+    EXPECT_NEAR(laplacian_integral(orbital1, orbital2), -13.212388465, 1e-6);
 }
 
 TEST(ElectronElectronIntegralTest, SlaterPrimitive) {
@@ -193,12 +179,9 @@ TEST(ElectronElectronIntegralTest, SlaterPrimitive) {
     SlaterPrimitive orbital2(3, 2, 0, 1);
     SlaterPrimitive orbital3(3, 2, 0, 0.3);
     SlaterPrimitive orbital4(3, 2, 0, 1);
-
-    double normalization = orbital1.normalization() * orbital2.normalization() *
-                           orbital3.normalization() * orbital4.normalization();
     double result =
         electron_electron_integral(orbital1, orbital2, orbital3, orbital4);
-    EXPECT_NEAR(result / normalization, 17.2833787319263, 1e-5);
+    EXPECT_NEAR(result, 17.2833787319263, 1e-5);
 
     orbital1 = SlaterPrimitive(2, 1, 0, 2);
     orbital2 = SlaterPrimitive(2, 1, 0, 2);
@@ -211,18 +194,17 @@ TEST(ElectronElectronIntegralTest, SlaterPrimitive) {
     orbital2 = SlaterPrimitive(2, 1, 0, 2);
     orbital3 = SlaterPrimitive(2, 1, 0, 2);
     orbital4 = SlaterPrimitive(2, 1, 0, 2);
-    normalization = orbital1.normalization() * orbital2.normalization() *
-                    orbital3.normalization() * orbital4.normalization();
     result = electron_electron_integral(orbital1, orbital2, orbital3, orbital4);
-    EXPECT_NEAR(result / normalization, 0.00043001174698042, 1e-7);
+    EXPECT_NEAR(result, 0.00043001174698042, 1e-7);
 
     orbital1 = SlaterPrimitive(1, 0, 0, 2);
     orbital2 = SlaterPrimitive(1, 0, 0, 2);
     orbital3 = SlaterPrimitive(1, 0, 0, 2);
     orbital4 = SlaterPrimitive(1, 0, 0, 2);
     result = electron_electron_integral(orbital1, orbital2, orbital3, orbital4);
-    EXPECT_NEAR(result, 1.25, 1e-6); // The reference value already account for
-                                     // normalization !! Do not change
+    double normalization = orbital1.normalization() * orbital2.normalization() *
+                           orbital3.normalization() * orbital4.normalization();
+    EXPECT_NEAR(result, 1.25 / normalization, 1e-6);
 
     orbital1 = SlaterPrimitive(2, 1, 0, 2);
     orbital2 = SlaterPrimitive(3, 2, 0, 2);
