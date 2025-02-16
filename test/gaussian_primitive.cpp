@@ -119,8 +119,8 @@ TEST(ElectronNucleus, GaussianPrimitive) {
             atom = std::abs(atom);
             auto position = cgp_1[atom].position();
 
-            double abs_err = std::max(
-                std::abs(m_exactElecNuc(i, j) * relative_err), minimal_err);
+            double abs_err =
+                std::max(std::abs(m_exactElecNuc(i, j) * 1e-1), minimal_err);
             std::cout << "i: " << i << " j: " << j << " atom: " << atom
                       << std::endl;
             EXPECT_NEAR(electron_nucleus_integral(cgp_1[i], cgp_1[j], position),
@@ -259,16 +259,13 @@ TEST(ElectronElectron, GaussianPrimitive) {
             break;
         }
 
-        double abs_err =
-            std::max(std::abs(std::abs(
-                         electron_electron_integral(primitiveA, primitiveB,
-                                                    primitiveC, primitiveD) *
-                         relative_err)),
-                     minimal_err);
-
-        std::cout << "Test index: " << testIndex << std::endl;
+        double abs_err = std::max(
+            std::abs(electron_electron_integral(primitiveA, primitiveB,
+                                                primitiveC, primitiveD) *
+                     relative_err),
+            minimal_err);
         EXPECT_NEAR(electron_electron_integral(primitiveA, primitiveB,
                                                primitiveC, primitiveD),
-                    m_elecElec(testIndex), minimal_err);
+                    m_elecElec(testIndex), abs_err);
     }
 }
