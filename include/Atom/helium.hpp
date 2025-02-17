@@ -2,6 +2,16 @@
 
 #include "Atom/atom.hpp"
 #include "BasisSet/contracted_orbital.hpp"
+#include "BasisSet/slater_primitive.hpp"
+
+class Helium_STO : public Atom<SlaterPrimitive> {
+  public:
+    Helium_STO() : Atom<SlaterPrimitive>(2, Eigen::Vector3d(0, 0, 0)) {
+        add_slater_orbital(1, 0, 0, 2);
+        add_slater_orbital(1, 0, 0, 1.6);
+        add_slater_orbital(1, 0, 0, 0.3);
+    }
+};
 
 class Helium_321G : public Atom<ContractedGaussian> {
   public:
