@@ -3,7 +3,7 @@
 #include <string>
 #include <unordered_map>
 
-enum class Element : int {
+enum Element : int {
     H = 1,
     He,
     Li,
