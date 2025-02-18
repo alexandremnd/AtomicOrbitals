@@ -27,7 +27,6 @@ def parse_atom(atom_lines: list[str]) -> dict:
 
     for line_no in range(1, len(atom_lines)):
         splitted = atom_lines[line_no].split()
-        print(atom_lines[line_no])
 
         if len(splitted) == 0:
             continue
@@ -59,10 +58,12 @@ def parse_atom(atom_lines: list[str]) -> dict:
         atom['basis'].append(("S", current_orbital_coefficients, current_orbital_exponents))
         atom['basis'].append(("P", current_orbital_coefficients_bis, current_orbital_exponents))
 
+    print(atom)
     return atom
 
 
 def parse_file(file_path):
+    # WARNING: This function is expecting Gaussian file type.
     file_content: list[str] = get_file_content(file_path)
     first_line = get_beginning(file_content)
     file_str: str = ''.join(file_content[first_line:-1])
@@ -77,36 +78,22 @@ def parse_file(file_path):
 
     return atoms
 
-def generate_cpp_class(atom: dict, basis_name: str) -> str:
-    class_name = f"{atom['name']}_{basis_name}"
-    basis_str = ""
-    for basis in atom['basis']:
-        basis_str += f"add_gaussian_orbital_{basis[0].lower()}type({basis[2]}, {basis[1]});\n\t"
+def write_basis_file(atom: dict, basis_name: str) -> str:
+    basis_file_name = f"{atom['name'].lower()}.basis"
+    basis_file = ""
 
-    cpp_class = f"""class {class_name} : public Atom<ContractedGaussian> {{
-public:
-    {class_name}() : Atom<ContractedGaussian>({atom['charge']}, Eigen::Vector3d(0, 0, 0)) {{
-        {basis_str}
-    }}
-}};
-"""
-    return cpp_class.replace("[", "{").replace("]", "}")
+    for orbital in atom['basis']:
+        basis_file += f"{orbital[0]} {len(orbital[1])} {orbital[1]} {orbital[2]} \n".replace("[", "").replace("]", "").replace(",", "")
 
-cpp_template = """#pragma once
+    if not os.path.exists(f"./../data/basis_set/{basis_name}"):
+        os.makedirs(f"./../data/basis_set/{basis_name}")
 
-#include "Atom/atom.hpp"
-#include "BasisSet/contracted_orbital.hpp"
-"""
+    with open(f"./../data/basis_set/{basis_name}/{basis_file_name}", "w+") as file:
+        file.write(basis_file)
 
-atoms = parse_file('./ugbs.txt')
+
+basis_name = "sto6g"
+atoms = parse_file(f"./{basis_name}.txt")
 
 for atom in atoms:
-    cpp_class = generate_cpp_class(atom, "631G")
-    cpp_file_path = f"./../include/Atom/{atom['name'].lower()}.hpp"
-
-    file_existed = os.path.exists(cpp_file_path)
-
-    with open(cpp_file_path, "a") as file:
-        if not file_existed:
-            file.write(cpp_template)
-        file.write(cpp_class)
+    write_basis_file(atom, basis_name)
