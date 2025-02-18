@@ -13,8 +13,9 @@ void HartreeFock::diagonalize_overlap_matrix() {
         solver.eigenvectors().transpose();
 }
 
-void HartreeFock::set_system(const System &system) {
+void HartreeFock::set_system(const System &system, uint no_electrons) {
     m_H = Hamiltonian(system);
+    m_no_electrons = no_electrons;
     diagonalize_overlap_matrix();
 }
 
@@ -25,8 +26,8 @@ void HartreeFock::set_smoothing_factor(double smoothing_factor) {
     m_smoothing_factor = smoothing_factor;
 }
 
-void HartreeFock::run(double convergence_threshold, uint max_iterations, uint converged_iteration,
-                      bool silent) {
+void HartreeFock::run(double convergence_threshold, uint max_iterations,
+                      uint converged_iteration, bool silent) {
     size_t n = 0;
     std::vector<double> old_energy(converged_iteration);
     double mean_old_energy = 0;
@@ -40,7 +41,7 @@ void HartreeFock::run(double convergence_threshold, uint max_iterations, uint co
         n++;
 
         mean_old_energy = 0;
-        for(auto E : old_energy) {
+        for (auto E : old_energy) {
             mean_old_energy += E;
         }
         mean_old_energy /= converged_iteration;
