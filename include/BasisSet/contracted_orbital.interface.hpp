@@ -84,6 +84,9 @@ extern template class ContractedOrbital<SlaterPrimitive>;
 typedef ContractedOrbital<GaussianPrimitive> ContractedGaussian;
 typedef ContractedOrbital<SlaterPrimitive> ContractedSlater;
 
+typedef ContractedOrbital<GaussianPrimitive> CGTO;
+typedef ContractedOrbital<SlaterPrimitive> CSTO;
+
 template <DerivedFromOrbital PrimitiveType>
 double overlap_integral(const ContractedOrbital<PrimitiveType> &,
                         const ContractedOrbital<PrimitiveType> &);

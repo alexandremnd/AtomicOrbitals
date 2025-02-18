@@ -84,6 +84,8 @@ class SlaterPrimitive final : public Orbital {
     double m_alpha;
 };
 
+typedef SlaterPrimitive STO;
+
 double overlap_integral(const SlaterPrimitive &, const SlaterPrimitive &,
                         const int n_offset = 0);
 double laplacian_integral(const SlaterPrimitive &, const SlaterPrimitive &);

@@ -113,6 +113,8 @@ class GaussianPrimitive : public Orbital {
     double m_alpha;
 };
 
+typedef GaussianPrimitive GTO;
+
 double overlap_integral(const GaussianPrimitive &, const GaussianPrimitive &);
 double laplacian_integral(const GaussianPrimitive &, const GaussianPrimitive &);
 double electron_nucleus_integral(const GaussianPrimitive &,
