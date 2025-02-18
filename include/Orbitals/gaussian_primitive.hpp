@@ -3,7 +3,7 @@
 #include <boost/math/special_functions/gamma.hpp>
 #include <cmath>
 
-#include "BasisSet/orbital.hpp"
+#include "Orbitals/orbital.hpp"
 #include "Eigen/Dense"
 
 class GaussianPrimitive : public Orbital {

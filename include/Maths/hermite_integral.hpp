@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasisSet/gaussian_primitive.hpp"
+#include "Orbitals/gaussian_primitive.hpp"
 #include "Eigen/src/Core/Matrix.h"
 #include "Maths/tensor4D.hpp"
 

@@ -4,7 +4,7 @@
 #include <cassert>
 #include <cmath>
 
-#include "BasisSet/slater_primitive.hpp"
+#include "Orbitals/slater_primitive.hpp"
 #include "Maths/wigner_3j.hpp"
 
 /**

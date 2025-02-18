@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasisSet/orbital.hpp"
+#include "Orbitals/orbital.hpp"
 #include <concepts>
 
 // Declare the template class for all orbital type

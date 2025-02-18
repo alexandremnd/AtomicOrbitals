@@ -5,9 +5,9 @@
 #include <vector>
 
 #include "Atom/system.hpp"
-#include "BasisSet/contracted_orbital.hpp"
-#include "BasisSet/orbital.hpp"
-#include "BasisSet/slater_primitive.hpp"
+#include "Orbitals/contracted_orbital.hpp"
+#include "Orbitals/orbital.hpp"
+#include "Orbitals/slater_primitive.hpp"
 
 #include "Eigen/Dense"
 #include "concepts.hpp"
@@ -41,7 +41,7 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
      * @param Z Number of protons in the nucleus.
      * @throw std::invalid_argument if Z < 1.
      */
-    Atom(int Z) : Atom(Z, Eigen::Vector3d{0., 0., 0.}) {};
+    Atom(int Z) : Atom(Z, Eigen::Vector3d{0., 0., 0.}){};
 
     /**
      * @brief Builds an atom at the given position.
@@ -52,14 +52,14 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
      * @throw std::invalid_argument if Z < 1.
      */
     Atom(int Z, float x, float y, float z)
-        : Atom(Z, Eigen::Vector3d{x, y, z}) {};
+        : Atom(Z, Eigen::Vector3d{x, y, z}){};
 
     Atom(Atom &atom)
         : m_Z(atom.Z()), m_position(atom.m_position),
-          m_orbitals(atom.m_orbitals) {};
+          m_orbitals(atom.m_orbitals){};
     Atom(Atom &&atom)
         : m_Z(atom.Z()), m_position(atom.m_position),
-          m_orbitals(std::move(atom.m_orbitals)) {};
+          m_orbitals(std::move(atom.m_orbitals)){};
 
     void print_info() const;
 

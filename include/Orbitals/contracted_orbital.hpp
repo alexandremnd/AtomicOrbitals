@@ -2,9 +2,9 @@
 
 #include <vector>
 
-#include "BasisSet/contracted_orbital.interface.hpp" // IWYU pragma: export
-#include "BasisSet/gaussian_primitive.hpp"
-#include "BasisSet/slater_primitive.hpp"
+#include "Orbitals/contracted_orbital.interface.hpp" // IWYU pragma: export
+#include "Orbitals/gaussian_primitive.hpp"
+#include "Orbitals/slater_primitive.hpp"
 #include "concepts.hpp"
 
 template <DerivedFromOrbital PrimitiveType>

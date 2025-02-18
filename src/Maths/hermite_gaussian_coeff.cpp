@@ -1,5 +1,5 @@
 #include "Maths/hermite_gaussian_coeff.hpp"
-#include "BasisSet/gaussian_primitive.hpp"
+#include "Orbitals/gaussian_primitive.hpp"
 #include "Eigen/Dense"
 
 #include <cmath>

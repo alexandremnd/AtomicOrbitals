@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "BasisSet/gaussian_primitive.hpp"
-#include "BasisSet/slater_primitive.hpp"
+#include "Orbitals/gaussian_primitive.hpp"
+#include "Orbitals/slater_primitive.hpp"
 #include "concepts.hpp"
 
 /**

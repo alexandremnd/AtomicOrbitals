@@ -1,4 +1,4 @@
-#include "BasisSet/gaussian_primitive.hpp"
+#include "Orbitals/gaussian_primitive.hpp"
 #include "./gaussian_tabulated_values.hpp"
 #include "Eigen/src/Core/Matrix.h"
 #include <gtest/gtest.h>

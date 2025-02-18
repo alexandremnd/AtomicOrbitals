@@ -1,5 +1,5 @@
-#include "BasisSet/contracted_orbital.hpp"
-#include "BasisSet/contracted_orbital.interface.hpp"
+#include "Orbitals/contracted_orbital.hpp"
+#include "Orbitals/contracted_orbital.interface.hpp"
 #include <gtest/gtest.h>
 
 TEST(ContractedSlater, Overlap) {}

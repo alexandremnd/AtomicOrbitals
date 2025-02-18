@@ -1,4 +1,4 @@
-#include <BasisSet/slater_primitive.hpp>
+#include <Orbitals/slater_primitive.hpp>
 #include <gtest/gtest.h>
 #include <stdexcept>
 

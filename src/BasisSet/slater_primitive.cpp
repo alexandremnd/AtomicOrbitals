@@ -1,7 +1,7 @@
 #include <boost/math/special_functions/gamma.hpp>
 #include <stdexcept>
 
-#include "BasisSet/slater_primitive.hpp"
+#include "Orbitals/slater_primitive.hpp"
 #include "Integrators/slater_braket.hpp"
 
 SlaterPrimitive::SlaterPrimitive(int n, int l, int m, double alpha)

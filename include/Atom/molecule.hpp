@@ -7,9 +7,9 @@
 
 #include "Atom/atom.hpp"
 #include "Atom/system.hpp"
-#include "BasisSet/contracted_orbital.hpp"
-#include "BasisSet/gaussian_primitive.hpp"
-#include "BasisSet/slater_primitive.hpp"
+#include "Orbitals/contracted_orbital.hpp"
+#include "Orbitals/gaussian_primitive.hpp"
+#include "Orbitals/slater_primitive.hpp"
 #include "concepts.hpp"
 
 /**
@@ -23,7 +23,7 @@
 template <DerivedFromOrbital OrbitalType> class Molecule : public System {
   public:
     Molecule() = default;
-    Molecule(const Molecule &molecule) : m_atoms(molecule.m_atoms) {};
+    Molecule(const Molecule &molecule) : m_atoms(molecule.m_atoms){};
     Molecule(Molecule &&molecule) : m_atoms(std::move(molecule.m_atoms)) {}
 
     void add_atom(std::shared_ptr<Atom<OrbitalType>> atom) {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasisSet/orbital.hpp"
+#include "Orbitals/orbital.hpp"
 
 /**
  * @brief Slater type orbital (STO) representation

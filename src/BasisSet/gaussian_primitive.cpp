@@ -1,4 +1,4 @@
-#include "BasisSet/gaussian_primitive.hpp"
+#include "Orbitals/gaussian_primitive.hpp"
 #include "Maths/hermite_gaussian_coeff.hpp"
 #include "Maths/hermite_integral.hpp"
 #include "Maths/tensor3D.hpp"

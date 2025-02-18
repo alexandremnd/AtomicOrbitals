@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasisSet/gaussian_primitive.hpp"
+#include "Orbitals/gaussian_primitive.hpp"
 #include "Maths/tensor3D.hpp"
 
 #include <cmath>
