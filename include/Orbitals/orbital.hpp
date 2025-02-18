@@ -11,7 +11,7 @@ class Orbital {
   public:
     ~Orbital() = default;
 
-    double normalization() const { return m_normalization_constant; };
+    double constant() const { return m_constant; };
 
     Eigen::Vector3d position() const { return m_position; };
 
@@ -26,6 +26,6 @@ class Orbital {
     };
 
   protected:
-    double m_normalization_constant = 0;
+    double m_constant = 1;
     Eigen::Vector3d m_position = Eigen::Vector3d{0, 0, 0};
 };

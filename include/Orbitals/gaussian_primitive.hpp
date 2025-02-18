@@ -24,7 +24,6 @@ class GaussianPrimitive : public Orbital {
         : m_x_exponent(x_exponent), m_y_exponent(y_exponent),
           m_z_exponent(z_exponent), m_alpha(alpha) {
         m_position = position;
-        update_normalisation();
     }
 
     GaussianPrimitive(int x_exponent, int y_exponent, int z_exponent,
@@ -36,14 +35,14 @@ class GaussianPrimitive : public Orbital {
         : m_x_exponent(other.m_x_exponent), m_y_exponent(other.m_y_exponent),
           m_z_exponent(other.m_z_exponent), m_alpha(other.m_alpha) {
         m_position = other.m_position;
-        m_normalization_constant = other.m_normalization_constant;
+        m_constant = other.m_constant;
     }
 
     GaussianPrimitive(GaussianPrimitive &&other)
         : m_x_exponent(other.m_x_exponent), m_y_exponent(other.m_y_exponent),
           m_z_exponent(other.m_z_exponent), m_alpha(other.m_alpha) {
         m_position = other.m_position;
-        m_normalization_constant = other.m_normalization_constant;
+        m_constant = other.m_constant;
     }
 
     /**

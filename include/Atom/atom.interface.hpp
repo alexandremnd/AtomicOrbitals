@@ -189,7 +189,9 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
     inline std::vector<OrbitalType> &get_orbitals() { return m_orbitals; }
     inline OrbitalType &get_orbital(size_t i) { return m_orbitals[i]; }
 
+    // ===============================
     // System interface implementation
+    // ===============================
     size_t size() const override { return m_orbitals.size(); }
     double overlap(size_t i, size_t j) const override {
         return overlap_integral(m_orbitals[i], m_orbitals[j]);

@@ -23,7 +23,7 @@ template <DerivedFromOrbital PrimitiveType>
 ContractedOrbital<PrimitiveType>::ContractedOrbital(
     const ContractedOrbital<PrimitiveType> &other)
     : m_coefficients(other.m_coefficients), m_primitives(other.m_primitives) {
-    m_normalization_constant = other.m_normalization_constant;
+    m_constant = other.m_constant;
 }
 
 template <DerivedFromOrbital PrimitiveType>
@@ -31,7 +31,7 @@ ContractedOrbital<PrimitiveType>::ContractedOrbital(
     const ContractedOrbital<PrimitiveType> &&other)
     : m_coefficients(std::move(other.m_coefficients)),
       m_primitives(std::move(other.m_primitives)) {
-    m_normalization_constant = other.m_normalization_constant;
+    m_constant = other.m_constant;
 }
 
 template <DerivedFromOrbital PrimitiveType>
@@ -57,24 +57,23 @@ void ContractedOrbital<PrimitiveType>::add_primitive(double coefficient,
 
 template <DerivedFromOrbital PrimitiveType>
 void ContractedOrbital<PrimitiveType>::update_normalization() {
-    m_normalization_constant = 0.0;
+    m_constant = 0.0;
 
     for (size_t i = 0; i < m_primitives.size(); i++) {
         for (size_t j = i; j < m_primitives.size(); j++) {
             if (i == j) {
-                m_normalization_constant +=
+                m_constant +=
                     m_coefficients[i] * m_coefficients[j] *
                     overlap_integral(m_primitives[i], m_primitives[j]);
                 continue;
             }
 
-            m_normalization_constant +=
-                2 * m_coefficients[i] * m_coefficients[j] *
-                overlap_integral(m_primitives[i], m_primitives[j]);
+            m_constant += 2 * m_coefficients[i] * m_coefficients[j] *
+                          overlap_integral(m_primitives[i], m_primitives[j]);
         }
     }
 
-    m_normalization_constant = 1.0 / std::sqrt(m_normalization_constant);
+    m_constant = 1.0 / std::sqrt(m_constant);
 }
 
 template <DerivedFromOrbital PrimitiveType>
@@ -104,8 +103,11 @@ double overlap_integral(const ContractedOrbital<PrimitiveType> &orbital1,
 
     for (size_t i = 0; i < orbital1.size(); i++) {
         for (size_t j = 0; j < orbital2.size(); j++) {
+            double prefactor = orbital1.get_primitive(i).constant() *
+                               orbital2.get_primitive(j).constant();
+
             integral += orbital1.get_coefficient(i) *
-                        orbital2.get_coefficient(j) *
+                        orbital2.get_coefficient(j) * prefactor *
                         overlap_integral(orbital1.get_primitive(i),
                                          orbital2.get_primitive(j));
         }
@@ -121,8 +123,11 @@ double laplacian_integral(const ContractedOrbital<PrimitiveType> &orbital1,
 
     for (size_t i = 0; i < orbital1.size(); i++) {
         for (size_t j = 0; j < orbital2.size(); j++) {
+            double prefactor = orbital1.get_primitive(i).constant() *
+                               orbital2.get_primitive(j).constant();
+
             integral += orbital1.get_coefficient(i) *
-                        orbital2.get_coefficient(j) *
+                        orbital2.get_coefficient(j) * prefactor *
                         laplacian_integral(orbital1.get_primitive(i),
                                            orbital2.get_primitive(j));
         }
@@ -139,8 +144,11 @@ electron_nucleus_integral(const ContractedOrbital<PrimitiveType> &orbital1,
     double integral = 0.0;
     for (size_t i = 0; i < orbital1.size(); i++) {
         for (size_t j = 0; j < orbital2.size(); j++) {
+            double prefactor = orbital1.get_primitive(i).constant() *
+                               orbital2.get_primitive(j).constant();
+
             integral += orbital1.get_coefficient(i) *
-                        orbital2.get_coefficient(j) *
+                        orbital2.get_coefficient(j) * prefactor *
                         electron_nucleus_integral(orbital1.get_primitive(i),
                                                   orbital2.get_primitive(j),
                                                   nucleus_position);
@@ -162,11 +170,16 @@ electron_electron_integral(const ContractedOrbital<PrimitiveType> &orbital1,
         for (size_t j = 0; j < orbital2.size(); j++) {
             for (size_t k = 0; k < orbital3.size(); k++) {
                 for (size_t l = 0; l < orbital4.size(); l++) {
+                    double prefactor = orbital1.get_primitive(i).constant() *
+                                       orbital2.get_primitive(j).constant() *
+                                       orbital3.get_primitive(k).constant() *
+                                       orbital4.get_primitive(l).constant();
+
                     integral +=
                         orbital1.get_coefficient(i) *
                         orbital2.get_coefficient(j) *
                         orbital3.get_coefficient(k) *
-                        orbital4.get_coefficient(l) *
+                        orbital4.get_coefficient(l) * prefactor *
                         electron_electron_integral(orbital1.get_primitive(i),
                                                    orbital2.get_primitive(j),
                                                    orbital3.get_primitive(k),

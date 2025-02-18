@@ -78,7 +78,7 @@ class SlaterPrimitive final : public Orbital {
   private:
     void check_parameters(const int n, const int l, const int m,
                           const double alpha);
-    void update_normalization_constant();
+    void update_constant();
 
     int m_n, m_l, m_m;
     double m_alpha;

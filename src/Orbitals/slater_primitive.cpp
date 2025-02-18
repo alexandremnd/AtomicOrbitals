@@ -7,21 +7,21 @@
 SlaterPrimitive::SlaterPrimitive(int n, int l, int m, double alpha)
     : m_n(n), m_l(l), m_m(m), m_alpha(alpha) {
     check_parameters(n, l, m, alpha);
-    update_normalization_constant();
+    update_constant();
 }
 
 void SlaterPrimitive::set_alpha(double alpha) {
     check_parameters(m_n, m_l, m_m, alpha);
 
     m_alpha = alpha;
-    update_normalization_constant();
+    update_constant();
 }
 
 void SlaterPrimitive::set_n(int n) {
     check_parameters(n, m_l, m_m, m_alpha);
 
     m_n = n;
-    update_normalization_constant();
+    update_constant();
 }
 
 void SlaterPrimitive::set_l(int l) {
@@ -53,9 +53,9 @@ void SlaterPrimitive::check_parameters(int n, int l, int m, double alpha) {
     }
 }
 
-void SlaterPrimitive::update_normalization_constant() {
-    m_normalization_constant = std::pow(2 * m_alpha, m_n + 0.5) /
-                               std::sqrt(boost::math::tgamma(2 * m_n + 1));
+void SlaterPrimitive::update_constant() {
+    m_constant = std::pow(2 * m_alpha, m_n + 0.5) /
+                 std::sqrt(boost::math::tgamma(2 * m_n + 1));
 }
 
 // ===============================================================================================

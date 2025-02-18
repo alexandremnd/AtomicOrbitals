@@ -1,6 +1,7 @@
 #include <boost/math/special_functions/gamma.hpp>
 #include <cmath>
 
+#include "Eigen/Dense"
 #include "Orbitals/gaussian_primitive.hpp"
 #include "Maths/hermite_gaussian_coeff.hpp"
 #include "Maths/hermite_integral.hpp"
@@ -34,7 +35,7 @@ void GaussianPrimitive::update_normalisation() {
         fact_z_exponent = boost::math::tgamma(m_z_exponent + 1);
         fact_2z_exponent = boost::math::tgamma(2 * m_z_exponent + 1);
     }
-    m_normalization_constant =
+    m_constant =
         std::pow(2 * m_alpha / M_PI, 3. / 4) *
         std::sqrt(
             std::pow(8 * m_alpha, m_x_exponent + m_y_exponent + m_z_exponent) *
@@ -91,7 +92,7 @@ GaussianPrimitive operator*(
                                          // primitives with the same position
     // Initialize variables with orbitals parameters
     double alpha = orbital1.alpha(), beta = orbital2.alpha();
-    double norm1 = orbital1.normalization(), norm2 = orbital2.normalization();
+    double norm1 = orbital1.constant(), norm2 = orbital2.constant();
 
     Eigen::Vector3d A_position = orbital1.position(),
                     B_position = orbital2.position(),
@@ -107,10 +108,9 @@ GaussianPrimitive operator*(
     GaussianPrimitive orbital3 =
         GaussianPrimitive(i + l, j + m, k + n, alpha + beta, new_position);
 
-    orbital3.m_normalization_constant =
-        norm1 * norm2 *
-        std::exp(-((alpha * beta) / (alpha + beta)) * AB_position.norm() *
-                 AB_position.norm());
+    orbital3.m_constant = norm1 * norm2 *
+                          std::exp(-((alpha * beta) / (alpha + beta)) *
+                                   AB_position.norm() * AB_position.norm());
 
     return orbital3;
 }
@@ -125,7 +125,7 @@ GaussianPrimitive &GaussianPrimitive::operator=(const GaussianPrimitive &rhs) {
     m_z_exponent = rhs.m_z_exponent;
     m_alpha = rhs.m_alpha;
     m_position = rhs.m_position;
-    m_normalization_constant = rhs.m_normalization_constant;
+    m_constant = rhs.m_constant;
 
     return *this;
 }
