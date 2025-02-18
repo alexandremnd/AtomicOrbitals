@@ -124,6 +124,12 @@ enum Element : int {
     Og
 };
 
+/**
+ * @brief Get the element name object
+ *
+ * @param element
+ * @return std::string Full name of the element
+ */
 inline std::string get_element_name(Element element) {
     static const std::unordered_map<Element, std::string> element_names = {
         {Element::H, "Hydrogen"},      {Element::He, "Helium"},
