@@ -79,5 +79,9 @@ To generate test cases, [GoogleTest](https://github.com/google/googletest) is re
 # Contributing
 Feel free to contribute for this project. Currently, we are still working on laying solid foundations for this project, so many design choice may change rapidly.
 
+# References
+- [Binding energies](data/experimental_binding_energies.csv) from the [NIST](https://physics.nist.gov/PhysRefData/ASD/ionEnergy.html).
+- Gaussian basis set from the [Basis Set Exchange](https://www.basissetexchange.org/) website.
+
 # License
 This project is licensed under the GNU GPLv3 - see [LICENCE](LICENSE) file for details
