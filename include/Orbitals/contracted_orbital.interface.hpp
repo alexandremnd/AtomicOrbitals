@@ -50,14 +50,23 @@ class ContractedOrbital final : public Orbital {
      */
     void reserve(std::size_t size);
 
+    /**
+     * @brief Add a primitive to the linear combination.
+     *
+     * @param coefficient Weight of the primitive in the linear combination.
+     * @param primitive Primitive to add.
+     */
     void add_primitive(double coefficient, const PrimitiveType &primitive);
 
+    /**
+     * @brief Add a primitive to the linear combination.
+     *
+     * @tparam Args
+     * @param coefficient Weight of the primitive in the linear combination.
+     * @param args Arguments to pass to the PrimitiveType constructor.
+     */
     template <typename... Args>
-    void add_primitive(double coefficient, Args &&...args) {
-        m_coefficients.push_back(coefficient);
-        m_primitives.emplace_back(std::forward<Args>(args)...);
-        update_normalization();
-    }
+    void add_primitive(double coefficient, Args &&...args);
 
     void update_normalization();
 

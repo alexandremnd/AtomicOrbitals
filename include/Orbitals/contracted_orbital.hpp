@@ -45,7 +45,14 @@ void ContractedOrbital<PrimitiveType>::add_primitive(
     double coefficient, const PrimitiveType &primitive) {
     m_coefficients.push_back(coefficient);
     m_primitives.push_back(primitive);
-    update_normalization();
+}
+
+template <DerivedFromOrbital PrimitiveType>
+template <typename... Args>
+void ContractedOrbital<PrimitiveType>::add_primitive(double coefficient,
+                                                     Args &&...args) {
+    m_coefficients.push_back(coefficient);
+    m_primitives.emplace_back(std::forward<Args>(args)...);
 }
 
 template <DerivedFromOrbital PrimitiveType>
@@ -104,7 +111,7 @@ double overlap_integral(const ContractedOrbital<PrimitiveType> &orbital1,
         }
     }
 
-    return integral * orbital1.normalization() * orbital2.normalization();
+    return integral;
 }
 
 template <DerivedFromOrbital PrimitiveType>
@@ -121,7 +128,7 @@ double laplacian_integral(const ContractedOrbital<PrimitiveType> &orbital1,
         }
     }
 
-    return integral * orbital1.normalization() * orbital2.normalization();
+    return integral;
 }
 
 template <DerivedFromOrbital PrimitiveType>
@@ -140,7 +147,7 @@ electron_nucleus_integral(const ContractedOrbital<PrimitiveType> &orbital1,
         }
     }
 
-    return integral * orbital1.normalization() * orbital2.normalization();
+    return integral;
 }
 
 template <DerivedFromOrbital PrimitiveType>
@@ -169,6 +176,5 @@ electron_electron_integral(const ContractedOrbital<PrimitiveType> &orbital1,
         }
     }
 
-    return integral * orbital1.normalization() * orbital2.normalization() *
-           orbital3.normalization() * orbital4.normalization();
+    return integral;
 }
