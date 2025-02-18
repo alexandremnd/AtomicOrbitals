@@ -5,7 +5,16 @@
 #include "Atom/atom.interface.hpp" // IWYU pragma: export
 #include "Orbitals/contracted_orbital.hpp"
 #include "Orbitals/slater_primitive.hpp"
+#include "parse_basis.hpp"
 #include "concepts.hpp"
+
+template <DerivedFromOrbital OrbitalType>
+Atom<OrbitalType>::Atom(Element elt, std::string basis_name,
+                        Eigen::Vector3d position) {
+    m_Z = elt;
+    m_position = position;
+    parse_basis(elt, basis_name, *this);
+}
 
 template <DerivedFromOrbital OrbitalType>
 void Atom<OrbitalType>::print_info() const {

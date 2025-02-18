@@ -6,8 +6,8 @@
 
 #include "Atom/system.hpp"
 #include "Orbitals/contracted_orbital.hpp"
-#include "Orbitals/orbital.hpp"
 #include "Orbitals/slater_primitive.hpp"
+#include "Atom/atom_list.hpp"
 
 #include "Eigen/Dense"
 #include "concepts.hpp"
@@ -53,6 +53,9 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
      */
     Atom(int Z, float x, float y, float z)
         : Atom(Z, Eigen::Vector3d{x, y, z}){};
+
+    Atom(Element elt, std::string basis_name,
+         Eigen::Vector3d position = {0, 0, 0});
 
     Atom(Atom &atom)
         : m_Z(atom.Z()), m_position(atom.m_position),
