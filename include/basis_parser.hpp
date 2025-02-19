@@ -3,8 +3,6 @@
 #include "Atom/atom.interface.hpp"
 #include "Atom/atom_list.hpp"
 #include "Orbitals/contracted_orbital.interface.hpp"
-#include "Orbitals/gaussian_primitive.hpp"
-#include "Orbitals/slater_primitive.hpp"
 #include "concepts.hpp"
 #include <stdexcept>
 
@@ -13,6 +11,8 @@
  * @note Basis file is expected to be in the data/BasisSet/basis_name.basis
  * directory from the current working directory. Working directory is the
  * directory from which the executable is run.
+ *
+ * @note The basis file is expected to be in the Gaussian basis set format.
  *
  * @param elt Element to parse basis for
  * @param basis_name Name of the basis set to load
@@ -23,3 +23,11 @@ void parse_basis(Element elt, std::string basis_name, Atom<OrbitalType> &atom) {
     throw std::logic_error("parse_basis: Basis parsing not implemented for the "
                            "given orbital type.");
 }
+
+template <>
+void parse_basis(Element elt, std::string basis_name,
+                 Atom<ContractedGaussian> &atom);
+
+template <>
+void parse_basis(Element elt, std::string basis_name,
+                 Atom<ContractedSlater> &atom);

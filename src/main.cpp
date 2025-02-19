@@ -15,11 +15,11 @@ int main() {
     //                           {1, 3, 2, 2}, {0, 0, 0, 0}, {0, 0, 0, 0},
     //                           {1.4595, 5.3244, 2.6298, 1.7504});
 
-    auto atom = Atom<CGTO>(Element(26), "sto6g");
+    auto atom = Atom<CGTO>(Element(2), "ugbs");
 
     auto clock = Clock();
 
-    auto rhf = RestrictedHartreeFock(atom, 26);
+    auto rhf = RestrictedHartreeFock(atom, 2);
     rhf.set_smoothing_factor(0.7);
     rhf.run(1e-6, 1000, 2, false);
     clock.time_ms("Execution time");

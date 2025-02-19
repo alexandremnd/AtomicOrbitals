@@ -30,34 +30,73 @@ void parse_basis(Element elt, std::string basis_name,
         exit(1);
     }
 
+    bool found = false;
+    std::string atom_to_find = get_element_short_name(elt);
+
+    std::string orbital_type;
+    int orbital_size = 0;
+    std::vector<double> weight, decay;
+
     std::string line;
     while (std::getline(basis_file, line)) {
         std::istringstream iss(line);
-        std::string type;
-        int N;
 
-        iss >> type;
-        iss >> N;
+        // Skip non relevant lines until we find the atom we are looking for.
+        if (!found) {
+            std::string possible_atom_name;
+            iss >> possible_atom_name;
 
-        std::vector<double> weight(N), decay(N);
+            if (possible_atom_name == atom_to_find) {
+                found = true;
+            }
 
-        for (int i = 0; i < N; i++) {
-            iss >> weight[i];
+            continue;
         }
 
-        for (int i = 0; i < N; i++) {
-            iss >> decay[i];
+        // We arrived at the end of the basis set for the desired atom
+        if (line == "****" && found) {
+            break;
         }
 
-        if (type == "S") {
-            atom.add_gaussian_orbital_stype(weight, decay);
-        } else if (type == "P") {
-            atom.add_gaussian_orbital_ptype(weight, decay);
-        } else if (type == "D") {
-            atom.add_gaussian_orbital_dtype(weight, decay);
-        } else if (type == "F") {
-            atom.add_gaussian_orbital_ftype(weight, decay);
+        // We found the atom we are looking for, but we are not at the end of
+        // the basis set. Parse the basis set.
+
+        std::string first_word, second_word;
+        iss >> first_word;
+        iss >> second_word;
+
+        if (first_word == "S" || first_word == "P" || first_word == "D" ||
+            first_word == "F") {
+
+            // Add the currently built orbital to the atom
+            if (orbital_type == "S") {
+                atom.add_gaussian_orbital_stype(weight, decay);
+            } else if (orbital_type == "P") {
+                atom.add_gaussian_orbital_ptype(weight, decay);
+            } else if (orbital_type == "D") {
+                atom.add_gaussian_orbital_dtype(weight, decay);
+            } else if (orbital_type == "F") {
+                atom.add_gaussian_orbital_ftype(weight, decay);
+            }
+
+            // Reset the type, weight, and decay vectors for next orbital
+            orbital_type = first_word;
+            iss >> orbital_size;
+
+            weight.clear();
+            decay.clear();
+
+            weight.reserve(N);
+            decay.reserve(N);
+
+            continue;
         }
+
+        double alpha = std::stod(first_word);
+        double c = std::stod(second_word);
+
+        weight.push_back(c);
+        decay.push_back(alpha);
     }
 
     return;

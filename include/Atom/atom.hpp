@@ -14,7 +14,7 @@ Atom<OrbitalType>::Atom(Element elt, std::string basis_name,
                         Eigen::Vector3d position) {
     m_position = position;
     m_Z = static_cast<int>(elt);
-    parse_basis<OrbitalType>(basis_name, elt, *this);
+    parse_basis<OrbitalType>(elt, basis_name, *this);
 }
 
 template <DerivedFromOrbital OrbitalType>
