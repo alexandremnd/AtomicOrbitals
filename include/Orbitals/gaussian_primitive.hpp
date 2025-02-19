@@ -20,16 +20,11 @@ class GaussianPrimitive : public Orbital {
     GaussianPrimitive(){};
 
     GaussianPrimitive(int x_exponent, int y_exponent, int z_exponent,
-                      double alpha, Eigen::Vector3d position)
+                      double alpha, Eigen::Vector3d position = {0, 0, 0})
         : m_x_exponent(x_exponent), m_y_exponent(y_exponent),
           m_z_exponent(z_exponent), m_alpha(alpha) {
         m_position = position;
     }
-
-    GaussianPrimitive(int x_exponent, int y_exponent, int z_exponent,
-                      double alpha)
-        : GaussianPrimitive(x_exponent, y_exponent, z_exponent, alpha,
-                            Eigen::Vector3d{0., 0., 0.}) {}
 
     GaussianPrimitive(GaussianPrimitive const &other)
         : m_x_exponent(other.m_x_exponent), m_y_exponent(other.m_y_exponent),

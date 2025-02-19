@@ -1,18 +1,20 @@
 #pragma once
 
 #include <iostream>
+#include <stdexcept>
 
 #include "Atom/atom.interface.hpp" // IWYU pragma: export
 #include "Orbitals/contracted_orbital.hpp"
-#include "parse_basis.hpp"
+#include "Orbitals/contracted_orbital.interface.hpp"
 #include "concepts.hpp"
+#include "basis_parser.hpp"
 
 template <DerivedFromOrbital OrbitalType>
 Atom<OrbitalType>::Atom(Element elt, std::string basis_name,
                         Eigen::Vector3d position) {
-    m_Z = elt;
     m_position = position;
-    parse_basis(elt, basis_name, *this);
+    m_Z = static_cast<int>(elt);
+    parse_basis<OrbitalType>(basis_name, elt, *this);
 }
 
 template <DerivedFromOrbital OrbitalType>

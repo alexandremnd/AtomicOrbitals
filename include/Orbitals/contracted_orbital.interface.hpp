@@ -77,6 +77,7 @@ class ContractedOrbital final : public Orbital {
 
     void set_position(Eigen::Vector3d position) override {
         m_position = position;
+
         for (auto &primitive : m_primitives) {
             primitive.set_position(position);
         }

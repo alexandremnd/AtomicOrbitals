@@ -75,9 +75,7 @@ void GaussianPrimitive::set_z_exponent(int z_exponent) {
     m_z_exponent = z_exponent;
 }
 
-double GaussianPrimitive::evaluate(double x, double y, double z)
-    const { // Return x^i * y^j * z^k * exp(-alpha*[(x-xA)² + (y-yA)² +
-            // (z-zA)²])
+double GaussianPrimitive::evaluate(double x, double y, double z) const {
     return std::pow(x - m_position(0), m_x_exponent) *
            std::pow(y - m_position(1), m_y_exponent) *
            std::pow(z - m_position(2), m_z_exponent) *
@@ -86,10 +84,9 @@ double GaussianPrimitive::evaluate(double x, double y, double z)
                                 (z - m_position(2)) * (z - m_position(2))));
 }
 
-GaussianPrimitive operator*(
-    const GaussianPrimitive &orbital1,
-    const GaussianPrimitive &orbital2) { // return the product of two gaussian
-                                         // primitives with the same position
+GaussianPrimitive operator*(const GaussianPrimitive &orbital1,
+                            const GaussianPrimitive &orbital2) {
+
     // Initialize variables with orbitals parameters
     double alpha = orbital1.alpha(), beta = orbital2.alpha();
     double norm1 = orbital1.constant(), norm2 = orbital2.constant();

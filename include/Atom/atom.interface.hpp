@@ -29,40 +29,23 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
      * @param position Position of the nucleus.
      * @throw std::invalid_argument if Z < 1.
      */
-    Atom(int Z, Eigen::Vector3d position) : m_Z(Z), m_position(position) {
+    Atom(int Z, Eigen::Vector3d position = {0, 0, 0})
+        : m_Z(Z), m_position(position) {
         if (Z < 1) {
             throw std::invalid_argument(
                 "Atom: The atomic number must be greater than 0.");
         }
     };
 
-    /**
-     * @brief Builds an atom at the origin.
-     * @param Z Number of protons in the nucleus.
-     * @throw std::invalid_argument if Z < 1.
-     */
-    Atom(int Z) : Atom(Z, Eigen::Vector3d{0., 0., 0.}) {};
-
-    /**
-     * @brief Builds an atom at the given position.
-     * @param Z Number of protons in the nucleus.
-     * @param x X coordinate of the nucleus.
-     * @param y Y coordinate of the nucleus.
-     * @param z Z coordinate of the nucleus.
-     * @throw std::invalid_argument if Z < 1.
-     */
-    Atom(int Z, float x, float y, float z)
-        : Atom(Z, Eigen::Vector3d{x, y, z}) {};
-
     Atom(Element elt, std::string basis_name,
          Eigen::Vector3d position = {0, 0, 0});
 
     Atom(Atom &atom)
         : m_Z(atom.Z()), m_position(atom.m_position),
-          m_orbitals(atom.m_orbitals) {};
+          m_orbitals(atom.m_orbitals){};
     Atom(Atom &&atom)
         : m_Z(atom.Z()), m_position(atom.m_position),
-          m_orbitals(std::move(atom.m_orbitals)) {};
+          m_orbitals(std::move(atom.m_orbitals)){};
 
     void print_info() const;
 
