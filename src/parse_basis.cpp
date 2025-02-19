@@ -15,8 +15,7 @@ namespace fs = std::filesystem;
 void parse_basis(Element elt, std::string basis_name,
                  Atom<ContractedGaussian> &atom) {
     fs::path basis_path = fs::current_path() / "data" / "BasisSet" /
-                          to_lowercase(basis_name) /
-                          (to_lowercase(get_element_name(elt)) + ".basis");
+                          (to_lowercase(basis_name) + ".basis");
 
     if (!fs::exists(basis_path)) {
         std::cerr << "parse_basis: The basis file " << basis_path

@@ -38,3 +38,4 @@
 .venv
 __pycache__
 .clocignore
+*/basis_to_split

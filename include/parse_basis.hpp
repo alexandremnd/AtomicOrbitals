@@ -8,12 +8,9 @@
 
 /**
  * @brief Loads a basis file and parses the basis set into the passed atom.
- * @note Basis file is expected to be in the data/BasisSet/basis_name directory
- * from the current working directory. Working directory is the directory from
- * which the executable is run.
- *
- * @note Basis file is expected to be named as the lowercase of the element name
- * followed by the .basis extension.
+ * @note Basis file is expected to be in the data/BasisSet/basis_name.basis
+ * directory from the current working directory. Working directory is the
+ * directory from which the executable is run.
  *
  * @param elt Element to parse basis for
  * @param basis_name Name of the basis set to load
@@ -27,9 +24,6 @@ void parse_basis(Element elt, std::string basis_name,
  * @note Basis file is expected to be in the data/BasisSet/basis_name directory
  * from the current working directory. Working directory is the directory from
  * which the executable is run.
- *
- * @note Basis file is expected to be named as the lowercase of the element name
- * followed by the .basis extension.
  *
  * @param elt Element to parse basis for
  * @param basis_name Name of the basis set to load

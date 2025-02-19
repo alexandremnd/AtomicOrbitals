@@ -4,7 +4,6 @@
 
 #include "Atom/atom.interface.hpp" // IWYU pragma: export
 #include "Orbitals/contracted_orbital.hpp"
-#include "Orbitals/slater_primitive.hpp"
 #include "parse_basis.hpp"
 #include "concepts.hpp"
 
