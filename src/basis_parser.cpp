@@ -66,7 +66,7 @@ void parse_basis(Element elt, std::string basis_name,
         iss >> second_word;
 
         if (first_word == "S" || first_word == "P" || first_word == "D" ||
-            first_word == "F") {
+            first_word == "F" || first_word == "SP") {
 
             // Add the currently built orbital to the atom
             if (orbital_type == "S") {
@@ -77,6 +77,9 @@ void parse_basis(Element elt, std::string basis_name,
                 atom.add_gaussian_orbital_dtype(weight, decay);
             } else if (orbital_type == "F") {
                 atom.add_gaussian_orbital_ftype(weight, decay);
+            } else if (orbital_type == "SP") {
+                atom.add_gaussian_orbital_stype(weight, decay);
+                atom.add_gaussian_orbital_ptype(weight, decay);
             }
 
             // Reset the type, weight, and decay vectors for next orbital

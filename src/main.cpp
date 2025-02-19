@@ -15,7 +15,7 @@ int main() {
     //                           {1, 3, 2, 2}, {0, 0, 0, 0}, {0, 0, 0, 0},
     //                           {1.4595, 5.3244, 2.6298, 1.7504});
 
-    auto atom = Atom<CGTO>(Element(2), "ugbs");
+    auto atom = Atom<CGTO>(Element(2), "ahgbsp3-9");
 
     auto clock = Clock();
 
