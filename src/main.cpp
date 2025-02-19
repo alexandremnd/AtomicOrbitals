@@ -2,6 +2,7 @@
 #include "Atom/atom.hpp"
 #include "Eigen/Dense"
 #include "HartreeFock/restricted_hartree_fock.hpp"
+#include "Utils/clock.hpp"
 
 int main() {
     // auto He = Atom<SlaterPrimitive>(2, Eigen::Vector3d(0, 0, 0));
@@ -14,14 +15,14 @@ int main() {
     //                           {1, 3, 2, 2}, {0, 0, 0, 0}, {0, 0, 0, 0},
     //                           {1.4595, 5.3244, 2.6298, 1.7504});
 
-    auto Be = Atom<CGTO>(Element(4), "ugbs");
+    auto atom = Atom<CGTO>(Element(26), "sto6g");
 
-    for (int i = 12; i < 21; i += 2) {
-        auto atom = Atom<CGTO>(Element(i), "ugbs");
-        auto rhf = RestrictedHartreeFock(atom, i);
-        rhf.set_smoothing_factor(0.7);
-        rhf.run(1e-6, 1000, 2, false);
-    }
+    auto clock = Clock();
+
+    auto rhf = RestrictedHartreeFock(atom, 26);
+    rhf.set_smoothing_factor(0.7);
+    rhf.run(1e-6, 1000, 2, false);
+    clock.time_ms("Execution time");
 
     return 0;
 };

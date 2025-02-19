@@ -11,6 +11,5 @@
 #define DECLARE_EXTERN_TEMPLATE(TemplateClass)                                 \
     extern template class TemplateClass<ContractedSlater>;                     \
     extern template class TemplateClass<ContractedGaussian>;
-
 template <typename T>
 concept DerivedFromOrbital = std::derived_from<T, Orbital>;

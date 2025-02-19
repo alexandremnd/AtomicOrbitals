@@ -3,6 +3,8 @@
 #include "Atom/atom.interface.hpp"
 #include "Atom/atom_list.hpp"
 #include "Orbitals/contracted_orbital.interface.hpp"
+#include "Orbitals/gaussian_primitive.hpp"
+#include "Orbitals/slater_primitive.hpp"
 
 /**
  * @brief Loads a basis file and parses the basis set into the passed atom.

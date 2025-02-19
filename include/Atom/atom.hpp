@@ -36,18 +36,23 @@ void Atom<OrbitalType>::add_orbital(OrbitalType &&orbital) {
 }
 
 template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_slater_orbital(int n, int l, int m, double alpha)
-    requires std::is_same_v<OrbitalType, SlaterPrimitive>
+template <typename... Args>
+void Atom<OrbitalType>::add_orbital(Args &&...args)
+    requires std::is_constructible_v<OrbitalType, Args...>
 {
-    m_orbitals.emplace_back(n, l, m, alpha);
+    m_orbitals.emplace_back(std::forward<Args>(args)...);
 }
 
+// ====================================
+// Contracted Slater Orbital Functions
+// ====================================
+
 template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_contracted_slater(const std::vector<double> &weight,
-                                              const std::vector<double> &n,
-                                              const std::vector<double> &l,
-                                              const std::vector<double> &m,
-                                              const std::vector<double> &decay)
+void Atom<OrbitalType>::add_slater_orbital(const std::vector<double> &weight,
+                                           const std::vector<double> &n,
+                                           const std::vector<double> &l,
+                                           const std::vector<double> &m,
+                                           const std::vector<double> &decay)
     requires std::is_same_v<OrbitalType, ContractedSlater>
 {
     if (weight.size() != decay.size()) {
@@ -64,6 +69,10 @@ void Atom<OrbitalType>::add_contracted_slater(const std::vector<double> &weight,
 
     m_orbitals.push_back(std::move(cs));
 }
+
+// ====================================
+// Contracted Gaussian Orbital Functions
+// ====================================
 
 template <DerivedFromOrbital OrbitalType>
 void Atom<OrbitalType>::add_gaussian_orbital_stype(
@@ -187,6 +196,10 @@ void Atom<OrbitalType>::add_gaussian_orbital_ftype(
     m_orbitals.push_back(std::move(cg_yzz));
     m_orbitals.push_back(std::move(cg_xyz));
 }
+
+// ====================================
+// Misceleaneous Functions
+// ====================================
 
 template <DerivedFromOrbital OrbitalType>
 void Atom<OrbitalType>::set_position(const Eigen::Vector3d &position) {

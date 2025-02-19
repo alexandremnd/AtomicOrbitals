@@ -2,12 +2,11 @@
 #include "Atom/atom_list.hpp"
 #include "Orbitals/contracted_orbital.interface.hpp"
 #include "Utils/to_lowercase.hpp"
+#include "Atom/atom.hpp"
 
 #include <fstream>
 #include <ostream>
 #include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include <string>
 #include <filesystem>
 
@@ -106,12 +105,11 @@ void parse_basis(Element elt, std::string basis_name,
     //         iss >> decay[i];
     //     }
 
-    //     atom.add_gaussian_orbital_stype(weight, decay);
-    //     atom.add_gaussian_orbital_ptype(weight, decay);
-    //     atom.add_gaussian_orbital_dtype(weight, decay);
-    //     atom.add_gaussian_orbital_ftype(weight, decay);
+    //     atom.add_slater_orbital(weight, decay);
+    //     atom.add_slater_orbital(weight, decay);
+    //     atom.add_slater_orbital(weight, decay);
+    //     atom.add_slater_orbital(weight, decay);
     // }
 
-    // return;
     return;
 }

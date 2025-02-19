@@ -41,7 +41,7 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
      * @param Z Number of protons in the nucleus.
      * @throw std::invalid_argument if Z < 1.
      */
-    Atom(int Z) : Atom(Z, Eigen::Vector3d{0., 0., 0.}){};
+    Atom(int Z) : Atom(Z, Eigen::Vector3d{0., 0., 0.}) {};
 
     /**
      * @brief Builds an atom at the given position.
@@ -52,17 +52,17 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
      * @throw std::invalid_argument if Z < 1.
      */
     Atom(int Z, float x, float y, float z)
-        : Atom(Z, Eigen::Vector3d{x, y, z}){};
+        : Atom(Z, Eigen::Vector3d{x, y, z}) {};
 
     Atom(Element elt, std::string basis_name,
          Eigen::Vector3d position = {0, 0, 0});
 
     Atom(Atom &atom)
         : m_Z(atom.Z()), m_position(atom.m_position),
-          m_orbitals(atom.m_orbitals){};
+          m_orbitals(atom.m_orbitals) {};
     Atom(Atom &&atom)
         : m_Z(atom.Z()), m_position(atom.m_position),
-          m_orbitals(std::move(atom.m_orbitals)){};
+          m_orbitals(std::move(atom.m_orbitals)) {};
 
     void print_info() const;
 
@@ -85,21 +85,12 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
      */
     template <typename... Args>
     void add_orbital(Args &&...args)
-        requires std::is_constructible_v<OrbitalType, Args...>
-    {
-        m_orbitals.emplace_back(std::forward<Args>(args)...);
-    }
+        requires std::is_constructible_v<OrbitalType, Args...>;
 
     /**
-     * @param n The principal quantum number. (0 < n)
-     * @param l The azimuthal quantum number. (0 <= l < n)
-     * @param m The magnetic quantum number. (-l <= m <= l)
-     * @param alpha The radial exponential decay rate. (alpha > 0)
-     */
-    void add_slater_orbital(int n, int l, int m, double alpha)
-        requires std::is_same_v<OrbitalType, SlaterPrimitive>;
-
-    /**
+     * @brief Prefered way to add a contracted slater orbital with arbitrary
+     * quantum numbers.
+     *
      * @param weight The principal quantum number. (0 < n)
      * @param n The principal quantum number. (0 < n)
      * @param l The azimuthal quantum number. (0 <= l < n)
@@ -107,11 +98,11 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
      * @param decay The exponential decay rate of the primitive gaussians (alpha
      * > 0)
      */
-    void add_contracted_slater(const std::vector<double> &weight,
-                               const std::vector<double> &n,
-                               const std::vector<double> &l,
-                               const std::vector<double> &m,
-                               const std::vector<double> &decay)
+    void add_slater_orbital(const std::vector<double> &weight,
+                            const std::vector<double> &n,
+                            const std::vector<double> &l,
+                            const std::vector<double> &m,
+                            const std::vector<double> &decay)
         requires std::is_same_v<OrbitalType, ContractedSlater>;
 
     /**
