@@ -15,8 +15,9 @@
 2. [CMake](https://cmake.org/) (version at least 3.12, checks using ```cmake --version```)
 3. [Boost](https://www.boost.org/)
 4. [Python](https://www.python.org/)
-5. (Optional) [Doxygen](https://www.doxygen.nl)
-6. (Optional) [GoogleTest](https://github.com/google/googletest)
+5. (Optional) [OpenMP](https://www.openmp.org/) : highly recommanded for large basis set.
+6. (Optional) [Doxygen](https://www.doxygen.nl)
+7. (Optional) [GoogleTest](https://github.com/google/googletest)
 
 We assume that you already installed a C++ compiler supporting at least the C++20 standard such as [g++](https://gcc.gnu.org/)/[clang](https://clang.llvm.org/).
 
