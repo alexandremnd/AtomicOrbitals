@@ -37,4 +37,6 @@ class HartreeFock {
     void print_info();
     void print_iteration_info(int n);
     void print_result(int total_iterations);
+
+    double get_final_energy() const { return m_hf_energy; }
 };
