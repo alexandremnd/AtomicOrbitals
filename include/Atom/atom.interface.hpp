@@ -168,22 +168,28 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
     // ===============================
     size_t size() const override { return m_orbitals.size(); }
     double overlap(size_t i, size_t j) const override {
-        return overlap_integral(m_orbitals[i], m_orbitals[j]);
+        return overlap_integral(m_orbitals[i], m_orbitals[j]) *
+               m_orbitals[i].constant() * m_orbitals[j].constant();
     }
 
     double kinetic(size_t i, size_t j) const override {
-        return -0.5 * laplacian_integral(m_orbitals[i], m_orbitals[j]);
+        return -0.5 * laplacian_integral(m_orbitals[i], m_orbitals[j]) *
+               m_orbitals[i].constant() * m_orbitals[j].constant();
     }
 
     double electron_nucleus(size_t i, size_t j) const override {
-        return -m_Z * electron_nucleus_integral(m_orbitals[i], m_orbitals[j],
-                                                m_position);
+        return -m_Z *
+               electron_nucleus_integral(m_orbitals[i], m_orbitals[j],
+                                         m_position) *
+               m_orbitals[i].constant() * m_orbitals[j].constant();
     }
 
     double electron_electron(size_t i, size_t j, size_t k,
                              size_t l) const override {
         return electron_electron_integral(m_orbitals[i], m_orbitals[j],
-                                          m_orbitals[k], m_orbitals[l]);
+                                          m_orbitals[k], m_orbitals[l]) *
+               m_orbitals[i].constant() * m_orbitals[j].constant() *
+               m_orbitals[k].constant() * m_orbitals[l].constant();
     }
 
     double nuclear_energy() const override { return 0.; }

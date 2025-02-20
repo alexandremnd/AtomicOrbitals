@@ -24,6 +24,7 @@ class GaussianPrimitive : public Orbital {
         : m_x_exponent(x_exponent), m_y_exponent(y_exponent),
           m_z_exponent(z_exponent), m_alpha(alpha) {
         m_position = position;
+        update_normalisation();
     }
 
     GaussianPrimitive(GaussianPrimitive const &other)

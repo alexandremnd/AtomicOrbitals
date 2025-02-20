@@ -1,6 +1,6 @@
 #include "Atom/atom_list.hpp"
 #include "Orbitals/contracted_orbital.interface.hpp"
-#include "Utils/to_lowercase.hpp"
+#include "Utils/string_fun.hpp"
 #include "Atom/atom.hpp"
 
 #include <fstream>
@@ -95,11 +95,28 @@ void parse_basis(Element elt, std::string basis_name,
             continue;
         }
 
+        replace_letter(first_word, 'D', 'E');
+        replace_letter(second_word, 'D', 'E');
+
         double alpha = std::stod(first_word);
         double c = std::stod(second_word);
 
         weight.push_back(c);
         decay.push_back(alpha);
+    }
+
+    // Add the last orbital to the atom
+    if (orbital_type == "S") {
+        atom.add_gaussian_orbital_stype(weight, decay);
+    } else if (orbital_type == "P") {
+        atom.add_gaussian_orbital_ptype(weight, decay);
+    } else if (orbital_type == "D") {
+        atom.add_gaussian_orbital_dtype(weight, decay);
+    } else if (orbital_type == "F") {
+        atom.add_gaussian_orbital_ftype(weight, decay);
+    } else if (orbital_type == "SP") {
+        atom.add_gaussian_orbital_stype(weight, decay);
+        atom.add_gaussian_orbital_ptype(weight, decay);
     }
 
     return;

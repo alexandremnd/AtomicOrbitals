@@ -30,6 +30,7 @@ void Hamiltonian::compute_two_body(const System &system) {
     // same for k and l. It remains cases where ij > kl and ij <= kl
     // (eg. (23|12) and (12|23) are equivalent). We only compute the
     // case where ij < kl.
+#pragma omp parallel for
     for (int i = 0; i < N; i++) {
         for (int j = 0; j <= i; j++) {
             for (int k = 0; k < N; k++) {

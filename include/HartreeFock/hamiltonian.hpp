@@ -11,6 +11,10 @@ class Hamiltonian {
 
     void compute_hamiltonian(const System &system) {
         m_nuclear_repulsion = system.nuclear_energy();
+
+        std::cout << "[Hamiltonian] Beginning hamiltonian pre-computation (may "
+                     "take many "
+                     "minutes for large basis).\n";
         compute_one_body(system);
         compute_two_body(system);
     }
@@ -77,7 +81,7 @@ class Hamiltonian {
     size_t size() const { return m_overlap.rows(); }
 
     void print() const {
-        std::cout << "Overlap matrix:\n" << m_overlap << std::endl;
+        std::cout << "Overlap matrix:\n" << std::endl;
         for (size_t i = 0; i < size(); i++) {
             for (size_t j = 0; j < size(); j++) {
                 std::cout << i << " " << j << " " << m_overlap(i, j)

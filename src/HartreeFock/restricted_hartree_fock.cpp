@@ -19,6 +19,7 @@ void RestrictedHartreeFock::setup_fock_matrix() {
 
     m_fock_matrix = m_H.T() + m_H.V();
 
+#pragma omp parallel for
     for (int p = 0; p < L; p++) {
         for (int q = 0; q < L; q++) {
             for (int r = 0; r < L; r++) {
@@ -88,18 +89,10 @@ void RestrictedHartreeFock::compute_hf_energy() {
     int N = m_no_electrons;
     int L = m_H.size();
 
-    m_hf_energy = 0;
+    m_hf_energy =
+        0.5 *
+        m_density_matrix.cwiseProduct(m_fock_matrix + m_H.T() + m_H.V()).sum();
 
-    for (int p = 0; p < L; p++)
-        for (int q = 0; q < L; q++) {
-            m_hf_energy += m_density_matrix(p, q) * m_H.core(p, q);
-
-            for (int r = 0; r < L; r++)
-                for (int s = 0; s < L; s++) {
-                    m_hf_energy += m_H.as(p, q, r, s) * m_density_matrix(p, q) *
-                                   m_density_matrix(s, r) * 0.25;
-                }
-        }
     m_hf_energy += m_H.nuclear_repulsion();
 }
 
