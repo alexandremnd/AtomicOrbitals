@@ -83,6 +83,20 @@ class ContractedOrbital final : public Orbital {
         }
     }
 
+    friend std::ostream &
+    operator<<(std::ostream &os,
+               const ContractedOrbital<PrimitiveType> &orbital) {
+        os << "Nucleus position: " << orbital.position().transpose()
+           << std::endl;
+        for (size_t i = 0; i < orbital.size(); i++) {
+            os << "\t * Primitive" << i << ": "
+               << orbital.get_coefficient(i) *
+                      orbital.get_primitive(i).constant()
+               << orbital.get_primitive(i) << std::endl;
+        }
+        return os;
+    }
+
   private:
     std::vector<double> m_coefficients;
     std::vector<PrimitiveType> m_primitives;

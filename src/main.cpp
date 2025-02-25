@@ -17,9 +17,13 @@ int main() {
               << std::endl;
 #endif
 
-    auto atom = Atom<CGTO>(Element(6), "sto6g");
+    auto atom = Atom<CGTO>(Element(10), "3-21g");
 
-    auto rhf = RestrictedHartreeFock(atom, 6);
+    for (auto &orb : atom.get_orbitals()) {
+        std::cout << orb << std::endl;
+    }
+
+    auto rhf = RestrictedHartreeFock(atom, 10);
     rhf.set_smoothing_factor(0.9);
     rhf.run(1e-6, 1000, 2, false);
     // clock.time_ms("Execution time");

@@ -75,6 +75,16 @@ class SlaterPrimitive final : public Orbital {
 
     inline double alpha() const { return m_alpha; }
 
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const SlaterPrimitive &orbital) {
+        os << "(";
+        os << orbital.n() << ", ";
+        os << orbital.l() << ", ";
+        os << orbital.m() << ") exp(- ";
+        os << orbital.alpha() << " r)";
+        return os;
+    }
+
   private:
     void check_parameters(const int n, const int l, const int m,
                           const double alpha);

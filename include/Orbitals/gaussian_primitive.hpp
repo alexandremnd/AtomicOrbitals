@@ -17,7 +17,7 @@
  */
 class GaussianPrimitive : public Orbital {
   public:
-    GaussianPrimitive(){};
+    GaussianPrimitive() {};
 
     GaussianPrimitive(int x_exponent, int y_exponent, int z_exponent,
                       double alpha, Eigen::Vector3d position = {0, 0, 0})
@@ -83,6 +83,16 @@ class GaussianPrimitive : public Orbital {
                                        const GaussianPrimitive &orbital2);
 
     GaussianPrimitive &operator=(const GaussianPrimitive &rhs);
+
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const GaussianPrimitive &orbital) {
+        os << "(";
+        os << orbital.m_x_exponent << ", ";
+        os << orbital.m_y_exponent << ", ";
+        os << orbital.m_z_exponent << ") exp(- ";
+        os << orbital.m_alpha << " ||r - R||^2)";
+        return os;
+    }
 
   private:
     int m_x_exponent;
