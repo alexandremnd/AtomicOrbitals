@@ -12,29 +12,15 @@ void GaussianPrimitive::update_normalisation() {
     double fact_x_exponent, fact_y_exponent, fact_z_exponent;
     double fact_2x_exponent, fact_2y_exponent, fact_2z_exponent;
 
-    if (m_x_exponent == 0) {
-        fact_x_exponent = 1.;
-        fact_2x_exponent = 1.;
-    } else {
-        fact_x_exponent = boost::math::tgamma(m_x_exponent + 1);
-        fact_2x_exponent = boost::math::tgamma(2 * m_x_exponent + 1);
-    }
+    fact_x_exponent = boost::math::tgamma(m_x_exponent + 1);
+    fact_2x_exponent = boost::math::tgamma(2 * m_x_exponent + 1);
 
-    if (m_y_exponent == 0) {
-        fact_y_exponent = 1.;
-        fact_2y_exponent = 1.;
-    } else {
-        fact_y_exponent = boost::math::tgamma(m_y_exponent + 1);
-        fact_2y_exponent = boost::math::tgamma(2 * m_y_exponent + 1);
-    }
+    fact_y_exponent = boost::math::tgamma(m_y_exponent + 1);
+    fact_2y_exponent = boost::math::tgamma(2 * m_y_exponent + 1);
 
-    if (m_z_exponent == 0) {
-        fact_z_exponent = 1.;
-        fact_2z_exponent = 1.;
-    } else {
-        fact_z_exponent = boost::math::tgamma(m_z_exponent + 1);
-        fact_2z_exponent = boost::math::tgamma(2 * m_z_exponent + 1);
-    }
+    fact_z_exponent = boost::math::tgamma(m_z_exponent + 1);
+    fact_2z_exponent = boost::math::tgamma(2 * m_z_exponent + 1);
+
     m_constant =
         std::pow(2 * m_alpha / M_PI, 3. / 4) *
         std::sqrt(
