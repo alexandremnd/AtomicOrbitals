@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "Orbitals/slater_primitive.hpp"
-#include "Integrators/slater_braket.hpp"
+#include "Maths/slater_braket.hpp"
 
 // For floating point comparison, we allow a relative error of around 1e-6
 TEST(SlaterBraketTest, RadialIntegral) {
@@ -9,13 +9,13 @@ TEST(SlaterBraketTest, RadialIntegral) {
     SlaterPrimitive orbital3(2, 1, 1, 1);
     SlaterPrimitive orbital4(2, 1, 1, 1);
 
-    double result = radial_integral(orbital1, orbital2, orbital3, orbital4, 0);
+    double result = radial_integral(orbital1, orbital3, orbital2, orbital4, 0);
     EXPECT_NEAR(result, 0.459777832031250, 1e-6);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 1);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 1);
     EXPECT_NEAR(result, 0.304870605468750, 1e-6);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 2);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 2);
     EXPECT_NEAR(result, 0.222473144531250, 1e-6);
 
     orbital1 = SlaterPrimitive(2, 1, 1, 3);
@@ -23,13 +23,13 @@ TEST(SlaterBraketTest, RadialIntegral) {
     orbital3 = SlaterPrimitive(3, 1, 1, 9);
     orbital4 = SlaterPrimitive(2, 1, 1, 12);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 0);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 0);
     EXPECT_NEAR(result, 3.00294126932456e-10, 1e-15);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 1);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 1);
     EXPECT_NEAR(result, 1.92980029768121e-10, 1e-15);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 2);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 2);
     EXPECT_NEAR(result, 1.37973923728128e-10, 1e-15);
 
     orbital1 = SlaterPrimitive(4, 3, 0, 3);
@@ -37,19 +37,19 @@ TEST(SlaterBraketTest, RadialIntegral) {
     orbital3 = SlaterPrimitive(5, 4, 0, 9);
     orbital4 = SlaterPrimitive(3, 2, 0, 12);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 0);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 0);
     EXPECT_NEAR(result, 9.01607666199089e-12, 1e-18);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 1);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 1);
     EXPECT_NEAR(result, 4.79826773710592e-12, 1e-18);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 2);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 2);
     EXPECT_NEAR(result, 2.98402484593426e-12, 1e-18);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 3);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 3);
     EXPECT_NEAR(result, 2.07510878703165e-12, 1e-18);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 4);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 4);
     EXPECT_NEAR(result, 1.56099109151659e-12, 1e-18);
 
     orbital1 = SlaterPrimitive(2, 1, 0, 50);
@@ -57,13 +57,13 @@ TEST(SlaterBraketTest, RadialIntegral) {
     orbital3 = SlaterPrimitive(2, 1, 0, 50);
     orbital4 = SlaterPrimitive(3, 1, 0, 47);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 0);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 0);
     EXPECT_NEAR(result, 3.74105950679226e-19, 1e-25);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 1);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 1);
     EXPECT_NEAR(result, 2.36867167366852e-19, 1e-25);
 
-    result = radial_integral(orbital1, orbital2, orbital3, orbital4, 2);
+    result = radial_integral(orbital1, orbital3, orbital2, orbital4, 2);
     EXPECT_NEAR(result, 1.68203740085704e-19, 1e-25);
 }
 

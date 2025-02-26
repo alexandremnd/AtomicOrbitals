@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 #include "Orbitals/slater_primitive.hpp"
-#include "Integrators/slater_braket.hpp"
+#include "Maths/slater_braket.hpp"
 
 SlaterPrimitive::SlaterPrimitive(int n, int l, int m, double alpha)
     : m_n(n), m_l(l), m_m(m), m_alpha(alpha) {
@@ -124,7 +124,7 @@ double electron_electron_integral(const SlaterPrimitive &orbital1,
         }
 
         value *= 4. * M_PI / (2. * L + 1.) *
-                 radial_integral(orbital1, orbital3, orbital2, orbital4, L);
+                 radial_integral(orbital1, orbital2, orbital3, orbital4, L);
         matrix_element += value;
     }
 
