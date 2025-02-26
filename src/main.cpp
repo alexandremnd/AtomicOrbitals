@@ -41,12 +41,11 @@ int main() {
 #endif
     // compute_atom_energies();
 
-    auto atom = Atom<CGTO>(Element(55), "3-21g");
+    auto atom = Atom<CGTO>(Element(14), "ugbs");
 
-    auto rhf = RestrictedHartreeFock(atom, 55);
-    rhf.set_smoothing_factor(0.9);
+    auto rhf = RestrictedHartreeFock(atom, 14);
+    rhf.set_smoothing_factor(0.3);
     rhf.run(1e-6, 1000, 2, false);
-    // clock.time_ms("Execution time");
 
     return 0;
 };

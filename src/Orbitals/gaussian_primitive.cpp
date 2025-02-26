@@ -150,9 +150,9 @@ double laplacian_integral(const GaussianPrimitive &orbital1,
 
     std::vector<Tensor3D<double>> Hermite_coeff_plus2 =
         HermiteCoefficient(orbital1, orbital2_plus2);
-    Tensor3D<double> Herm_x = Hermite_coeff_plus2[0],
-                     Herm_y = Hermite_coeff_plus2[1],
-                     Herm_z = Hermite_coeff_plus2[2];
+    Tensor3D<double> &Herm_x = Hermite_coeff_plus2[0],
+                     &Herm_y = Hermite_coeff_plus2[1],
+                     &Herm_z = Hermite_coeff_plus2[2];
 
     double Til;
     if (l >= 2) {
@@ -211,8 +211,8 @@ double electron_nucleus_integral(const GaussianPrimitive &orbital1,
     // Initialize variables for Hermite coefficients and Hermite integrals
     std::vector<Tensor3D<double>> Hermite_coeff =
         HermiteCoefficient(orbital1, orbital2);
-    Tensor3D E_xaxis = Hermite_coeff[0], E_yaxis = Hermite_coeff[1],
-             E_zaxis = Hermite_coeff[2];
+    Tensor3D<double> &E_xaxis = Hermite_coeff[0], &E_yaxis = Hermite_coeff[1],
+                     &E_zaxis = Hermite_coeff[2];
     Tensor4D Rntuv =
         HermiteIntegral(orbital1, orbital2, p,
                         PNucleus_position); // Define the 4 dimension tensor
