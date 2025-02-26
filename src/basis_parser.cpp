@@ -88,9 +88,11 @@ void parse_basis(Element elt, std::string basis_name,
             iss >> orbital_size;
 
             weight.clear();
+            weight_sp.clear();
             decay.clear();
 
             weight.reserve(N);
+            weight_sp.reserve(N);
             decay.reserve(N);
 
             continue;

@@ -7,6 +7,7 @@
 /**
  * @brief Container using Yoshimine sorting.
  *
+ * We use (ij | kl) as a shorthand for <ik | jl>.
  * For electron electron integrals denoted (ij | kl), we have an 8-fold
  * symmetry: (ij | kl) = (ji | kl) = (ij | lk) = (ji | lk) = (kl | ij) = (lk |
  * ij) = (kl | ji) = (lk | ji)
@@ -29,6 +30,16 @@ template <typename T> class Yoshimine {
 
     Yoshimine() = default;
 
+    /**
+     * @brief Returns the corresponding element (ab| cd) in the Yoshimine
+     * container. Used for reducing memory usage
+     *
+     * @param a First electron index
+     * @param b Second electron index sharing the same coordinates as a
+     * @param c Third electron index
+     * @param d Fourth electron index sharing the same coordinates as c
+     * @return T
+     */
     inline T operator()(int a, int b, int c, int d) const {
         int abcd = index(a, b, c, d);
 
@@ -39,6 +50,16 @@ template <typename T> class Yoshimine {
         return m_yoshimine[abcd];
     }
 
+    /**
+     * @brief Returns the corresponding element (ab| cd) in the Yoshimine
+     * container. Used for reducing memory usage
+     *
+     * @param a First electron index
+     * @param b Second electron index sharing the same coordinates as a
+     * @param c Third electron index
+     * @param d Fourth electron index sharing the same coordinates as c
+     * @return T
+     */
     inline T &operator()(int a, int b, int c, int d) {
         int abcd = index(a, b, c, d);
 
