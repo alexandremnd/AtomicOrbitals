@@ -10,7 +10,7 @@ class Hamiltonian {
     Hamiltonian(const System &system) { compute_hamiltonian(system); }
 
     void compute_hamiltonian(const System &system) {
-        m_nuclear_repulsion = system.nuclear_energy();
+        m_nuclear_repulsion = system.nucleus_repulsion();
 
         std::cout << "[Hamiltonian] Beginning hamiltonian pre-computation (may "
                      "take many "
@@ -20,10 +20,10 @@ class Hamiltonian {
     }
 
     /**
-     * @brief Compute the nuclear repulsion energy between all nuclei in the
+     * @brief Compute the nucleus repulsion energy between all nucleus in the
      * system.
      */
-    double nuclear_repulsion() const { return m_nuclear_repulsion; }
+    double nucleus_repulsion() const { return m_nuclear_repulsion; }
 
     /**
      * @brief Returns the overlap matrix.
@@ -65,17 +65,17 @@ class Hamiltonian {
     }
 
     /**
-     * @brief Returns the antisymmetric two-electron integral.
+     * @brief Returns the antisymmetric two-electron integral 2(pq|rs) - (ps|rq)
      *
-     * @param i i-th orbital
-     * @param j j-th orbital
-     * @param k k-th orbital
-     * @param l l-th orbital
-     * @return double
+     * @param p p-th orbital
+     * @param q q-th orbital
+     * @param r r-th orbital
+     * @param s s-th orbital
+     * @return double 2(pq|rs) - (ps|rq)
      */
-    double as(size_t i, size_t j, size_t k, size_t l) const {
-        return 2 * m_electron_electron_energy(i, j, k, l) -
-               m_electron_electron_energy(i, l, k, j);
+    double as(size_t p, size_t q, size_t r, size_t s) const {
+        return 2 * m_electron_electron_energy(p, q, r, s) -
+               m_electron_electron_energy(p, s, r, q);
     }
 
     size_t size() const { return m_overlap.rows(); }

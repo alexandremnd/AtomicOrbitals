@@ -23,7 +23,7 @@
 template <DerivedFromOrbital OrbitalType> class Molecule : public System {
   public:
     Molecule() = default;
-    Molecule(const Molecule &molecule) : m_atoms(molecule.m_atoms){};
+    Molecule(const Molecule &molecule) : m_atoms(molecule.m_atoms) {};
     Molecule(Molecule &&molecule) : m_atoms(std::move(molecule.m_atoms)) {}
 
     void add_atom(std::shared_ptr<Atom<OrbitalType>> atom) {
@@ -73,7 +73,7 @@ template <DerivedFromOrbital OrbitalType> class Molecule : public System {
             m_orbitals[l].get());
     }
 
-    double nuclear_energy() const override {
+    double nucleus_repulsion() const override {
         double repulsion = 0.0;
 
         for (size_t i = 0; i < m_atoms.size(); i++) {

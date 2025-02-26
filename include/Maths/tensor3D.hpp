@@ -3,9 +3,14 @@
 #include <iostream>
 #include <vector>
 
+/**
+ * @brief A 3D Tensor class
+ *
+ * @tparam T Contained type in the tensor
+ */
 template <typename T> class Tensor3D {
   public:
-    Tensor3D(){};
+    Tensor3D() {};
 
     Tensor3D(int size_1index, int size_2index, int size_3index)
         : m_size_1index(size_1index), m_size_2index(size_2index),

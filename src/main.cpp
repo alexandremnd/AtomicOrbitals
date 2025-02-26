@@ -41,9 +41,9 @@ int main() {
 #endif
     // compute_atom_energies();
 
-    auto atom = Atom<CGTO>(Element(14), "ugbs");
+    auto atom = Atom<CGTO>(Element(6), "ugbs");
 
-    auto rhf = RestrictedHartreeFock(atom, 14);
+    auto rhf = RestrictedHartreeFock(atom, 6);
     rhf.set_smoothing_factor(0.3);
     rhf.run(1e-6, 1000, 2, false);
 

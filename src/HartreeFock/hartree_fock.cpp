@@ -75,5 +75,5 @@ void HartreeFock::print_result(int total_iterations) {
               << std::endl;
     std::cout << "SCF Iteration required: " << total_iterations << "\n";
     std::cout << "Final energy: " << m_hf_energy << " (Hartree)\n";
-    std::cout << "Final energy: " << m_hf_energy * 27.2113 << " (eV)\n";
+    std::cout << "Final energy: " << m_hf_energy * 27.2114 << " (eV)\n";
 }

@@ -93,7 +93,7 @@ void RestrictedHartreeFock::compute_hf_energy() {
         0.5 *
         m_density_matrix.cwiseProduct(m_fock_matrix + m_H.T() + m_H.V()).sum();
 
-    m_hf_energy += m_H.nuclear_repulsion();
+    m_hf_energy += m_H.nucleus_repulsion();
 }
 
 void RestrictedHartreeFock::diis(size_t iteration) {
