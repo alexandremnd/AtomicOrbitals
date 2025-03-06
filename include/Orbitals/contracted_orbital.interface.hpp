@@ -14,8 +14,8 @@
     \f]
     where \f$ c_i \f$ are the coefficients and \f$ \phi_i \f$ are the primitive
  basis functions.
- * @note Coefficients do not need to be normalized, the normalization constant
- is calculated automatically when adding a primitive.
+ * @note Coefficients needs to be normalized. Otherwise, you should add
+ * primitive and call update_normalization after adding all primitives.
  *
  * @tparam PrimitiveType Type of primitive basis functions (e.g
  GaussianPrimitive, SlaterPrimitive).
@@ -44,14 +44,14 @@ class ContractedOrbital final : public Orbital {
     ContractedOrbital(const ContractedOrbital<PrimitiveType> &&other);
 
     /**
-     * @brief Allocate memory for primitives and coefficients.
+     * @brief Allocates memory for primitives and coefficients.
      *
      * @param size Number of primitives for the linear combination.
      */
     void reserve(std::size_t size);
 
     /**
-     * @brief Add a primitive to the linear combination.
+     * @brief Adds a primitive to the linear combination.
      *
      * @param coefficient Weight of the primitive in the linear combination.
      * @param primitive Primitive to add.
@@ -59,7 +59,7 @@ class ContractedOrbital final : public Orbital {
     void add_primitive(double coefficient, const PrimitiveType &primitive);
 
     /**
-     * @brief Add a primitive to the linear combination.
+     * @brief Adds a primitive to the linear combination.
      *
      * @tparam Args
      * @param coefficient Weight of the primitive in the linear combination.
@@ -83,6 +83,20 @@ class ContractedOrbital final : public Orbital {
         }
     }
 
+    friend std::ostream &
+    operator<<(std::ostream &os,
+               const ContractedOrbital<PrimitiveType> &orbital) {
+        os << "Nucleus position: " << orbital.position().transpose()
+           << std::endl;
+        for (size_t i = 0; i < orbital.size(); i++) {
+            os << "\t * Primitive" << i << ": "
+               << orbital.get_coefficient(i) *
+                      orbital.get_primitive(i).constant()
+               << orbital.get_primitive(i) << std::endl;
+        }
+        return os;
+    }
+
   private:
     std::vector<double> m_coefficients;
     std::vector<PrimitiveType> m_primitives;
@@ -97,21 +111,53 @@ typedef ContractedOrbital<SlaterPrimitive> ContractedSlater;
 typedef ContractedOrbital<GaussianPrimitive> CGTO;
 typedef ContractedOrbital<SlaterPrimitive> CSTO;
 
+/**
+ * @brief Computes the overlap integral between two contracted orbitals <o1|o2>
+ *
+ * @param o1 First contracted orbital
+ * @param o2 Second contracted orbital
+ * @return double <o1|o2>
+ */
 template <DerivedFromOrbital PrimitiveType>
-double overlap_integral(const ContractedOrbital<PrimitiveType> &,
-                        const ContractedOrbital<PrimitiveType> &);
+double overlap_integral(const ContractedOrbital<PrimitiveType> &o1,
+                        const ContractedOrbital<PrimitiveType> &o2);
 
+/**
+ * @brief Computes the laplacian integral between two contracted orbitals
+ *
+ * @param o1 First contracted orbital
+ * @param o2 Second contracted orbital
+ * @return double <o1|nabla^2|o2>
+ */
 template <DerivedFromOrbital PrimitiveType>
-double laplacian_integral(const ContractedOrbital<PrimitiveType> &,
-                          const ContractedOrbital<PrimitiveType> &);
+double laplacian_integral(const ContractedOrbital<PrimitiveType> &o1,
+                          const ContractedOrbital<PrimitiveType> &o2);
 
+/**
+ * @brief Computes the 1/|r-pos| integral between two contracted orbitals
+ *
+ * @param o1 First contracted orbital
+ * @param o2 Second contracted orbital
+ * @param pos Position of the considered nucleus
+ * @return double <o1|1/|r-pos| |o2>
+ */
 template <DerivedFromOrbital PrimitiveType>
-double electron_nucleus_integral(const ContractedOrbital<PrimitiveType> &,
-                                 const ContractedOrbital<PrimitiveType> &,
-                                 const Eigen::Vector3d &);
+double electron_nucleus_integral(const ContractedOrbital<PrimitiveType> &o1,
+                                 const ContractedOrbital<PrimitiveType> &o2,
+                                 const Eigen::Vector3d &pos);
 
+/**
+ * @brief Computes the electron-electron integral between four contractd
+ * orbitals
+ *
+ * @param o1 First contracted orbital
+ * @param o2 Second contracted orbital sharing coordinates of o1
+ * @param o3 Third contracted orbital
+ * @param o4 Fourth contracted orbital sharing coordinates of o3
+ * @return double <o1 o3 | 1/|r1-r2| | o2 o4>
+ */
 template <DerivedFromOrbital PrimitiveType>
-double electron_electron_integral(const ContractedOrbital<PrimitiveType> &,
-                                  const ContractedOrbital<PrimitiveType> &,
-                                  const ContractedOrbital<PrimitiveType> &,
-                                  const ContractedOrbital<PrimitiveType> &);
+double electron_electron_integral(const ContractedOrbital<PrimitiveType> &o1,
+                                  const ContractedOrbital<PrimitiveType> &o2,
+                                  const ContractedOrbital<PrimitiveType> &o3,
+                                  const ContractedOrbital<PrimitiveType> &o4);

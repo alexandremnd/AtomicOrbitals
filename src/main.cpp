@@ -52,6 +52,7 @@ int main() {
                  "basis set."
               << std::endl;
 #endif
+    // compute_atom_energies();
 
     compute_periodic_table_energies(2, 36, "ugbs");
 

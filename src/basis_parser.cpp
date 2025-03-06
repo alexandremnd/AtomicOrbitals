@@ -35,7 +35,7 @@ void parse_basis(Element elt, std::string basis_name,
 
     std::string orbital_type;
     int orbital_size = 0;
-    std::vector<double> weight, decay;
+    std::vector<double> weight, weight_sp, decay;
 
     std::string line;
     while (std::getline(basis_file, line)) {
@@ -61,9 +61,10 @@ void parse_basis(Element elt, std::string basis_name,
         // We found the atom we are looking for, but we are not at the end of
         // the basis set. Parse the basis set.
 
-        std::string first_word, second_word;
+        std::string first_word, second_word, third_word;
         iss >> first_word;
         iss >> second_word;
+        iss >> third_word;
 
         if (first_word == "S" || first_word == "P" || first_word == "D" ||
             first_word == "F" || first_word == "SP") {
@@ -79,7 +80,7 @@ void parse_basis(Element elt, std::string basis_name,
                 atom.add_gaussian_orbital_ftype(weight, decay);
             } else if (orbital_type == "SP") {
                 atom.add_gaussian_orbital_stype(weight, decay);
-                atom.add_gaussian_orbital_ptype(weight, decay);
+                atom.add_gaussian_orbital_ptype(weight_sp, decay);
             }
 
             // Reset the type, weight, and decay vectors for next orbital
@@ -87,9 +88,11 @@ void parse_basis(Element elt, std::string basis_name,
             iss >> orbital_size;
 
             weight.clear();
+            weight_sp.clear();
             decay.clear();
 
             weight.reserve(N);
+            weight_sp.reserve(N);
             decay.reserve(N);
 
             continue;
@@ -103,6 +106,12 @@ void parse_basis(Element elt, std::string basis_name,
 
         weight.push_back(c);
         decay.push_back(alpha);
+
+        if (orbital_type == "SP") {
+            replace_letter(third_word, 'D', 'E');
+            double c_sp = std::stod(third_word);
+            weight_sp.push_back(c_sp);
+        }
     }
 
     // Add the last orbital to the atom

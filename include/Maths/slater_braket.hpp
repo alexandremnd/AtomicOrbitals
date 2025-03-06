@@ -23,16 +23,17 @@
  * Reference: https://en.wikipedia.org/wiki/Laplace_expansion_(potential)
  *
  * @param orbital_i First Slater primitive
+ * @param orbital_k Third Slater primitive sharing the coordinate with orbital_i
  * @param orbital_j Second Slater primitive
- * @param orbital_k Third Slater primitive
- * @param orbital_l Fourth Slater primitive
+ * @param orbital_l Fourth Slater primitive sharing the coordinate with
+ * orbital_j
  * @param L Legendre polynomial order of coulomb repulsion (1/r is expanded as
  Σ_L P_L(cos γ))
  * @return double Evaluation of the radial integral
  */
 inline double radial_integral(const SlaterPrimitive &orbital_i,
-                              const SlaterPrimitive &orbital_j,
                               const SlaterPrimitive &orbital_k,
+                              const SlaterPrimitive &orbital_j,
                               const SlaterPrimitive &orbital_l, int L) {
     assert(L >= 0);
     assert(L <= std::min({orbital_i.l() + orbital_k.l(),
@@ -77,7 +78,7 @@ inline double radial_integral(const SlaterPrimitive &orbital_i,
  * Reference: https://en.wikipedia.org/wiki/Laplace_expansion_(potential)
  *
  * @param orbital1 First Slater primitive
- * @param orbital2 Second Slater primitive
+ * @param orbital2 Second Slater primitive sharing the coordinate with orbital1
  * @param L Legendre polynomial order of coulomb repulsion (1/r is expanded as
  * Σ_L P_L(cos γ)) (0 <= L)
  * @param M Expansion order of a Legendre polynomial of order L on the spherical

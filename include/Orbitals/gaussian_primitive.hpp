@@ -17,28 +17,25 @@
  */
 class GaussianPrimitive : public Orbital {
   public:
-    GaussianPrimitive(){};
+    GaussianPrimitive() {};
 
+    /**
+     * @brief Construct a new Gaussian Primitive object
+     *
+     * @param x_exponent
+     * @param y_exponent
+     * @param z_exponent
+     * @param alpha
+     * @param position
+     */
     GaussianPrimitive(int x_exponent, int y_exponent, int z_exponent,
-                      double alpha, Eigen::Vector3d position = {0, 0, 0})
-        : m_x_exponent(x_exponent), m_y_exponent(y_exponent),
-          m_z_exponent(z_exponent), m_alpha(alpha) {
+                      double alpha, Eigen::Vector3d position = {0, 0, 0}) {
         m_position = position;
+        set_x_exponent(x_exponent);
+        set_y_exponent(y_exponent);
+        set_z_exponent(z_exponent);
+        set_alpha(alpha);
         update_normalisation();
-    }
-
-    GaussianPrimitive(GaussianPrimitive const &other)
-        : m_x_exponent(other.m_x_exponent), m_y_exponent(other.m_y_exponent),
-          m_z_exponent(other.m_z_exponent), m_alpha(other.m_alpha) {
-        m_position = other.m_position;
-        m_constant = other.m_constant;
-    }
-
-    GaussianPrimitive(GaussianPrimitive &&other)
-        : m_x_exponent(other.m_x_exponent), m_y_exponent(other.m_y_exponent),
-          m_z_exponent(other.m_z_exponent), m_alpha(other.m_alpha) {
-        m_position = other.m_position;
-        m_constant = other.m_constant;
     }
 
     /**
@@ -84,6 +81,16 @@ class GaussianPrimitive : public Orbital {
 
     GaussianPrimitive &operator=(const GaussianPrimitive &rhs);
 
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const GaussianPrimitive &orbital) {
+        os << "(";
+        os << orbital.m_x_exponent << ", ";
+        os << orbital.m_y_exponent << ", ";
+        os << orbital.m_z_exponent << ") exp(- ";
+        os << orbital.m_alpha << " ||r - R||^2)";
+        return os;
+    }
+
   private:
     int m_x_exponent;
     int m_y_exponent;
@@ -93,12 +100,49 @@ class GaussianPrimitive : public Orbital {
 
 typedef GaussianPrimitive GTO;
 
-double overlap_integral(const GaussianPrimitive &, const GaussianPrimitive &);
-double laplacian_integral(const GaussianPrimitive &, const GaussianPrimitive &);
-double electron_nucleus_integral(const GaussianPrimitive &,
-                                 const GaussianPrimitive &,
-                                 const Eigen::Vector3d &);
-double electron_electron_integral(const GaussianPrimitive &,
-                                  const GaussianPrimitive &,
-                                  const GaussianPrimitive &,
-                                  const GaussianPrimitive &);
+/**
+ * @brief Computes the overlap integral between two Gaussian primitives <o1|o2>
+ *
+ * @param o1 First gaussian primitive
+ * @param o2 Second gaussian primitive
+ * @return double <o1|o2>
+ */
+double overlap_integral(const GaussianPrimitive &o1,
+                        const GaussianPrimitive &o2);
+
+/**
+ * @brief Computes the laplacian integral between two Gaussian primitives
+ *
+ * @param o1 First gaussian primitive
+ * @param o2 Second gaussian primitive
+ * @return double <o1|nabla^2|o2>
+ */
+double laplacian_integral(const GaussianPrimitive &o1,
+                          const GaussianPrimitive &o2);
+
+/**
+ * @brief Computes the 1/|r-pos| integral between two Gaussian primitives
+ *
+ * @param o1 First gaussian primitive
+ * @param o2 Second gaussian primitive
+ * @param pos Position of the considered nucleus
+ * @return double <o1|1/|r-pos| |o2>
+ */
+double electron_nucleus_integral(const GaussianPrimitive &o1,
+                                 const GaussianPrimitive &o2,
+                                 const Eigen::Vector3d &pos);
+
+/**
+ * @brief Computes the electron-electron integral between four Gaussian
+ * primitives
+ *
+ * @param o1 First gaussian primitive
+ * @param o2 Second gaussian primitive sharing coordinates of o1
+ * @param o3 Third gaussian primitive
+ * @param o4 Fourth gaussian primitive sharing coordinates of o3
+ * @return double <o1 o3 | 1/|r1-r2| | o2 o4>
+ */
+double electron_electron_integral(const GaussianPrimitive &o1,
+                                  const GaussianPrimitive &o2,
+                                  const GaussianPrimitive &o3,
+                                  const GaussianPrimitive &o4);

@@ -42,10 +42,10 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
 
     Atom(Atom &atom)
         : m_Z(atom.Z()), m_position(atom.m_position),
-          m_orbitals(atom.m_orbitals){};
+          m_orbitals(atom.m_orbitals) {};
     Atom(Atom &&atom)
         : m_Z(atom.Z()), m_position(atom.m_position),
-          m_orbitals(std::move(atom.m_orbitals)){};
+          m_orbitals(std::move(atom.m_orbitals)) {};
 
     void print_info() const;
 
@@ -105,7 +105,7 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
         requires std::is_same_v<OrbitalType, ContractedGaussian>;
 
     /**
-     * @brief Add a contracted gaussian orbital (p type) to the atom.
+     * @brief Adds a contracted gaussian orbital (p type) to the atom.
      *
      * The contracted gaussian orbital will be a linear combination of
      * weight.size() primitive gaussians.
@@ -120,7 +120,7 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
         requires std::is_same_v<OrbitalType, ContractedGaussian>;
 
     /**
-     * @brief Add a contracted gaussian orbital (d type) to the atom.
+     * @brief Adds a contracted gaussian orbital (d type) to the atom.
      *
      * The contracted gaussian orbital will be a linear combination of
      * weight.size() primitive gaussians.
@@ -135,7 +135,7 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
         requires std::is_same_v<OrbitalType, ContractedGaussian>;
 
     /**
-     * @brief Add a contracted gaussian orbital (f type ie l = 3) to the atom.
+     * @brief Adds a contracted gaussian orbital (f type ie l = 3) to the atom.
      *
      * The contracted gaussian orbital will be a linear combination of
      * weight.size() primitive gaussians.
@@ -150,7 +150,7 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
         requires std::is_same_v<OrbitalType, ContractedGaussian>;
 
     /**
-     * @brief Set the position of the nucleus.
+     * @brief Sets the position of the nucleus.
      * @note This will also update the center of the orbitals if required.
      *
      * @param position New position of the nucleus.
@@ -192,7 +192,7 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
                m_orbitals[k].constant() * m_orbitals[l].constant();
     }
 
-    double nuclear_energy() const override { return 0.; }
+    double nucleus_repulsion() const override { return 0.; }
 
   private:
     int m_Z;

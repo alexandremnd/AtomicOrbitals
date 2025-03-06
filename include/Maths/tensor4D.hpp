@@ -3,9 +3,14 @@
 #include <iostream>
 #include <vector>
 
+/**
+ * @brief A 4D tensor class.
+ *
+ * @tparam T Contained type in the tensor
+ */
 template <typename T> class Tensor4D {
   public:
-    Tensor4D(){};
+    Tensor4D() {};
 
     Tensor4D(int size_1index, int size_2index, int size_3index, int size_4index)
         : m_size_1index(size_1index), m_size_2index(size_2index),

@@ -8,13 +8,13 @@ TEST(SlaterPrimitive, Constructor) {
     EXPECT_EQ(sp.l(), 0);
     EXPECT_EQ(sp.m(), 0);
     EXPECT_EQ(sp.alpha(), 1.0);
-    EXPECT_NEAR(sp.normalization(), 2.0, 1e-6);
+    EXPECT_NEAR(sp.constant(), 2.0, 1e-6);
 
     SlaterPrimitive sp1(2, 1, 1, 3.0);
-    EXPECT_NEAR(sp1.normalization(), 18.0, 1e-6);
+    EXPECT_NEAR(sp1.constant(), 18.0, 1e-6);
 
     SlaterPrimitive sp2(3, 2, 1, 3.0);
-    EXPECT_NEAR(sp2.normalization(), 19.718012070, 1e-6);
+    EXPECT_NEAR(sp2.constant(), 19.718012070, 1e-6);
 
     EXPECT_THROW({ SlaterPrimitive sp3(0, 0, 0, 1.0); }, std::invalid_argument);
 
@@ -38,7 +38,7 @@ TEST(SlaterPrimitive, SettersGetters) {
     EXPECT_EQ(sp.l(), 1);
     EXPECT_EQ(sp.m(), 1);
     EXPECT_EQ(sp.alpha(), 3.0);
-    EXPECT_NEAR(sp.normalization(), 18.0, 1e-6);
+    EXPECT_NEAR(sp.constant(), 18.0, 1e-6);
 
     // n = 2, l = 1, m = 1, alpha = 3.0
     // n < 1 -> throw
@@ -180,36 +180,36 @@ TEST(ElectronElectronIntegralTest, SlaterPrimitive) {
     SlaterPrimitive orbital3(3, 2, 0, 0.3);
     SlaterPrimitive orbital4(3, 2, 0, 1);
     double result =
-        electron_electron_integral(orbital1, orbital2, orbital3, orbital4);
+        electron_electron_integral(orbital1, orbital3, orbital2, orbital4);
     EXPECT_NEAR(result, 17.2833787319263, 1e-5);
 
     orbital1 = SlaterPrimitive(2, 1, 0, 2);
     orbital2 = SlaterPrimitive(2, 1, 0, 2);
     orbital3 = SlaterPrimitive(2, 1, -1, 2);
     orbital4 = SlaterPrimitive(2, 1, -1, 2);
-    result = electron_electron_integral(orbital1, orbital2, orbital3, orbital4);
+    result = electron_electron_integral(orbital1, orbital3, orbital2, orbital4);
     EXPECT_NEAR(result, 0.0, 1e-5);
 
     orbital1 = SlaterPrimitive(2, 1, 0, 2);
     orbital2 = SlaterPrimitive(2, 1, 0, 2);
     orbital3 = SlaterPrimitive(2, 1, 0, 2);
     orbital4 = SlaterPrimitive(2, 1, 0, 2);
-    result = electron_electron_integral(orbital1, orbital2, orbital3, orbital4);
+    result = electron_electron_integral(orbital1, orbital3, orbital2, orbital4);
     EXPECT_NEAR(result, 0.00043001174698042, 1e-7);
 
     orbital1 = SlaterPrimitive(1, 0, 0, 2);
     orbital2 = SlaterPrimitive(1, 0, 0, 2);
     orbital3 = SlaterPrimitive(1, 0, 0, 2);
     orbital4 = SlaterPrimitive(1, 0, 0, 2);
-    result = electron_electron_integral(orbital1, orbital2, orbital3, orbital4);
-    double normalization = orbital1.normalization() * orbital2.normalization() *
-                           orbital3.normalization() * orbital4.normalization();
+    result = electron_electron_integral(orbital1, orbital3, orbital2, orbital4);
+    double normalization = orbital1.constant() * orbital2.constant() *
+                           orbital3.constant() * orbital4.constant();
     EXPECT_NEAR(result, 1.25 / normalization, 1e-6);
 
     orbital1 = SlaterPrimitive(2, 1, 0, 2);
     orbital2 = SlaterPrimitive(3, 2, 0, 2);
     orbital3 = SlaterPrimitive(4, 2, -1, 2);
     orbital4 = SlaterPrimitive(2, 1, -1, 2);
-    result = electron_electron_integral(orbital1, orbital2, orbital3, orbital4);
+    result = electron_electron_integral(orbital1, orbital3, orbital2, orbital4);
     EXPECT_NEAR(result, 0.0, 1e-7);
 }

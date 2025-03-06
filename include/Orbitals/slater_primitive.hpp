@@ -75,6 +75,16 @@ class SlaterPrimitive final : public Orbital {
 
     inline double alpha() const { return m_alpha; }
 
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const SlaterPrimitive &orbital) {
+        os << "(";
+        os << orbital.n() << ", ";
+        os << orbital.l() << ", ";
+        os << orbital.m() << ") exp(- ";
+        os << orbital.alpha() << " r)";
+        return os;
+    }
+
   private:
     void check_parameters(const int n, const int l, const int m,
                           const double alpha);
@@ -86,12 +96,47 @@ class SlaterPrimitive final : public Orbital {
 
 typedef SlaterPrimitive STO;
 
+/**
+ * @brief Computes the overlap integral between two slater primitives <o1|o2>
+ *
+ * @param o1 First slater primitive
+ * @param o2 Second slater primitive
+ * @return double <o1|o2>
+ */
 double overlap_integral(const SlaterPrimitive &, const SlaterPrimitive &,
                         const int n_offset = 0);
+
+/**
+ * @brief Computes the laplacian integral between two slater primitives
+ *
+ * @param o1 First slater primitive
+ * @param o2 Second slater primitive
+ * @return double <o1|nabla^2|o2>
+ */
 double laplacian_integral(const SlaterPrimitive &, const SlaterPrimitive &);
+
+/**
+ * @brief Computes the 1/|r-pos| integral between two slater primitives
+ *
+ * @param o1 First slater primitive
+ * @param o2 Second slater primitive
+ * @param pos Position of the considered nucleus
+ * @return double <o1|1/|r-pos| |o2>
+ */
 double electron_nucleus_integral(const SlaterPrimitive &,
                                  const SlaterPrimitive &,
                                  const Eigen::Vector3d &);
+
+/**
+ * @brief Computes the electron-electron integral between four slater
+ * primitives
+ *
+ * @param o1 First slater primitive
+ * @param o2 Second slater primitive sharing coordinates of o1
+ * @param o3 Third slater primitive
+ * @param o4 Fourth slater primitive sharing coordinates of o3
+ * @return double <o1 o3 | 1/|r1-r2| | o2 o4>
+ */
 double electron_electron_integral(const SlaterPrimitive &,
                                   const SlaterPrimitive &,
                                   const SlaterPrimitive &,

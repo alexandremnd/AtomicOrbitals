@@ -12,29 +12,15 @@ void GaussianPrimitive::update_normalisation() {
     double fact_x_exponent, fact_y_exponent, fact_z_exponent;
     double fact_2x_exponent, fact_2y_exponent, fact_2z_exponent;
 
-    if (m_x_exponent == 0) {
-        fact_x_exponent = 1.;
-        fact_2x_exponent = 1.;
-    } else {
-        fact_x_exponent = boost::math::tgamma(m_x_exponent + 1);
-        fact_2x_exponent = boost::math::tgamma(2 * m_x_exponent + 1);
-    }
+    fact_x_exponent = boost::math::tgamma(m_x_exponent + 1);
+    fact_2x_exponent = boost::math::tgamma(2 * m_x_exponent + 1);
 
-    if (m_y_exponent == 0) {
-        fact_y_exponent = 1.;
-        fact_2y_exponent = 1.;
-    } else {
-        fact_y_exponent = boost::math::tgamma(m_y_exponent + 1);
-        fact_2y_exponent = boost::math::tgamma(2 * m_y_exponent + 1);
-    }
+    fact_y_exponent = boost::math::tgamma(m_y_exponent + 1);
+    fact_2y_exponent = boost::math::tgamma(2 * m_y_exponent + 1);
 
-    if (m_z_exponent == 0) {
-        fact_z_exponent = 1.;
-        fact_2z_exponent = 1.;
-    } else {
-        fact_z_exponent = boost::math::tgamma(m_z_exponent + 1);
-        fact_2z_exponent = boost::math::tgamma(2 * m_z_exponent + 1);
-    }
+    fact_z_exponent = boost::math::tgamma(m_z_exponent + 1);
+    fact_2z_exponent = boost::math::tgamma(2 * m_z_exponent + 1);
+
     m_constant =
         std::pow(2 * m_alpha / M_PI, 3. / 4) *
         std::sqrt(
@@ -164,9 +150,9 @@ double laplacian_integral(const GaussianPrimitive &orbital1,
 
     std::vector<Tensor3D<double>> Hermite_coeff_plus2 =
         HermiteCoefficient(orbital1, orbital2_plus2);
-    Tensor3D<double> Herm_x = Hermite_coeff_plus2[0],
-                     Herm_y = Hermite_coeff_plus2[1],
-                     Herm_z = Hermite_coeff_plus2[2];
+    Tensor3D<double> &Herm_x = Hermite_coeff_plus2[0],
+                     &Herm_y = Hermite_coeff_plus2[1],
+                     &Herm_z = Hermite_coeff_plus2[2];
 
     double Til;
     if (l >= 2) {
@@ -225,8 +211,8 @@ double electron_nucleus_integral(const GaussianPrimitive &orbital1,
     // Initialize variables for Hermite coefficients and Hermite integrals
     std::vector<Tensor3D<double>> Hermite_coeff =
         HermiteCoefficient(orbital1, orbital2);
-    Tensor3D E_xaxis = Hermite_coeff[0], E_yaxis = Hermite_coeff[1],
-             E_zaxis = Hermite_coeff[2];
+    Tensor3D<double> &E_xaxis = Hermite_coeff[0], &E_yaxis = Hermite_coeff[1],
+                     &E_zaxis = Hermite_coeff[2];
     Tensor4D Rntuv =
         HermiteIntegral(orbital1, orbital2, p,
                         PNucleus_position); // Define the 4 dimension tensor
