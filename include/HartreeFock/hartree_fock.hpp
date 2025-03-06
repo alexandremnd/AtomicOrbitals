@@ -14,6 +14,8 @@ class HartreeFock {
     virtual void compute_hf_energy() = 0;
     virtual void self_consistent_field_iteration(size_t iteration) = 0;
 
+    bool silent = true;
+
   protected:
     Eigen::MatrixXd m_transformation_matrix;
     Hamiltonian m_H;
@@ -31,8 +33,9 @@ class HartreeFock {
 
     void set_system(const System &system, uint no_electrons);
     void set_smoothing_factor(double smoothing_factor = 0.7);
+    void set_silent(bool silent) { this->silent = silent; }
     void run(double convergence_threshold = 1e-6, uint max_iterations = 1000,
-             uint converged_iteration = 5, bool silent = false);
+             uint converged_iteration = 5);
 
     void print_info();
     void print_iteration_info(int n);
