@@ -4,11 +4,20 @@
 #include "Eigen/Dense"
 #include "Utils/yoshimine.hpp"
 
+/**
+ * @brief Class to pre-compute and store the hamiltonian of a system.
+ *
+ */
 class Hamiltonian {
   public:
     Hamiltonian() = default;
     Hamiltonian(const System &system) { compute_hamiltonian(system); }
 
+    /**
+     * @brief Pre-compute the hamiltonian of the passed system
+     *
+     * @param system System you want the hamiltonian to be pre-computed.
+     */
     void compute_hamiltonian(const System &system) {
         m_nuclear_repulsion = system.nucleus_repulsion();
 
@@ -20,7 +29,7 @@ class Hamiltonian {
     }
 
     /**
-     * @brief Compute the nucleus repulsion energy between all nucleus in the
+     * @brief Returns the nucleus repulsion energy between all nucleus in the
      * system.
      */
     double nucleus_repulsion() const { return m_nuclear_repulsion; }

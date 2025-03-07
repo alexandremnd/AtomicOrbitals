@@ -5,6 +5,11 @@
 #include "HartreeFock/hartree_fock.hpp"
 #include <sys/types.h>
 
+/**
+ * @brief Hartree-Fock method implementation in the restricted case. Basis
+ * orbitals are supposed doubly occupied.
+ *
+ */
 class RestrictedHartreeFock : public HartreeFock {
   public:
     RestrictedHartreeFock(const System &system, uint no_electrons);
@@ -18,7 +23,8 @@ class RestrictedHartreeFock : public HartreeFock {
     void reset_diis_subspace() {
         m_fock_history.clear();
         m_density_history.clear();
-        m_error_history = Eigen::MatrixXd::Zero(m_H.size() * m_H.size(), m_diis_size);
+        m_error_history =
+            Eigen::MatrixXd::Zero(m_H.size() * m_H.size(), m_diis_size);
         m_fock_history.resize(m_diis_size);
         m_density_history.resize(m_diis_size);
     }

@@ -4,10 +4,18 @@
 #include "Eigen/Dense"
 #include "HartreeFock/hamiltonian.hpp"
 
+/**
+ * @brief A base Hartree-Fock implementation. This class is meant to be derived
+ * for specialized HF method.
+ *
+ */
 class HartreeFock {
   private:
     void diagonalize_overlap_matrix();
 
+    /**
+     * @brief Sets the fock matrix for the current iteration.
+     */
     virtual void setup_fock_matrix() = 0;
     virtual void diagonalize_fock_matrix() = 0;
     virtual void compute_density_matrix() = 0;

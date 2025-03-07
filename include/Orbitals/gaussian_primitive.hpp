@@ -22,11 +22,14 @@ class GaussianPrimitive : public Orbital {
     /**
      * @brief Construct a new Gaussian Primitive object
      *
-     * @param x_exponent
-     * @param y_exponent
-     * @param z_exponent
-     * @param alpha
-     * @param position
+     * @param x_exponent Power for the \f$(x-x_A)^i \f$ factor
+     * @param y_exponent Power for the \f$(y-y_A)^j \f$ factor
+     * @param z_exponent Power for the \f$(z-z_A)^k \f$ factor
+     * @param alpha Decay rate of the exponential \f$ e^{-\alpha
+     *      ||\mathbf{r} - \mathbf{R_A}||^2} \f$
+     * @param position Coordinates of the \f$ \mathbf{R_A} = (x_A, y_A, z_A) \f$
+     * vector which is the center of the orbital (often being the nucleus
+     * position)
      */
     GaussianPrimitive(int x_exponent, int y_exponent, int z_exponent,
                       double alpha, Eigen::Vector3d position = {0, 0, 0}) {
@@ -44,7 +47,7 @@ class GaussianPrimitive : public Orbital {
      * @param x x-coordinate
      * @param y y-coordinate
      * @param z z-coordinate
-     * @return double Phi(x, y, z)
+     * @return double \f$ \Phi(x, y, z) \f$
      */
     double evaluate(double x, double y, double z) const;
 

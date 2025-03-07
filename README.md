@@ -14,7 +14,7 @@
 1. A C++ compiler (this project is tested on g++ and clang++) supporting C++20 standard
 2. [CMake](https://cmake.org/) (version at least 3.12, checks using ```cmake --version```)
 3. [Boost](https://www.boost.org/)
-4. [Python](https://www.python.org/)
+4. [Python](https://www.python.org/) with necessary packages in [requirements](requirements.txt)
 5. (Optional) [OpenMP](https://www.openmp.org/) : highly recommanded for large basis set.
 6. (Optional) [Doxygen](https://www.doxygen.nl)
 7. (Optional) [GoogleTest](https://github.com/google/googletest)

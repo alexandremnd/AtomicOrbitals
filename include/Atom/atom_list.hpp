@@ -3,6 +3,9 @@
 #include <string>
 #include <unordered_map>
 
+/**
+ * @brief List of all chemical elements that might be available.
+ */
 enum Element : int {
     H = 1,
     He,
@@ -125,6 +128,10 @@ enum Element : int {
     Unknown
 };
 
+/**
+ * @brief Structure holding full and abbreviated name of an element (e.g Helium
+ * and He).
+ */
 struct ElementNames {
     std::string short_name;
     std::string long_name;

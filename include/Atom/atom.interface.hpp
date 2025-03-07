@@ -37,6 +37,16 @@ template <DerivedFromOrbital OrbitalType> class Atom : public System {
         }
     };
 
+    /**
+     * @brief Builds an atom at the given position and loads corresponding
+     * basis.
+     * @note Basis name is case sensitive, by convention, all basis file are in
+     * lowercase.
+     *
+     * @param elt Element to build (He, Li, ...)
+     * @param basis_name Basis type to use (sto-6g, sto, ugbs, ...)
+     * @param position Position of the atom
+     */
     Atom(Element elt, std::string basis_name,
          Eigen::Vector3d position = {0, 0, 0});
 

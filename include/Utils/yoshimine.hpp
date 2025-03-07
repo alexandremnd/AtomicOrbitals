@@ -7,7 +7,7 @@
 /**
  * @brief Container using Yoshimine sorting.
  *
- * We use (ij | kl) as a shorthand for <ik | jl>.
+ * We use (ij | kl) as a shorthand for <ik | w | jl>.
  * For electron electron integrals denoted (ij | kl), we have an 8-fold
  * symmetry: (ij | kl) = (ji | kl) = (ij | lk) = (ji | lk) = (kl | ij) = (lk |
  * ij) = (kl | ji) = (lk | ji)
