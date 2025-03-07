@@ -3,6 +3,14 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 from dataclasses import dataclass
+from scipy import special
+
+@dataclass
+class Atom:
+    Z: int
+    x: float
+    y: float
+    z: float
 
 @dataclass
 class GaussianPrimitive:
@@ -15,7 +23,20 @@ class GaussianPrimitive:
     z0: float
 
 def get_normalization(gaussian: GaussianPrimitive):
+    fact_x_exponent = special.gamma(gaussian.i + 1)
+    fact_2x_exponent = special.gamma(2 * gaussian.i + 1)
 
+    fact_y_exponent = special.gamma(gaussian.j + 1)
+    fact_2y_exponent = special.gamma(2 * gaussian.j + 1)
+
+    fact_z_exponent = special.gamma(gaussian.k + 1)
+    fact_2z_exponent = special.gamma(2 * gaussian.k + 1)
+
+    t1 = np.power(2 * gaussian.alpha / np.pi, 3.0 / 4)
+    t2 = np.sqrt(np.power(8 * gaussian.alpha, gaussian.i + gaussian.j + gaussian.k))
+    t3 = fact_x_exponent * fact_y_exponent * fact_z_exponent
+    t4 = fact_2x_exponent * fact_2y_exponent * fact_2z_exponent
+    return t1 * t2 * t3 / t4
 
 
 def create_grid(limits=(-5, 5), points=100):
@@ -53,20 +74,20 @@ def plot_orbital_density(orbital_densities):
     plt.show()
 
 def main():
-    # Parse the UGBS basis set
-    basis_file = './data/BasisSet/ugbs.basis'
-    elements_basis: list[GaussianPrimitive] = parse_basis(basis_file)
-    grid_points = create_grid(limits=(-10, 10), points=100)
+    atoms: list[Atom] = parse_system("data/system.out")
+    basis: list[GaussianPrimitive] = parse_basis("data/basis.out")
+    coefficient: np.ndarray = parse_coefficients("data/coefficients.out")
+    X, Y, Z = create_grid(limits=(-10, 10), points=100)
 
-    orbitals_densities = np.zeros((len(elements_basis), grid_points.shape[0], grid_points.shape[1], grid_points.shape[2]))
+    orbitals_densities = np.zeros((len(basis), X.shape[0], Y.shape[0], Z.shape[0]))
 
-    for i, orbital in enumerate(elements_basis):
-        orbital_densities[i, :, :, :] =
+    for i, orbital in enumerate(basis):
+        normalization = get_normalization(orbital)
+        orbitals_densities[i, :, :, :] = normalization * (X - orbital.x0)**orbital.i * (Y - orbital.y0)**orbital.j * (Z - orbital.z0)**orbital.k * np.exp(-orbital.alpha * ((X - orbital.x0)**2 + (Y - orbital.y0)**2 + (Z - orbital.z0)**2))
+
+    fig = plt.figure(figsize=(8, 4))
 
 
-    orbital_densities = calculate_orbital_density(basis_functions, coefficients, grid_points)
-
-    plot_orbital_density(orbital_densities)
 
 if __name__ == "__main__":
     main()

@@ -20,10 +20,10 @@ void RestrictedHartreeFock::setup_fock_matrix() {
     m_fock_matrix = m_H.T() + m_H.V();
 
 #pragma omp parallel for
-    for (int p = 0; p < L; p++) {
-        for (int q = 0; q < L; q++) {
-            for (int r = 0; r < L; r++) {
-                for (int s = 0; s < L; s++) {
+    for (size_t p = 0; p < L; p++) {
+        for (size_t q = 0; q < L; q++) {
+            for (size_t r = 0; r < L; r++) {
+                for (size_t s = 0; s < L; s++) {
                     m_fock_matrix(q, p) +=
                         0.5 * m_density_matrix(r, s) * m_H.as(p, q, r, s);
                 }
@@ -36,10 +36,10 @@ void RestrictedHartreeFock::normalizeCoefficientMatrix() {
     int N = m_no_electrons;
     int L = m_H.size();
 
-    for (int k = 0; k < m_no_electrons / 2; k++) {
+    for (size_t k = 0; k < m_no_electrons / 2; k++) {
         double normalizationFactor = 0;
-        for (int p = 0; p < L; p++) {
-            for (int q = 0; q < L; q++) {
+        for (size_t p = 0; p < L; p++) {
+            for (size_t q = 0; q < L; q++) {
                 normalizationFactor += m_coefficient_matrix(p, k) *
                                        m_coefficient_matrix(q, k) *
                                        m_H.S()(p, q);
