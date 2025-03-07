@@ -37,7 +37,7 @@ void parse_basis(Element elt, std::string basis_name,
     int orbital_size = 0;
     std::vector<double> weight, weight_sp, decay;
 
-    std::string line;
+    std::string line, previous_line;
     while (std::getline(basis_file, line)) {
         std::istringstream iss(line);
 
@@ -46,10 +46,15 @@ void parse_basis(Element elt, std::string basis_name,
             std::string possible_atom_name;
             iss >> possible_atom_name;
 
-            if (possible_atom_name == atom_to_find) {
+            // We have to check for "****" otherwise the parser interprets S
+            // type as Sulfur.
+            // std::cout << previous_line << std::endl;
+            if (possible_atom_name == atom_to_find &&
+                (previous_line == "****" || previous_line.empty())) {
                 found = true;
             }
 
+            previous_line = line;
             continue;
         }
 

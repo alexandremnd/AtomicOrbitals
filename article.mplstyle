@@ -1,0 +1,92 @@
+# AXES
+axes.titlesize : 16
+axes.labelsize : 16
+axes.edgecolor : black #Normalized RGB colours (from 0 to 1 instead of 0 to 255)
+axes.labelcolor : (0.1,0.1,0.1)
+axes.linewidth : 1
+axes.spines.top : True
+axes.spines.right : True
+axes.spines.bottom : True
+axes.spines.left : True
+
+# GRID
+axes.grid : False
+axes.grid.axis:     both
+axes.grid.which:    major
+grid.color: (0.1, 0.1, 0.1)
+grid.linestyle: --
+grid.linewidth: 0.8
+grid.alpha:     0.5
+
+# LINES
+axes.prop_cycle : cycler('color',["#D62728","#FF7F0E", "#1F77B4","#185918", "#9467BD","#8C564B","#E377C2","#7F7F7F", "#BCBD22","#17BECF"]) #hex colours
+lines.linewidth : 1
+lines.markeredgewidth : 0.0
+
+# SCATTER PLOT
+scatter.marker : .
+
+# X TICKS
+xtick.top:              True
+xtick.bottom:           True
+xtick.labelsize:        14
+xtick.color:            black
+xtick.direction:        in
+
+xtick.labeltop:         False
+xtick.labelbottom:      True
+xtick.labelcolor:       inherit
+
+xtick.major.top:        True
+xtick.major.bottom:     True
+xtick.major.size:       6
+xtick.major.width:      1
+xtick.major.pad:        3.5
+xtick.minor.pad:        3.4
+
+xtick.minor.visible:    True
+xtick.minor.top:        True
+xtick.minor.bottom:     True
+xtick.minor.size:       3
+xtick.minor.width:      0.5
+
+xtick.alignment:        center
+
+# Y TICKS
+ytick.left:              True
+ytick.right:           True
+ytick.labelsize:        14
+ytick.color:            black
+ytick.direction:        in
+
+ytick.labelright:         False
+ytick.labelleft:      True
+ytick.labelcolor:       inherit
+
+ytick.major.left:       True
+ytick.major.right:      True
+ytick.major.size:       6
+ytick.major.width:      1
+ytick.major.pad:        3.5
+ytick.minor.pad:        3.5
+
+ytick.minor.visible:    True
+ytick.minor.left:     True
+ytick.minor.right:        True
+ytick.minor.size:       3
+ytick.minor.width:      0.5
+
+ytick.alignment:        center
+
+# TEXT PARAMETERS
+font.family: serif
+mathtext.fontset: cm
+text.color : black
+
+# LEGEND
+legend.fontsize: 14
+
+# FIGURE OUTPUT
+figure.figsize  : 7, 5
+figure.dpi : 150
+savefig.dpi : 200

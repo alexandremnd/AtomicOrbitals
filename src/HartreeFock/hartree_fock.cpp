@@ -30,7 +30,7 @@ void HartreeFock::set_smoothing_factor(double smoothing_factor) {
 }
 
 void HartreeFock::run(double convergence_threshold, uint max_iterations,
-                      uint converged_iteration, bool silent) {
+                      uint converged_iteration) {
     size_t n = 0;
     std::vector<double> old_energy(converged_iteration);
     double mean_old_energy = 0;
@@ -38,9 +38,7 @@ void HartreeFock::run(double convergence_threshold, uint max_iterations,
     do {
         old_energy[n % converged_iteration] = m_hf_energy;
         self_consistent_field_iteration(n);
-        if (!silent) {
-            print_iteration_info(n);
-        }
+        print_iteration_info(n);
         n++;
 
         mean_old_energy = 0;
@@ -56,6 +54,9 @@ void HartreeFock::run(double convergence_threshold, uint max_iterations,
 }
 
 void HartreeFock::print_info() {
+    if (silent)
+        return;
+
     std::cout << "============= Hartree-Fock Configuration ============="
               << std::endl;
     std::cout << "Number of electrons: " << m_no_electrons << std::endl;
@@ -65,12 +66,18 @@ void HartreeFock::print_info() {
 }
 
 void HartreeFock::print_iteration_info(int n) {
+    if (silent)
+        return;
+
     std::cout << std::setprecision(8);
     std::cout << "Iteration n°" << n << ": E(SCF) = " << m_hf_energy
               << " (Hartree)\n";
 }
 
 void HartreeFock::print_result(int total_iterations) {
+    if (silent)
+        return;
+
     std::cout << "============= Hartree-Fock result ===================="
               << std::endl;
     std::cout << "SCF Iteration required: " << total_iterations << "\n";

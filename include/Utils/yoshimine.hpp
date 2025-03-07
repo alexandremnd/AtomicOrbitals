@@ -23,7 +23,7 @@ template <typename T> class Yoshimine {
     /**
      * @param size Size of the Yoshimine container
      */
-    Yoshimine(int size) {
+    Yoshimine(size_t size) {
         size = (size * (size + 1) * (size * size + size + 2)) / 8;
         m_yoshimine.resize(size);
     }
@@ -40,7 +40,7 @@ template <typename T> class Yoshimine {
      * @param d Fourth electron index sharing the same coordinates as c
      * @return T
      */
-    inline T operator()(int a, int b, int c, int d) const {
+    inline T operator()(size_t a, size_t b, size_t c, size_t d) const {
         int abcd = index(a, b, c, d);
 
         if (abcd >= m_yoshimine.size()) {
@@ -60,7 +60,7 @@ template <typename T> class Yoshimine {
      * @param d Fourth electron index sharing the same coordinates as c
      * @return T
      */
-    inline T &operator()(int a, int b, int c, int d) {
+    inline T &operator()(size_t a, size_t b, size_t c, size_t d) {
         int abcd = index(a, b, c, d);
 
         if (abcd >= m_yoshimine.size()) {
@@ -79,7 +79,7 @@ template <typename T> class Yoshimine {
     inline int size() const { return m_yoshimine.size(); }
 
   private:
-    inline int index(int a, int b, int c, int d) const {
+    inline int index(size_t a, size_t b, size_t c, size_t d) const {
         int ab, cd, abcd;
 
         if (a > b) {

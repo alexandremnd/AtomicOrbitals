@@ -74,7 +74,7 @@ To generate test cases, [GoogleTest](https://github.com/google/googletest) is re
 
 # Authors
 - [Alexandre Menard](https://github.com/alexandremnd/)
-- Ewan Bataille
+- [Ewan Bataille](https://github.com/EwanBat)
 - Jérémy Atané
 
 # Contributing
