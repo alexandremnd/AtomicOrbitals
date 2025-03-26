@@ -51,7 +51,7 @@ template <typename T> class Yoshimine {
     }
 
     /**
-     * @brief Returns the corresponding element (ab| cd) in the Yoshimine
+     * @brief Returns the corresponding element (ab|cd) in the Yoshimine
      * container. Used for reducing memory usage
      *
      * @param a First electron index

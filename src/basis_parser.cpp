@@ -1,5 +1,4 @@
 #include "Atom/atom_list.hpp"
-#include "Orbitals/contracted_orbital.interface.hpp"
 #include "Utils/string_fun.hpp"
 #include "Atom/atom.hpp"
 
@@ -11,9 +10,7 @@
 
 namespace fs = std::filesystem;
 
-template <>
-void parse_basis(Element elt, std::string basis_name,
-                 Atom<ContractedGaussian> &atom) {
+void parse_basis(Element elt, std::string basis_name, Atom &atom) {
     fs::path basis_path = fs::current_path() / "data" / "BasisSet" /
                           (to_lowercase(basis_name) + ".basis");
 
@@ -65,14 +62,13 @@ void parse_basis(Element elt, std::string basis_name,
 
         // We found the atom we are looking for, but we are not at the end of
         // the basis set. Parse the basis set.
-
         std::string first_word, second_word, third_word;
         iss >> first_word;
         iss >> second_word;
         iss >> third_word;
 
         if (first_word == "S" || first_word == "P" || first_word == "D" ||
-            first_word == "F" || first_word == "SP") {
+            first_word == "F" || first_word == "SP" && weight.size() != 0) {
 
             // Add the currently built orbital to the atom
             if (orbital_type == "S") {
@@ -130,15 +126,8 @@ void parse_basis(Element elt, std::string basis_name,
         atom.add_gaussian_orbital_ftype(weight, decay);
     } else if (orbital_type == "SP") {
         atom.add_gaussian_orbital_stype(weight, decay);
-        atom.add_gaussian_orbital_ptype(weight, decay);
+        atom.add_gaussian_orbital_ptype(weight_sp, decay);
     }
-
-    return;
-}
-
-template <>
-void parse_basis(Element elt, std::string basis_name,
-                 Atom<ContractedSlater> &atom) {
 
     return;
 }

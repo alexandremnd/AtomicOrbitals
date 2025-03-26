@@ -1,212 +1,192 @@
 #pragma once
 
-#include <iostream>
 #include <stdexcept>
+#include <type_traits>
+#include <vector>
 
-#include "Atom/atom.interface.hpp" // IWYU pragma: export
-#include "Orbitals/contracted_orbital.hpp"
-#include "Orbitals/contracted_orbital.interface.hpp"
-#include "concepts.hpp"
-#include "basis_parser.hpp"
+#include "Atom/system.hpp"
+#include "Orbitals/contracted_gaussian.hpp"
+#include "Atom/atom_list.hpp"
 
-template <DerivedFromOrbital OrbitalType>
-Atom<OrbitalType>::Atom(Element elt, std::string basis_name,
-                        Eigen::Vector3d position) {
-    m_position = position;
-    m_Z = static_cast<int>(elt);
-    parse_basis<OrbitalType>(elt, basis_name, *this);
-}
+#include "Eigen/Dense"
 
-template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::print_info() const {
-    std::cout << "============= Atom Configuration =============" << std::endl;
-    std::cout << "Atomic number: " << m_Z << std::endl;
-    std::cout << "Position: " << m_position.transpose() << std::endl;
-    std::cout << "Orbitals count: " << m_orbitals.size() << std::endl;
-    std::cout << "==============================================" << std::endl;
-}
+/**
+ * @brief Class representing an atom (if not obvious ...).
+ *
+ * This is the privileged class to build any system that may be forwarded to
+ * Hartree-Fock for computation. Molecules are built upon atoms.
+ *
+ * @tparam ContractedGaussian The type of the orbitals to use (SlaterPrimitive,
+ * ContractedSlater, ContractedGaussian, ...).
+ */
+class Atom : public System {
+  public:
+    /**
+     * @brief Builds an atom at the given position.
+     * @param Z Number of protons in the nucleus.
+     * @param position Position of the nucleus.
+     * @throw std::invalid_argument if Z < 1.
+     */
+    Atom(int Z, Eigen::Vector3d position = {0, 0, 0})
+        : m_Z(Z), m_position(position) {
+        if (Z < 1) {
+            throw std::invalid_argument(
+                "Atom: The atomic number must be greater than 0.");
+        }
+    };
 
-template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_orbital(const OrbitalType &orbital) {
-    m_orbitals.push_back(orbital);
-}
+    /**
+     * @brief Builds an atom at the given position and loads corresponding
+     * basis.
+     * @note Basis name is case sensitive, by convention, all basis file are in
+     * lowercase.
+     *
+     * @param elt Element to build (He, Li, ...)
+     * @param basis_name Basis type to use (sto-6g, sto, ugbs, ...)
+     * @param position Position of the atom
+     */
+    Atom(Element elt, std::string basis_name,
+         Eigen::Vector3d position = {0, 0, 0});
 
-template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_orbital(OrbitalType &&orbital) {
-    m_orbitals.push_back(std::move(orbital));
-}
+    Atom(Atom &atom)
+        : m_Z(atom.Z()), m_position(atom.m_position),
+          m_orbitals(atom.m_orbitals){};
+    Atom(Atom &&atom)
+        : m_Z(atom.Z()), m_position(atom.m_position),
+          m_orbitals(std::move(atom.m_orbitals)){};
 
-template <DerivedFromOrbital OrbitalType>
-template <typename... Args>
-void Atom<OrbitalType>::add_orbital(Args &&...args)
-    requires std::is_constructible_v<OrbitalType, Args...>
-{
-    m_orbitals.emplace_back(std::forward<Args>(args)...);
-}
+    void print_info() const;
 
-// ====================================
-// Contracted Slater Orbital Functions
-// ====================================
+    /**
+     * @param orbital The orbital to add to the atom.
+     * @note The orbital will be copied in this case.
+     */
+    void add_orbital(const ContractedGaussian &orbital);
 
-template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_slater_orbital(const std::vector<double> &weight,
-                                           const std::vector<double> &n,
-                                           const std::vector<double> &l,
-                                           const std::vector<double> &m,
-                                           const std::vector<double> &decay)
-    requires std::is_same_v<OrbitalType, ContractedSlater>
-{
-    if (weight.size() != decay.size()) {
-        throw std::invalid_argument(
-            "Atom: The weight and decay vectors must have the same size.");
+    /**
+     * @param orbital The orbital to add to the atom.
+     * @note The orbital will be moved in this case. Passed orbital will be
+     * invalid after this call.
+     */
+    void add_orbital(ContractedGaussian &&orbital);
+
+    /**
+     * @brief Constructs an orbital with T constructor
+     * @param args Arguments to pass to the constructor of the orbital.
+     */
+    template <typename... Args>
+    void add_orbital(Args &&...args)
+        requires std::is_constructible_v<ContractedGaussian, Args...>
+    {
+        m_orbitals.emplace_back(std::forward<Args>(args)...);
     }
 
-    auto cs = ContractedSlater();
-    cs.reserve(weight.size());
+    /**
+     * @brief Adds a contracted gaussian orbital (s type) to the atom.
+     *
+     * The contracted gaussian orbital will be a linear combination of
+     * weight.size() primitive gaussians.
+     *
+     * @throw std::invalid_argument if (weight.size() != decay.size())
+     *
+     * @param weight Coefficient of the primitive gaussians in the linear
+     * combination.
+     * @param decay Exponential decay rate of the primitive gaussians.
+     */
+    void add_gaussian_orbital_stype(const std::vector<double> &weight,
+                                    const std::vector<double> &decay);
 
-    for (size_t i = 0; i < weight.size(); i++) {
-        cs.add_primitive(weight[i], n[i], l[i], m[i], decay[i]);
+    /**
+     * @brief Adds a contracted gaussian orbital (p type) to the atom.
+     *
+     * The contracted gaussian orbital will be a linear combination of
+     * weight.size() primitive gaussians.
+     *
+     * @throw std::invalid_argument if (weight.size() != decay.size())
+     * @param weight Coefficient of the primitive gaussians in the linear
+     * combination.
+     * @param decay Exponential decay rate of the primitive gaussians.
+     */
+    void add_gaussian_orbital_ptype(const std::vector<double> &weight,
+                                    const std::vector<double> &decay);
+
+    /**
+     * @brief Adds a contracted gaussian orbital (d type) to the atom.
+     *
+     * The contracted gaussian orbital will be a linear combination of
+     * weight.size() primitive gaussians.
+     *
+     * @throw std::invalid_argument if (weight.size() != decay.size())
+     * @param weight Coefficient of the primitive gaussians in the linear
+     * combination.
+     * @param decay Exponential decay rate of the primitive gaussians.
+     */
+    void add_gaussian_orbital_dtype(const std::vector<double> &weight,
+                                    const std::vector<double> &decay);
+
+    /**
+     * @brief Adds a contracted gaussian orbital (f type ie l = 3) to the atom.
+     *
+     * The contracted gaussian orbital will be a linear combination of
+     * weight.size() primitive gaussians.
+     *
+     * @throw std::invalid_argument if (weight.size() != decay.size())
+     * @param weight Coefficient of the primitive gaussians in the linear
+     * combination.
+     * @param decay Exponential decay rate of the primitive gaussians.
+     */
+    void add_gaussian_orbital_ftype(const std::vector<double> &weight,
+                                    const std::vector<double> &decay);
+
+    /**
+     * @brief Sets the position of the nucleus.
+     * @note This will also update the center of the orbitals if required.
+     *
+     * @param position New position of the nucleus.
+     */
+    void set_position(const Eigen::Vector3d &position);
+
+    inline int Z() { return m_Z; }
+    inline Eigen::Vector3d position() { return m_position; }
+
+    inline std::vector<ContractedGaussian> &get_orbitals() {
+        return m_orbitals;
+    }
+    inline ContractedGaussian &get_orbital(size_t i) { return m_orbitals[i]; }
+
+    // ===============================
+    // System interface implementation
+    // ===============================
+    size_t size() const override { return m_orbitals.size(); }
+    double overlap(size_t i, size_t j) const override {
+        return overlap_integral(m_orbitals[i], m_orbitals[j]) *
+               m_orbitals[i].constant() * m_orbitals[j].constant();
     }
 
-    m_orbitals.push_back(std::move(cs));
-}
-
-// ====================================
-// Contracted Gaussian Orbital Functions
-// ====================================
-
-template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_gaussian_orbital_stype(
-    const std::vector<double> &weight, const std::vector<double> &decay)
-    requires std::is_same_v<OrbitalType, ContractedGaussian>
-{
-    if (weight.size() != decay.size()) {
-        throw std::invalid_argument(
-            "Atom: The weight and decay vectors must have the same size.");
+    double kinetic(size_t i, size_t j) const override {
+        return -0.5 * laplacian_integral(m_orbitals[i], m_orbitals[j]) *
+               m_orbitals[i].constant() * m_orbitals[j].constant();
     }
 
-    auto cg = ContractedGaussian();
-    for (size_t i = 0; i < weight.size(); i++) {
-        cg.add_primitive(weight[i], 0, 0, 0, decay[i], m_position);
+    double electron_nucleus(size_t i, size_t j) const override {
+        return -m_Z *
+               electron_nucleus_integral(m_orbitals[i], m_orbitals[j],
+                                         m_position) *
+               m_orbitals[i].constant() * m_orbitals[j].constant();
     }
 
-    m_orbitals.push_back(std::move(cg));
-}
-
-template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_gaussian_orbital_ptype(
-    const std::vector<double> &weight, const std::vector<double> &decay)
-    requires std::is_same_v<OrbitalType, ContractedGaussian>
-{
-    if (weight.size() != decay.size()) {
-        throw std::invalid_argument(
-            "Atom: The weight and decay vectors must have the same size.");
+    double electron_electron(size_t i, size_t j, size_t k,
+                             size_t l) const override {
+        return electron_electron_integral(m_orbitals[i], m_orbitals[j],
+                                          m_orbitals[k], m_orbitals[l]) *
+               m_orbitals[i].constant() * m_orbitals[j].constant() *
+               m_orbitals[k].constant() * m_orbitals[l].constant();
     }
 
-    auto cg_x = ContractedGaussian();
-    auto cg_y = ContractedGaussian();
-    auto cg_z = ContractedGaussian();
+    double nucleus_repulsion() const override { return 0.; }
 
-    for (size_t i = 0; i < weight.size(); i++) {
-        cg_x.add_primitive(weight[i], 1, 0, 0, decay[i], m_position);
-        cg_y.add_primitive(weight[i], 0, 1, 0, decay[i], m_position);
-        cg_z.add_primitive(weight[i], 0, 0, 1, decay[i], m_position);
-    }
-
-    m_orbitals.push_back(std::move(cg_x));
-    m_orbitals.push_back(std::move(cg_y));
-    m_orbitals.push_back(std::move(cg_z));
-}
-
-template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_gaussian_orbital_dtype(
-    const std::vector<double> &weight, const std::vector<double> &decay)
-    requires std::is_same_v<OrbitalType, ContractedGaussian>
-{
-    if (weight.size() != decay.size()) {
-        throw std::invalid_argument(
-            "Atom: The weight and decay vectors must have the same size.");
-    }
-
-    auto cg_xx = ContractedGaussian();
-    auto cg_yy = ContractedGaussian();
-    auto cg_zz = ContractedGaussian();
-    auto cg_xy = ContractedGaussian();
-    auto cg_xz = ContractedGaussian();
-    auto cg_yz = ContractedGaussian();
-
-    for (size_t i = 0; i < weight.size(); i++) {
-        cg_xx.add_primitive(weight[i], 2, 0, 0, decay[i], m_position);
-        cg_yy.add_primitive(weight[i], 0, 2, 0, decay[i], m_position);
-        cg_zz.add_primitive(weight[i], 0, 0, 2, decay[i], m_position);
-        cg_xy.add_primitive(weight[i], 1, 1, 0, decay[i], m_position);
-        cg_xz.add_primitive(weight[i], 1, 0, 1, decay[i], m_position);
-        cg_yz.add_primitive(weight[i], 0, 1, 1, decay[i], m_position);
-    }
-
-    m_orbitals.push_back(std::move(cg_xx));
-    m_orbitals.push_back(std::move(cg_yy));
-    m_orbitals.push_back(std::move(cg_zz));
-    m_orbitals.push_back(std::move(cg_xy));
-    m_orbitals.push_back(std::move(cg_xz));
-    m_orbitals.push_back(std::move(cg_yz));
-}
-
-template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::add_gaussian_orbital_ftype(
-    const std::vector<double> &weight, const std::vector<double> &decay)
-    requires std::is_same_v<OrbitalType, ContractedGaussian>
-{
-    if (weight.size() != decay.size()) {
-        throw std::invalid_argument(
-            "Atom: The weight and decay vectors must have the same size.");
-    }
-
-    auto cg_xxx = ContractedGaussian();
-    auto cg_yyy = ContractedGaussian();
-    auto cg_zzz = ContractedGaussian();
-    auto cg_xxy = ContractedGaussian();
-    auto cg_xxz = ContractedGaussian();
-    auto cg_xyy = ContractedGaussian();
-    auto cg_yyz = ContractedGaussian();
-    auto cg_xzz = ContractedGaussian();
-    auto cg_yzz = ContractedGaussian();
-    auto cg_xyz = ContractedGaussian();
-
-    for (size_t i = 0; i < weight.size(); i++) {
-        cg_xxx.add_primitive(weight[i], 3, 0, 0, decay[i], m_position);
-        cg_yyy.add_primitive(weight[i], 0, 3, 0, decay[i], m_position);
-        cg_zzz.add_primitive(weight[i], 0, 0, 3, decay[i], m_position);
-        cg_xxy.add_primitive(weight[i], 2, 1, 0, decay[i], m_position);
-        cg_xxz.add_primitive(weight[i], 2, 0, 1, decay[i], m_position);
-        cg_xyy.add_primitive(weight[i], 1, 2, 0, decay[i], m_position);
-        cg_yyz.add_primitive(weight[i], 0, 2, 1, decay[i], m_position);
-        cg_xzz.add_primitive(weight[i], 1, 0, 2, decay[i], m_position);
-        cg_yzz.add_primitive(weight[i], 0, 1, 2, decay[i], m_position);
-        cg_xyz.add_primitive(weight[i], 1, 1, 1, decay[i], m_position);
-    }
-
-    m_orbitals.push_back(std::move(cg_xxx));
-    m_orbitals.push_back(std::move(cg_yyy));
-    m_orbitals.push_back(std::move(cg_zzz));
-    m_orbitals.push_back(std::move(cg_xxy));
-    m_orbitals.push_back(std::move(cg_xxz));
-    m_orbitals.push_back(std::move(cg_xyy));
-    m_orbitals.push_back(std::move(cg_yyz));
-    m_orbitals.push_back(std::move(cg_xzz));
-    m_orbitals.push_back(std::move(cg_yzz));
-    m_orbitals.push_back(std::move(cg_xyz));
-}
-
-// ====================================
-// Misceleaneous Functions
-// ====================================
-
-template <DerivedFromOrbital OrbitalType>
-void Atom<OrbitalType>::set_position(const Eigen::Vector3d &position) {
-    m_position = position;
-
-    for (OrbitalType &orbital : m_orbitals) {
-        orbital.set_position(m_position);
-    }
-}
+  private:
+    int m_Z;
+    Eigen::Vector3d m_position;
+    std::vector<ContractedGaussian> m_orbitals;
+};

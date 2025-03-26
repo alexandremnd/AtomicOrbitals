@@ -1,0 +1,4 @@
+/home/alexandremnd/HartreeFock/build/CMakeFiles/AtomicOrbitalsObjects.dir
+/home/alexandremnd/HartreeFock/build/CMakeFiles/AtomicOrbitals.dir
+/home/alexandremnd/HartreeFock/build/CMakeFiles/edit_cache.dir
+/home/alexandremnd/HartreeFock/build/CMakeFiles/rebuild_cache.dir

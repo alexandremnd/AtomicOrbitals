@@ -21,9 +21,6 @@ class Hamiltonian {
     void compute_hamiltonian(const System &system) {
         m_nuclear_repulsion = system.nucleus_repulsion();
 
-        std::cout << "[Hamiltonian] Beginning hamiltonian pre-computation (may "
-                     "take many "
-                     "minutes for large basis).\n";
         compute_one_body(system);
         compute_two_body(system);
     }
@@ -85,6 +82,19 @@ class Hamiltonian {
     double as(size_t p, size_t q, size_t r, size_t s) const {
         return 2 * m_electron_electron_energy(p, q, r, s) -
                m_electron_electron_energy(p, s, r, q);
+    }
+
+    /**
+     * @brief Returns the antisymmetric two-electron integral (pq|rs)
+     *
+     * @param p p-th orbital
+     * @param q q-th orbital
+     * @param r r-th orbital
+     * @param s s-th orbital
+     * @return double (pq|rs)
+     */
+    double ee(size_t p, size_t q, size_t r, size_t s) const {
+        return m_electron_electron_energy(p, q, r, s);
     }
 
     size_t size() const { return m_overlap.rows(); }

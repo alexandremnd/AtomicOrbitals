@@ -1,16 +1,13 @@
 #pragma once
 
 #include <functional>
-#include <iostream>
 #include <memory>
 #include <vector>
+#include <iostream>
 
 #include "Atom/atom.hpp"
 #include "Atom/system.hpp"
-#include "Orbitals/contracted_orbital.hpp"
-#include "Orbitals/gaussian_primitive.hpp"
-#include "Orbitals/slater_primitive.hpp"
-#include "concepts.hpp"
+#include "Orbitals/contracted_gaussian.hpp"
 
 /**
  * @brief Provides a class to model molecule that can be used in Hartree-Fock.
@@ -20,22 +17,22 @@
  * @tparam OrbitalType The type of orbitals to use (SlaterPrimitive,
  * GaussianPrimitive, ...).
  */
-template <DerivedFromOrbital OrbitalType> class Molecule : public System {
+class Molecule : public System {
   public:
     Molecule() = default;
     Molecule(const Molecule &molecule) : m_atoms(molecule.m_atoms){};
     Molecule(Molecule &&molecule) : m_atoms(std::move(molecule.m_atoms)) {}
 
-    void add_atom(std::shared_ptr<Atom<OrbitalType>> atom) {
+    void add_atom(std::shared_ptr<Atom> atom) {
         m_atoms.push_back(atom);
 
-        for (OrbitalType &orbital : atom->get_orbitals()) {
+        for (ContractedGaussian &orbital : atom->get_orbitals()) {
             m_orbitals.emplace_back(orbital);
         }
     }
 
-    Atom<OrbitalType> &get_atom(size_t i) { return *m_atoms[i]; }
-    OrbitalType &get_orbital(size_t i) { return m_orbitals[i]; }
+    Atom &get_atom(size_t i) { return *m_atoms[i]; }
+    ContractedGaussian &get_orbital(size_t i) { return m_orbitals[i]; }
 
     const double distance(size_t i, size_t j) const {
         return (m_atoms[i]->position() - m_atoms[j]->position()).norm();
@@ -81,13 +78,10 @@ template <DerivedFromOrbital OrbitalType> class Molecule : public System {
                 repulsion += m_atoms[i]->Z() * m_atoms[j]->Z() / distance(i, j);
             }
         }
-
         return repulsion;
     }
 
   private:
-    std::vector<std::shared_ptr<Atom<OrbitalType>>> m_atoms;
-    std::vector<std::reference_wrapper<OrbitalType>> m_orbitals;
+    std::vector<std::shared_ptr<Atom>> m_atoms;
+    std::vector<std::reference_wrapper<ContractedGaussian>> m_orbitals;
 };
-
-DECLARE_EXTERN_TEMPLATE(Molecule)

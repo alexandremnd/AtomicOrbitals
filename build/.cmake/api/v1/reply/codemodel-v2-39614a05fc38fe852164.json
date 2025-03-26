@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Release-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "AtomicOrbitals",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "AtomicOrbitals::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-AtomicOrbitals-Release-2b642698a5d05d77bf68.json",
+					"name" : "AtomicOrbitals",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "AtomicOrbitalsObjects::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-AtomicOrbitalsObjects-Release-0585c650d9da80d95959.json",
+					"name" : "AtomicOrbitalsObjects",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/alexandremnd/HartreeFock/build",
+		"source" : "/home/alexandremnd/HartreeFock"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

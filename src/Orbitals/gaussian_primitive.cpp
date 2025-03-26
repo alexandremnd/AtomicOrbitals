@@ -213,7 +213,7 @@ double electron_nucleus_integral(const GaussianPrimitive &orbital1,
         HermiteCoefficient(orbital1, orbital2);
     Tensor3D<double> &E_xaxis = Hermite_coeff[0], &E_yaxis = Hermite_coeff[1],
                      &E_zaxis = Hermite_coeff[2];
-    Tensor4D Rntuv =
+    Tensor4D<double> Rntuv =
         HermiteIntegral(orbital1, orbital2, p,
                         PNucleus_position); // Define the 4 dimension tensor
 

@@ -15,11 +15,9 @@ void HartreeFock::diagonalize_overlap_matrix() {
 }
 
 void HartreeFock::set_system(const System &system, uint no_electrons) {
-    auto clock = Clock();
     m_H = Hamiltonian(system);
     m_no_electrons = no_electrons;
     diagonalize_overlap_matrix();
-    clock.time_ms("Hamiltonian building time");
 }
 
 void HartreeFock::set_smoothing_factor(double smoothing_factor) {

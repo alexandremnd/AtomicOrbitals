@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Orbitals/orbital.hpp"
 #include "Eigen/Dense"
+#include "Orbitals/orbital.hpp"
 
 /**
  * @brief Gaussian primitive orbital.
@@ -17,7 +17,7 @@
  */
 class GaussianPrimitive : public Orbital {
   public:
-    GaussianPrimitive() {};
+    GaussianPrimitive(){};
 
     /**
      * @brief Construct a new Gaussian Primitive object
