@@ -12,6 +12,17 @@
 
 namespace fs = std::filesystem;
 
+void print_openmp_state() {
+#ifdef _OPENMP
+    std::cout << "[OpenMP] Parellization enabled. Max threads: "
+              << omp_get_max_threads() << std::endl;
+#else
+    std::cout << "[OpenMP] No parellization enabled. Consider using smaller "
+                 "basis set."
+              << std::endl;
+#endif
+}
+
 std::ostream create_output_file(std::string output, int precision = 10) {
     fs::path path = fs::current_path() / "data" / output;
     fs::create_directories(path.parent_path());
@@ -93,16 +104,9 @@ void compute_periodic_table_energies(
 }
 
 int main() {
-#ifdef _OPENMP
-    std::cout << "[OpenMP] Parellization enabled. Max threads: "
-              << omp_get_max_threads() << std::endl;
-#else
-    std::cout << "[OpenMP] No parellization enabled. Consider using smaller "
-                 "basis set."
-              << std::endl;
-#endif
+    print_openmp_state();
 
-    // compute_periodic_table_energies(2, 8, "sto6g");*
+    compute_periodic_table_energies(2, 36, "ugbs", "ugbs_atomic_energies.out");
 
     return 0;
 };
