@@ -5,7 +5,7 @@
     </a>
     <h3 align="center">Atomic orbitals</h3>
     <p align="center">
-        An Hartree-Fock approach to find atomic ground state and electronic density using Slater type orbitals (STO) and Gaussian type orbitals (GTO).
+        An Hartree-Fock approach to find atomic ground state and electronic density using Gaussian type orbitals (GTO).
     </p>
 </div>
 
@@ -46,6 +46,12 @@ To install dependencies on your Arch-based distribution:
     git clone https://github.com/alexandremnd/AtomicOrbitals.git
     cd AtomicOrbitals
 ```
+
+3. Download requirements for executing python scripts from (using a virtual environnement is recommended):
+```bash
+    pip install -r requirements.txt
+```
+
 2. Build the project without tests:
 ```bash
     cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_DOCS=OFF -DENABLE_TESTS=OFF

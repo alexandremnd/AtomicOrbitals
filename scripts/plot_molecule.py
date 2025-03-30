@@ -169,5 +169,5 @@ def main(molecule_name):
 
 
 if __name__ == "__main__":
-    molecule = input("Enter the molecule name (e.g., h2): ")
+    molecule = input("Enter the molecule name (directory name given by C++) (e.g., h2/ethylen): ")
     main(molecule)

@@ -1,4 +1,5 @@
 #include <cmath>
+#include <filesystem>
 #include "Eigen/Dense"
 
 #include "Atom/atom_list.hpp"
@@ -214,8 +215,11 @@ void numerov() {
 }
 
 int main() {
+    namespace fs = std::filesystem;
     print_copyright();
     print_openmp_state();
+
+    fs::create_directories("figures");
 
     int choice = 0;
     bool running = true;
@@ -266,7 +270,7 @@ int main() {
         }
 
         case 5: {
-            double min = 0.5, max = 10.0, step = 0.05;
+            double min = 0.5, max = 5, step = 0.1;
             std::vector<std::string> basis_sets = {"6-31g", "sto6g", "3-21g"};
 
             optimize_h2(min, max, step, basis_sets);
