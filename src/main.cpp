@@ -25,17 +25,24 @@ void print_openmp_state() {
 #endif
 }
 
-void validation_table() {
-    auto H2 = Molecule();
-    auto Ha = std::make_shared<Atom>(Element::H, "3-21g");
-    auto Hb = std::make_shared<Atom>(Element::H, "3-21g");
+void print_copyright() {
+    std::cout << "===========================" << std::endl;
+    std::cout << "AtomicOrbitals Copyright (C) 2025 Alexandre Menard, Ewan "
+                 "Bataille, Jeremy Atané"
+              << std::endl;
+    std::cout << "This program comes with ABSOLUTELY NO WARRANTY" << std::endl;
+    std::cout << "This is free software, and you are welcome to redistribute it"
+                 " under certain conditions;"
+              << std::endl;
+    std::cout << "See the GNU General Public License v3 for details."
+              << std::endl;
+    std::cout << "===========================" << std::endl;
 }
 
-void compute_periodic_table_energies(
-    int min_Z, int max_Z, std::string basis_name,
-    std::string output = "atomic_energies.out") {
+void compute_periodic_table_energies(int min_Z, int max_Z,
+                                     std::string basis_name) {
 
-    auto output_file = create_output_file(output);
+    auto output_file = create_output_file("atom-" + basis_name + ".out");
 
     auto clock = Clock();
     for (int Z = min_Z; Z < max_Z + 1; Z += 2) {
@@ -51,6 +58,13 @@ void compute_periodic_table_energies(
         *output_file << Z << "," << rhf.get_final_energy() << std::endl;
     }
     clock.time_s("Periodic table computation time: ");
+}
+
+void compute_atoms() {
+    compute_periodic_table_energies(2, 16, "sto6g");
+    compute_periodic_table_energies(2, 16, "6-31g");
+
+    execute_python_script("plot_atom.py");
 }
 
 void optimize_h2(double min, double max, double step,
@@ -81,6 +95,28 @@ void optimize_h2(double min, double max, double step,
                            << std::endl;
         }
     }
+
+    auto H2 = Molecule();
+    auto Ha = std::make_shared<Atom>(Element::H, "6-31g");
+    auto Hb = std::make_shared<Atom>(Element::H, "6-31g");
+
+    H2.add_atom(Ha);
+    H2.add_atom(Hb);
+
+    std::string output = "h2_rhf.out";
+    auto output_stream = create_output_file(output);
+
+    for (int i = 0; i < n; i++) {
+        Hb->set_position({0.0, 0.0, i * step + min});
+        auto rhf = RestrictedHartreeFock(H2, 2);
+        rhf.set_smoothing_factor(0.7);
+        rhf.set_silent(true);
+        rhf.run(1e-6, 1000, 1);
+        *output_stream << step * i + min << "," << rhf.get_final_energy()
+                       << std::endl;
+    }
+
+    execute_python_script("plot_optimization.py");
 }
 
 void compute_h2_eq() {
@@ -106,6 +142,10 @@ void compute_h2_eq() {
     *density_file << rhf.density_matrix() << std::endl;
     *energy_file << rhf.orbital_energies() << std::endl;
     *coefficients_file << rhf.coefficient_matrix() << std::endl;
+
+    std::cout << "Data saved in h2 directory." << std::endl;
+    std::cout << "===========================" << std::endl;
+    execute_python_script("plot_molecule.py");
 }
 
 /**
@@ -159,6 +199,11 @@ void compute_ethylen_eq() {
     *density_file << rhf.density_matrix() << std::endl;
     *energy_file << rhf.orbital_energies() << std::endl;
     *coefficients_file << rhf.coefficient_matrix() << std::endl;
+
+    std::cout << "Data saved in ethylen directory." << std::endl;
+    std::cout << "===========================" << std::endl;
+
+    execute_python_script("plot_molecule.py");
 }
 
 void numerov() {
@@ -169,14 +214,75 @@ void numerov() {
 }
 
 int main() {
+    print_copyright();
     print_openmp_state();
-    numerov();
-    // compute_periodic_table_energies(2, 36, "ugbs", "atom-ugbs.out");
 
-    // optimize_h2(0.5, 10, 0.05, {"6-31g", "sto6g", "3-21g"});
+    int choice = 0;
+    bool running = true;
 
-    // compute_h2_eq();
-    // compute_ethylen_eq();
+    while (running) {
+        // Display menu
+        std::cout << "\n===== AtomicOrbitals Menu =====\n";
+        std::cout << "1. Compute H2 at equilibrium geometry\n";
+        std::cout << "2. Compute ethylene at equilibrium geometry\n";
+        std::cout << "3. Run Numerov's method for hydrogen-like atoms\n";
+        std::cout << "4. Compute periodic table energies\n";
+        std::cout << "5. Optimize H2 bond length\n";
+        std::cout << "0. Exit\n";
+        std::cout << "Enter your choice: ";
+
+        // Get user input with validation
+        if (!(std::cin >> choice)) {
+            std::cin.clear(); // Clear error flags
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),
+                            '\n'); // Discard invalid input
+            std::cout << "Invalid input. Please enter a number.\n";
+            continue;
+        }
+
+        // Process user choice
+        switch (choice) {
+        case 1:
+            std::cout << "\nComputing H2 at equilibrium geometry...\n";
+            compute_h2_eq();
+            return 0;
+
+        case 2:
+            std::cout << "\nComputing ethylene at equilibrium geometry...\n";
+            compute_ethylen_eq();
+            return 0;
+
+        case 3:
+            std::cout
+                << "\nRunning Numerov's method for hydrogen-like atoms...\n";
+            numerov();
+            return 0;
+
+        case 4: {
+            std::cout << "\nComputing periodic table energies...\n";
+
+            compute_atoms();
+            return 0;
+        }
+
+        case 5: {
+            double min = 0.5, max = 10.0, step = 0.05;
+            std::vector<std::string> basis_sets = {"6-31g", "sto6g", "3-21g"};
+
+            optimize_h2(min, max, step, basis_sets);
+            return 0;
+        }
+
+        case 0:
+            std::cout << "Exiting program. Goodbye!\n";
+            running = false;
+            break;
+
+        default:
+            std::cout << "Invalid choice. Please try again.\n";
+            break;
+        }
+    }
 
     return 0;
 };

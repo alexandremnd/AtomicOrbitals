@@ -142,7 +142,8 @@ def plot(filename, density, X, Y, Z):
     plt.subplots_adjust(right=0.8, hspace=0.4)
 
     # plt.tight_layout()
-    plt.savefig(f"figures/{filename}.svg", bbox_inches="tight")
+    # plt.savefig(f"figures/{filename}.svg", bbox_inches="tight")
+    plt.show()
 
 
 def main(molecule_name):
