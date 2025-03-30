@@ -165,7 +165,7 @@ void numerov() {
     minimisation(2, 1);
     radial_solution(2, 1, 2);
 
-    // execute_python_script("affichage.py");
+    execute_python_script("affichage.py");
 }
 
 int main() {
