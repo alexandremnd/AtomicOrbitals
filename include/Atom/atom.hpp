@@ -15,9 +15,6 @@
  *
  * This is the privileged class to build any system that may be forwarded to
  * Hartree-Fock for computation. Molecules are built upon atoms.
- *
- * @tparam ContractedGaussian The type of the orbitals to use (SlaterPrimitive,
- * ContractedSlater, ContractedGaussian, ...).
  */
 class Atom : public System {
   public:
@@ -50,10 +47,10 @@ class Atom : public System {
 
     Atom(Atom &atom)
         : m_Z(atom.Z()), m_position(atom.m_position),
-          m_orbitals(atom.m_orbitals){};
+          m_orbitals(atom.m_orbitals) {};
     Atom(Atom &&atom)
         : m_Z(atom.Z()), m_position(atom.m_position),
-          m_orbitals(std::move(atom.m_orbitals)){};
+          m_orbitals(std::move(atom.m_orbitals)) {};
 
     void print_info() const;
 
@@ -157,33 +154,18 @@ class Atom : public System {
     // ===============================
     // System interface implementation
     // ===============================
-    size_t size() const override { return m_orbitals.size(); }
-    double overlap(size_t i, size_t j) const override {
-        return overlap_integral(m_orbitals[i], m_orbitals[j]) *
-               m_orbitals[i].constant() * m_orbitals[j].constant();
-    }
+    size_t size() const override;
+    double overlap(size_t i, size_t j) const override;
 
-    double kinetic(size_t i, size_t j) const override {
-        return -0.5 * laplacian_integral(m_orbitals[i], m_orbitals[j]) *
-               m_orbitals[i].constant() * m_orbitals[j].constant();
-    }
+    double kinetic(size_t i, size_t j) const override;
 
-    double electron_nucleus(size_t i, size_t j) const override {
-        return -m_Z *
-               electron_nucleus_integral(m_orbitals[i], m_orbitals[j],
-                                         m_position) *
-               m_orbitals[i].constant() * m_orbitals[j].constant();
-    }
+    double electron_nucleus(size_t i, size_t j) const override;
 
     double electron_electron(size_t i, size_t j, size_t k,
-                             size_t l) const override {
-        return electron_electron_integral(m_orbitals[i], m_orbitals[j],
-                                          m_orbitals[k], m_orbitals[l]) *
-               m_orbitals[i].constant() * m_orbitals[j].constant() *
-               m_orbitals[k].constant() * m_orbitals[l].constant();
-    }
+                             size_t l) const override;
+    double nucleus_repulsion() const override;
 
-    double nucleus_repulsion() const override { return 0.; }
+    friend std::ostream &operator<<(std::ostream &os, const Atom &orbital);
 
   private:
     int m_Z;

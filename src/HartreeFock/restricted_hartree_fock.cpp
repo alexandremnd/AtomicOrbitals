@@ -59,10 +59,12 @@ void RestrictedHartreeFock::diagonalize_fock_matrix() {
     const Eigen::MatrixXd &V = m_transformation_matrix;
     Eigen::MatrixXd &F_tilde = m_fock_matrix_tilde;
     Eigen::MatrixXd &C = m_coefficient_matrix;
+    Eigen::VectorXd &E = m_orbital_energies;
 
     F_tilde = V * F * V;
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(F_tilde);
 
+    E = es.eigenvalues().head(N / 2);
     C = V * es.eigenvectors().block(0, 0, L, N / 2);
     normalizeCoefficientMatrix();
 }
@@ -94,6 +96,15 @@ void RestrictedHartreeFock::compute_hf_energy() {
         m_density_matrix.cwiseProduct(m_fock_matrix + m_H.T() + m_H.V()).sum();
 
     m_hf_energy += m_H.nucleus_repulsion();
+}
+
+void RestrictedHartreeFock::reset_diis_subspace() {
+    m_fock_history.clear();
+    m_density_history.clear();
+    m_error_history =
+        Eigen::MatrixXd::Zero(m_H.size() * m_H.size(), m_diis_size);
+    m_fock_history.resize(m_diis_size);
+    m_density_history.resize(m_diis_size);
 }
 
 void RestrictedHartreeFock::diis(size_t iteration) {

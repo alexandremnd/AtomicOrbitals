@@ -14,9 +14,6 @@
  basis functions.
  * @note Coefficients needs to be normalized. Otherwise, you should add
  * primitive and call update_normalization after adding all primitives.
- *
- * @tparam PrimitiveType Type of primitive basis functions (e.g
- GaussianPrimitive, SlaterPrimitive).
  */
 class ContractedGaussian final : public Orbital {
   public:
@@ -73,6 +70,7 @@ class ContractedGaussian final : public Orbital {
 
     size_t size() const;
 
+    const std::vector<GaussianPrimitive> &get_primitives() const;
     const GaussianPrimitive &get_primitive(int i) const;
     double get_coefficient(int i) const;
 

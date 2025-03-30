@@ -142,9 +142,60 @@ void Atom::add_gaussian_orbital_ftype(const std::vector<double> &weight,
     m_orbitals.push_back(std::move(cg_xyz));
 }
 
+// ===============================
+// System interface implementation
+// ===============================
+
+size_t Atom::size() const { return m_orbitals.size(); }
+
+double Atom::overlap(size_t i, size_t j) const {
+    return overlap_integral(m_orbitals[i], m_orbitals[j]) *
+           m_orbitals[i].constant() * m_orbitals[j].constant();
+}
+
+double Atom::kinetic(size_t i, size_t j) const {
+    return -0.5 * laplacian_integral(m_orbitals[i], m_orbitals[j]) *
+           m_orbitals[i].constant() * m_orbitals[j].constant();
+}
+
+double Atom::electron_nucleus(size_t i, size_t j) const {
+    return -m_Z *
+           electron_nucleus_integral(m_orbitals[i], m_orbitals[j], m_position) *
+           m_orbitals[i].constant() * m_orbitals[j].constant();
+}
+
+double Atom::electron_electron(size_t i, size_t j, size_t k, size_t l) const {
+    return electron_electron_integral(m_orbitals[i], m_orbitals[j],
+                                      m_orbitals[k], m_orbitals[l]) *
+           m_orbitals[i].constant() * m_orbitals[j].constant() *
+           m_orbitals[k].constant() * m_orbitals[l].constant();
+}
+
+double Atom::nucleus_repulsion() const { return 0.; }
+
 // ====================================
 // Misceleaneous Functions
 // ====================================
+
+std::ostream &operator<<(std::ostream &os, const Atom &atom) {
+    os << static_cast<Element>(atom.m_Z) << " " << atom.m_position.transpose()
+       << "\n";
+    os << "****\n";
+
+    for (const auto &orb : atom.m_orbitals) {
+        int i = 0;
+        for (const auto &sub_orb : orb.get_primitives()) {
+            os << orb.get_coefficient(i) << " " << sub_orb.constant();
+            os << " " << sub_orb.position().transpose();
+            os << " " << sub_orb.alpha() << " " << sub_orb.x_exponent() << " ";
+            os << sub_orb.y_exponent() << " " << sub_orb.z_exponent() << "\n";
+            i++;
+        }
+        os << "****\n";
+    }
+
+    return os;
+}
 
 void Atom::set_position(const Eigen::Vector3d &position) {
     m_position = position;

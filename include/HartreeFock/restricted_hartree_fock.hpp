@@ -20,14 +20,9 @@ class RestrictedHartreeFock : public HartreeFock {
         reset_diis_subspace();
     }
 
-    void reset_diis_subspace() {
-        m_fock_history.clear();
-        m_density_history.clear();
-        m_error_history =
-            Eigen::MatrixXd::Zero(m_H.size() * m_H.size(), m_diis_size);
-        m_fock_history.resize(m_diis_size);
-        m_density_history.resize(m_diis_size);
-    }
+    const Eigen::VectorXd &orbital_energies() { return m_orbital_energies; }
+    const Eigen::MatrixXd &coefficient_matrix() { return m_coefficient_matrix; }
+    const Eigen::MatrixXd &density_matrix() { return m_density_matrix; }
 
   private:
     void setup_fock_matrix() override;
@@ -37,6 +32,8 @@ class RestrictedHartreeFock : public HartreeFock {
     void compute_hf_energy() override;
 
     void normalizeCoefficientMatrix();
+
+    void reset_diis_subspace();
 
     /**
      * @brief Stores the error vector in the DIIS error history
@@ -57,6 +54,7 @@ class RestrictedHartreeFock : public HartreeFock {
     Eigen::MatrixXd m_fock_matrix_tilde;
     Eigen::MatrixXd m_density_matrix;
     Eigen::MatrixXd m_coefficient_matrix;
+    Eigen::VectorXd m_orbital_energies;
 
     uint m_diis_size = 0;
     std::vector<Eigen::MatrixXd> m_fock_history;

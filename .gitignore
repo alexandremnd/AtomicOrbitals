@@ -39,3 +39,4 @@
 __pycache__
 .clocignore
 */basis_to_split
+/figures

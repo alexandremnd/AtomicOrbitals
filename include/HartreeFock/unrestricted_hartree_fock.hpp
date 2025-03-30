@@ -8,6 +8,28 @@ class UnrestrictedHartreeFock : public HartreeFock {
     UnrestrictedHartreeFock(const System &system, uint num_electrons,
                             uint num_alpha_electrons);
 
+    const Eigen::VectorXd &orbital_alpha_energies() {
+        return m_alpha_orbital_energies;
+    }
+    const Eigen::MatrixXd &coefficient_alpha_matrix() {
+        return m_alpha_coefficients;
+    }
+    const Eigen::MatrixXd &density_alpha_matrix() {
+        return m_alpha_density_matrix;
+    }
+
+    const Eigen::VectorXd &orbital_beta_energies() {
+        return m_beta_orbital_energies;
+    }
+
+    const Eigen::MatrixXd &coefficient_beta_matrix() {
+        return m_beta_coefficients;
+    }
+
+    const Eigen::MatrixXd &density_beta_matrix() {
+        return m_beta_density_matrix;
+    }
+
   private:
     void setup_fock_matrix() override;
     void diagonalize_fock_matrix() override;

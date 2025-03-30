@@ -21,17 +21,12 @@ UnrestrictedHartreeFock::UnrestrictedHartreeFock(const System &system,
     m_beta_fock_matrix_tilde = Eigen::MatrixXd::Zero(L, L);
     m_alpha_coefficients = Eigen::MatrixXd::Zero(L, m_num_alpha_electrons);
     m_beta_coefficients = Eigen::MatrixXd::Zero(L, m_num_beta_electrons);
-
-    std::cout << "UnrestrictedHartreeFock initialized with "
-              << m_num_alpha_electrons << " alpha electrons and "
-              << m_num_beta_electrons << " beta electrons." << std::endl;
 }
 
 void UnrestrictedHartreeFock::setup_fock_matrix() {
     int N = m_no_electrons;
     int L = m_H.size();
 
-    // Initialize Fock matrices with the core Hamiltonian
     m_alpha_fock_matrix = m_H.T() + m_H.V();
     m_beta_fock_matrix = m_H.T() + m_H.V();
 
@@ -67,17 +62,14 @@ void UnrestrictedHartreeFock::diagonalize_fock_matrix() {
 
     F_beta_tilde = V.transpose() * m_beta_fock_matrix * V;
 
-    // Solve eigenvalue problems for alpha and beta electrons
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> alpha_solver(F_alpha_tilde);
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> beta_solver(F_beta_tilde);
 
-    // Transform eigenvectors back to original basis
     m_alpha_coefficients =
         V * alpha_solver.eigenvectors().block(0, 0, L, m_num_alpha_electrons);
     m_beta_coefficients =
         V * beta_solver.eigenvectors().block(0, 0, L, m_num_beta_electrons);
 
-    // Normalize coefficient matrices
     normalizeCoefficientMatrix();
 }
 
@@ -85,7 +77,6 @@ void UnrestrictedHartreeFock::normalizeCoefficientMatrix() {
     const size_t L = m_H.size();
     const size_t N = m_no_electrons;
 
-    // Normalize alpha coefficient matrix
     for (size_t k = 0; k < m_num_alpha_electrons; k++) {
         double normalizationFactor = 0;
         for (size_t p = 0; p < L; p++) {
@@ -100,7 +91,6 @@ void UnrestrictedHartreeFock::normalizeCoefficientMatrix() {
             m_alpha_coefficients.col(k) / normalizationFactor;
     }
 
-    // Normalize beta coefficient matrix
     for (size_t k = 0; k < m_num_beta_electrons; k++) {
         double normalizationFactor = 0;
         for (size_t p = 0; p < L; p++) {
@@ -120,7 +110,6 @@ void UnrestrictedHartreeFock::compute_density_matrix() {
     const size_t L = m_H.size();
     const size_t N = m_no_electrons;
 
-    // Reset density matrices
     m_alpha_density_matrix = m_smoothing_factor * m_alpha_coefficients *
                                  m_alpha_coefficients.transpose() +
                              (1 - m_smoothing_factor) * m_alpha_density_matrix;
@@ -152,6 +141,5 @@ void UnrestrictedHartreeFock::self_consistent_field_iteration(
     setup_fock_matrix();
     diagonalize_fock_matrix();
     compute_density_matrix();
-
     compute_hf_energy();
 }

@@ -1,16 +1,18 @@
-#include "Atom/atom_list.hpp"
+#include <cmath>
 #include "Eigen/Dense"
-#include "HartreeFock/restricted_hartree_fock.hpp"
-#include "HartreeFock/unrestricted_hartree_fock.hpp"
+
+#include "Atom/atom_list.hpp"
 #include "Atom/atom.hpp"
 #include "Atom/molecule.hpp"
-#include <filesystem>
-#include <fstream>
-#include <iomanip>
-#include <memory>
-#include "Utils/clock.hpp"
 
-namespace fs = std::filesystem;
+#include "HartreeFock/restricted_hartree_fock.hpp"
+#include "HartreeFock/unrestricted_hartree_fock.hpp"
+
+#include "Numerov/sol_radiale.hpp"
+#include "Numerov/minimisation.hpp"
+
+#include "Utils/clock.hpp"
+#include "Utils/misc.hpp"
 
 void print_openmp_state() {
 #ifdef _OPENMP
@@ -23,17 +25,32 @@ void print_openmp_state() {
 #endif
 }
 
-std::ostream create_output_file(std::string output, int precision = 10) {
-    fs::path path = fs::current_path() / "data" / output;
-    fs::create_directories(path.parent_path());
+void validation_table() {
+    auto H2 = Molecule();
+    auto Ha = std::make_shared<Atom>(Element::H, "3-21g");
+    auto Hb = std::make_shared<Atom>(Element::H, "3-21g");
+}
 
-    std::ofstream output_file(path);
-    if (!output_file.is_open()) {
-        std::cerr << "Ouput file creation: Could not open the output file "
-                  << path << ".\n";
-        exit(1);
+void compute_periodic_table_energies(
+    int min_Z, int max_Z, std::string basis_name,
+    std::string output = "atomic_energies.out") {
+
+    auto output_file = create_output_file(output);
+
+    auto clock = Clock();
+    for (int Z = min_Z; Z < max_Z + 1; Z += 2) {
+        std::cout << "Computing " << get_element_long_name(Element(Z))
+                  << " ground state." << std::endl;
+
+        auto atom = Atom(Element(Z), basis_name);
+
+        auto rhf = RestrictedHartreeFock(atom, Z);
+        rhf.set_smoothing_factor(0.7);
+        rhf.run(1e-4, 1000, 2);
+
+        *output_file << Z << "," << rhf.get_final_energy() << std::endl;
     }
-    output_file << std::setprecision(precision);
+    clock.time_s("Periodic table computation time: ");
 }
 
 void optimize_h2(double min, double max, double step,
@@ -60,53 +77,106 @@ void optimize_h2(double min, double max, double step,
             rhf.set_smoothing_factor(0.7);
             rhf.set_silent(true);
             rhf.run(1e-6, 1000, 1);
-            output_stream << step * i + min << "," << rhf.get_final_energy()
-                          << std::endl;
+            *output_stream << step * i + min << "," << rhf.get_final_energy()
+                           << std::endl;
         }
     }
 }
 
-void validation_table() {
+void compute_h2_eq() {
     auto H2 = Molecule();
-    auto Ha = std::make_shared<Atom>(Element::H, "3-21g");
-    auto Hb = std::make_shared<Atom>(Element::H, "3-21g");
+    auto Ha = std::make_shared<Atom>(Element::H, "6-31g");
+    auto Hb = std::make_shared<Atom>(Element::H, "6-31g");
+
+    H2.add_atom(Ha);
+    H2.add_atom(Hb);
+
+    Hb->set_position({0.0, 0.0, 1.5});
+
+    auto rhf = RestrictedHartreeFock(H2, 2);
+    rhf.set_smoothing_factor(0.7);
+    rhf.run(1e-6, 1000, 1);
+
+    auto system_file = create_output_file("h2/system.out");
+    auto density_file = create_output_file("h2/density.out");
+    auto energy_file = create_output_file("h2/energy.out");
+    auto coefficients_file = create_output_file("h2/coefficients.out");
+
+    *system_file << H2 << std::endl;
+    *density_file << rhf.density_matrix() << std::endl;
+    *energy_file << rhf.orbital_energies() << std::endl;
+    *coefficients_file << rhf.coefficient_matrix() << std::endl;
 }
 
-void compute_periodic_table_energies(
-    int min_Z, int max_Z, std::string basis_name,
-    std::string output = "atomic_energies.out") {
+/**
+ * @brief Compute ethylen orbital energies and density matrix at equilibrium
+ * geometry. 121.3° bond angle, 109 pm (2.06 a0) C-H bond length, 134 pm (2.53
+ * a0) C=C bond length (alkene).
+ *
+ */
+void compute_ethylen_eq() {
+    auto ethylen = Molecule();
+    auto C1 = std::make_shared<Atom>(Element::C, "6-311++(2d,2p)");
+    auto C2 = std::make_shared<Atom>(Element::C, "6-311++(2d,2p)");
+    auto H1 = std::make_shared<Atom>(Element::H, "6-311++g");
+    auto H2 = std::make_shared<Atom>(Element::H, "6-311++g");
+    auto H3 = std::make_shared<Atom>(Element::H, "6-311++g");
+    auto H4 = std::make_shared<Atom>(Element::H, "6-311++g");
 
-    fs::path path = fs::current_path() / "data" / output;
-    fs::create_directories(path.parent_path());
+    double cos_60 = cos(0.5 * 121.3 * M_PI / 180);
+    double sin_60 = sin(0.5 * 121.3 * M_PI / 180);
 
-    std::ofstream output_file(path);
-    if (!output_file.is_open()) {
-        std::cerr << "Computation: Could not open the output file " << path
-                  << ".\n";
-        exit(1);
-    }
-    output_file << std::setprecision(10);
+    C1->set_position({0, 0, 0});
+    C2->set_position({0, 0, 2.53});
 
-    auto clock = Clock();
-    for (int Z = min_Z; Z < max_Z + 1; Z += 2) {
-        std::cout << "Computing " << get_element_long_name(Element(Z))
-                  << " ground state." << std::endl;
+    // Hydrogen linked to C2
+    H3->set_position({0, 2.06 * sin_60, 2.53 + 2.06 * cos_60});
+    H4->set_position({0, -2.06 * sin_60, 2.53 + 2.06 * cos_60});
 
-        auto atom = Atom(Element(Z), basis_name);
+    // Hydrogen linked to C1
+    H1->set_position({0, 2.06 * sin_60, -2.06 * cos_60});
+    H2->set_position({0, -2.06 * sin_60, -2.06 * cos_60});
 
-        auto rhf = RestrictedHartreeFock(atom, Z);
-        rhf.set_smoothing_factor(0.7);
-        rhf.run(1e-4, 1000, 2);
+    ethylen.add_atom(C1);
+    ethylen.add_atom(C2);
+    ethylen.add_atom(H1);
+    ethylen.add_atom(H2);
+    ethylen.add_atom(H3);
+    ethylen.add_atom(H4);
 
-        output_file << Z << "," << rhf.get_final_energy() << std::endl;
-    }
-    clock.time_s("Periodic table computation time: ");
+    auto rhf = RestrictedHartreeFock(ethylen, 16);
+    rhf.set_silent(false);
+    rhf.set_smoothing_factor(0.7);
+    rhf.run(1e-6, 1000, 1);
+
+    // Print results
+    auto system_file = create_output_file("ethylen/system.out");
+    auto density_file = create_output_file("ethylen/density.out");
+    auto energy_file = create_output_file("ethylen/energy.out");
+    auto coefficients_file = create_output_file("ethylen/coefficients.out");
+
+    *system_file << ethylen << std::endl;
+    *density_file << rhf.density_matrix() << std::endl;
+    *energy_file << rhf.orbital_energies() << std::endl;
+    *coefficients_file << rhf.coefficient_matrix() << std::endl;
+}
+
+void numerov() {
+    minimisation(2, 1);
+    radial_solution(2, 1, 2);
+
+    // execute_python_script("affichage.py");
 }
 
 int main() {
     print_openmp_state();
+    numerov();
+    // compute_periodic_table_energies(2, 36, "ugbs", "atom-ugbs.out");
 
-    compute_periodic_table_energies(2, 36, "ugbs", "ugbs_atomic_energies.out");
+    // optimize_h2(0.5, 10, 0.05, {"6-31g", "sto6g", "3-21g"});
+
+    // compute_h2_eq();
+    // compute_ethylen_eq();
 
     return 0;
 };

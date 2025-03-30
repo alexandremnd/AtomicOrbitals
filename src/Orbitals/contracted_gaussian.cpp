@@ -59,6 +59,11 @@ void ContractedGaussian::update_normalization() {
 
 size_t ContractedGaussian::size() const { return m_primitives.size(); }
 
+const std::vector<GaussianPrimitive> &
+ContractedGaussian::get_primitives() const {
+    return m_primitives;
+}
+
 const GaussianPrimitive &ContractedGaussian::get_primitive(int i) const {
     return m_primitives[i];
 }
