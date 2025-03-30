@@ -5,56 +5,28 @@
 #include <string>
 #include <math.h>
 
+#include "Eigen/Dense"
 #include "Numerov/numerov.hpp"
 #include "Numerov/minimisation.hpp"
 
-std::vector<double> Multiplication(std::vector<double> U,
-                                   std::vector<double> V) {
-    int Taille = U.size();
-    std::vector<double> W(Taille);
-    for (int i = 0; i < Taille; i++) {
-        W[i] = U[i] * V[i];
-    }
-    return W;
-}
+Eigen::VectorXd derivative(Eigen::VectorXd &X, Eigen::VectorXd &Y) {
+    int N = X.size();
+    Eigen::VectorXd dx, dy;
 
-std::vector<double> Multiplication_scalaire(std::vector<double> U, double x) {
-    int Taille = U.size();
-    std::vector<double> W(Taille);
-    for (int i = 0; i < Taille; i++) {
-        W[i] = U[i] * x;
-    }
-    return W;
-}
+    Eigen::VectorXd dY(N - 1);
 
-double maximum(std::vector<double> L) {
-    double maxi = L[0];
-    for (int i = 0; i < L.size(); i++) {
-        if (L[i] > maxi) {
-            maxi = L[i];
-        }
-    }
-    return maxi;
-}
+    // dx = X[1:] - X[:-1]
+    // dy = Y[1:] - Y[:-1]
+    dx = X.block(1, 0, N - 1, 1) - X.block(0, 0, N - 1, 1);
+    dy = Y.block(1, 0, N - 1, 1) - Y.block(0, 0, N - 1, 1);
 
-std::vector<double> derivation(std::vector<double> &X, std::vector<double> &Y) {
-    int Taille = X.size();
-    double dx, dy;
-    std::vector<double> dY(Taille - 1);
-    for (int i = 0; i < Taille - 1; i++) {
-        dx = X[i + 1] - X[i];
-        dy = Y[i + 1] - Y[i];
-        dY[i] = dy / dx;
-    }
+    // dY = dy / dx
+    dY = dy.cwiseQuotient(dx);
+
     return dY;
 }
 
-/// Fonctions utiles
-
-std::vector<double>
-Liste_Energie(double Ei, double Ef,
-              double dE_i) { // Fonctionne uniquement pour des énergies
-                             // négatives tq |Ei| > |Ef|
+Eigen::VectorXd energy_list(double Ei, double Ef, double dE_i) {
     std::vector<double> L_E;
     double E = Ei, dE = dE_i;
 
@@ -66,14 +38,22 @@ Liste_Energie(double Ei, double Ef,
         E = E + dE;
     }
 
-    L_E.shrink_to_fit(); // Fixe la taille du vecteur une fois initialisé
-    return L_E;
+    L_E.shrink_to_fit();
+
+    Eigen::VectorXd out(L_E.size());
+    for (size_t i = 0; i < L_E.size(); i++) {
+        out(i) = L_E[i];
+    }
+
+    return out;
 }
 
-std::vector<double> f_U0(double dr, double ri, double rf, int Nr,
-                         std::vector<double> &L_E, int N_E, int Z, int l) {
-    std::vector<double> Y0(2), r0(2), U(Nr), L_U0(N_E), densite;
+Eigen::VectorXd f_U0(double dr, double ri, double rf, int Nr,
+                     Eigen::VectorXd &L_E, int Z, int l) {
+    int N_E = L_E.size();
+    Eigen::VectorXd Y0(2), r0(2), U(Nr), L_U0(N_E), densite;
 
+    // Initialisation des conditions initiales
     Y0[0] = 0.0001;
     Y0[1] = 0.0001;
     r0[0] = ri;
@@ -81,51 +61,59 @@ std::vector<double> f_U0(double dr, double ri, double rf, int Nr,
 
     double E, max_dense;
 
-    for (int i = 0; i < N_E; i++) { // On parcourt les énergies
+    for (int i = 0; i < N_E; i++) {
         E = L_E[i];
-        auto Ec = [E, Z, l](double r) { return Energie(r, E, Z, l); };
-        U = Numerov(Y0, Ec, f_nulle, r0, ri, rf, dr);
 
-        densite = Multiplication(U, Multiplication_scalaire(U, dr));
-        max_dense = maximum(densite);
+        auto Ec = [E, Z, l](double r) { return Numerov::energy(r, E, Z, l); };
+        U = Numerov::numerov(Y0, Ec, Numerov::f_null, r0, ri, rf, dr);
+
+        // On calcule la densité normalisée du dernier point (Nr - 1) ie en 0
+        densite = U.cwiseProduct(U * dr); // U * U * dr
+        max_dense = densite.maxCoeff();
         L_U0[i] = (densite[Nr - 1]) / max_dense;
     }
+
     return L_U0;
 }
 
 void minimisation(int Z, int l) {
-    double
-        dr = 0.001,
-        ri = 200. /
-             Z, // Le rayon initiale ne doit pas être trop grand pour éviter une
-                // divergence en 0. Le rayon initiale doit prendre en compte que
-                // si Z grand, la zone de l'électron est plus proche du noyau
-                // donc les conditions initiales sont à mettre plus proche aussi
-        rf = 0.01; // Le rayon finale, soit le plus proche de 0, doit être
-                   // adapté à la valeur de l
+    // Le rayon initial (ri) ne doit pas être trop grand pour éviter une
+    // divergence en 0. Le rayon initiale doit prendre en compte que
+    // si Z grand, la zone de l'électron est plus proche du noyau
+    // donc les conditions initiales sont à mettre plus proche aussi
+
+    // Le rayon final doit être le plus proche de 0 et doit être
+    // adapté à la valeur de l
+
+    double dr = 0.001;
+    double ri = 200. / Z;
+    double rf = 0.01;
+
     double Nr = fabs(rf - ri) / dr;
-    double dE = 0.0002, Ei = -0.7,
-           Ef = -0.05; // Les énergies doivent être négatives et |Ei| > |Ef|
-    std::vector<double> L_E = Liste_Energie(Ei, Ef, dE);
+    double dE = 0.0002;
+    double Ei = -0.7;
+    double Ef = -0.05; // Les énergies doivent être négatives et |Ei| > |Ef|
+
+    Eigen::VectorXd L_E = energy_list(Ei, Ef, dE);
     int N_E = L_E.size();
 
+    // Affichage des paramètres
     std::cout << "dr=" << dr << ", Nr=" << Nr << std::endl;
     std::cout << "dE=" << dE << ", N_E=" << N_E << std::endl;
-    std::vector<double> L_U0 = f_U0(dr, ri, rf, Nr, L_E, N_E, Z, l);
-    std::vector<double> L_U0_norm =
-        Multiplication_scalaire(L_U0, 1. / maximum(L_U0));
 
-    std::string Nom_fichier = "valeur_rfixe.txt"; // Nom du fichier de sortie
-    std::ofstream fichier(Nom_fichier);
+    Eigen::VectorXd L_U0 = f_U0(dr, ri, rf, Nr, L_E, Z, l);
+    Eigen::VectorXd L_U0_norm = L_U0 / L_U0.maxCoeff();
+
+    std::string output_file = "data/valeur_rfixe.out";
+    std::ofstream fichier(output_file);
+
     fichier << "Z=" << Z << ";l=" << l << ";dr=" << dr << std::endl;
     fichier << "U(0,E);E" << std::endl;
 
-    double L_U0j, Ej;
     for (int j = 0; j < N_E; j++) {
-        L_U0j = L_U0_norm[j];
-        Ej = L_E[j];
-        fichier << std::to_string(L_U0j) << ";" << std::to_string(Ej)
+        fichier << std::to_string(L_U0_norm[j]) << ";" << std::to_string(L_E[j])
                 << std::endl;
     }
+
     fichier.close();
 }

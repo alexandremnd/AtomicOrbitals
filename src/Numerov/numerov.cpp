@@ -1,27 +1,28 @@
 // Import de librairies
+#include <cmath>
 #include <iostream>
 #include <vector>
 #include <functional>
-#include <math.h>
+#include <cmath>
 
 #include "Numerov/numerov.hpp"
 
-double V_eff(double r, int Z, int l) {
+double Numerov::v_eff(double r, int Z, int l) {
     return -Z / r + l * (l + 1) / (2. * r * r);
 }
 
-double Energie(double r, double E, int Z, int l) {
-    return 2. * (E - V_eff(r, Z, l));
+double Numerov::energy(double r, double E, int Z, int l) {
+    return 2. * (E - Numerov::v_eff(r, Z, l));
 }
 
-double f_nulle(double x) { return 0.; }
+double Numerov::f_null(double x) { return 0.; }
 
-std::vector<double> Numerov(std::vector<double> &Y0,
-                            std::function<double(double)> f_g,
-                            double (&f_s)(double), std::vector<double> &X0,
-                            double xi, double xf, double dx) {
+Eigen::VectorXd Numerov::numerov(Eigen::VectorXd &Y0,
+                                 std::function<double(double)> f_g,
+                                 double (&f_s)(double), Eigen::VectorXd &X0,
+                                 double xi, double xf, double dx) {
     double Nx = fabs(xf - xi) / dx; // Nombre de points de calcul
-    std::vector<double> resultat(Nx);
+    Eigen::VectorXd resultat(static_cast<int>(ceil(Nx)));
 
     double x0 = X0[0], x1 = X0[1], x2;
     double y0 = Y0[0], y1 = Y0[1];

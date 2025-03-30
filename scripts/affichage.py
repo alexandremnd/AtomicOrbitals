@@ -11,7 +11,7 @@ plt.style.use("article.mplstyle")
 ### ================================================
 ### Lecture du fichier pour la fonction d'onde radiale
 ### ================================================
-Nom_fichier = "valeur_radiale.txt"
+Nom_fichier = "data/valeur_radiale.txt"
 fichier = open(Nom_fichier, "r")
 Lignes = fichier.readlines()
 
@@ -107,7 +107,7 @@ plt.legend()
 ### ==============================================
 ### Lecture des données pour la minimisation
 ### ==============================================
-Nom_fichier = "valeur_rfixe.txt"
+Nom_fichier = "data/valeur_rfixe.txt"
 fichier = open(Nom_fichier,"r")
 Lignes = fichier.readlines()
 

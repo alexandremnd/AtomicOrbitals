@@ -1,8 +1,11 @@
 #pragma once
 
+#include "Eigen/Dense"
+
 #include <vector>
 #include <functional>
 
+namespace Numerov {
 /**
  * @brief Implements the Numerov method to solve second-order differential
  * equations of the form y''(x) = -g(x)y(x) + s(x).
@@ -21,13 +24,37 @@
  *
  * @return Vector containing the solution values at the specified grid points.
  */
-std::vector<double> Numerov(std::vector<double> &Y0,
-                            std::function<double(double)> f_g,
-                            double (&f_s)(double), std::vector<double> &X0,
-                            double xi, double xf, double dx);
+Eigen::VectorXd numerov(Eigen::VectorXd &Y0, std::function<double(double)> f_g,
+                        double (&f_s)(double), Eigen::VectorXd &X0, double xi,
+                        double xf, double dx);
 
-double V_eff(double r, int Z, int l);
+/**
+ * @brief Effective potential for the radial Schrödinger equation.
+ *
+ * @param r Radial position
+ * @param Z Nucleus charge
+ * @param l Angular momentum quantum number
+ * @return double Effective potential value
+ */
+double v_eff(double r, int Z, int l);
 
-double Energie(double r, double E, int Z, int l);
+/**
+ * @brief Energy function for the radial Schrödinger equation.
+ *
+ * @param r Radial position
+ * @param E Energy
+ * @param Z Nucleus charge
+ * @param l Agular momentum quantum number
+ * @return double
+ */
+double energy(double r, double E, int Z, int l);
 
-double f_nulle(double x);
+/**
+ * @brief Function that returns 0.
+ *
+ * @param x Input value
+ * @return double Always returns 0.
+ */
+double f_null(double x);
+
+} // namespace Numerov
