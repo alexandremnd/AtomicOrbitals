@@ -33,7 +33,7 @@ To install dependencies on your Fedora-based distribution:
     sudo dnf install cmake python3-devel boost-devel gtest-devel doxygen
 ```
 
-### Arch (tested on rolling release of February)
+### Arch (tested on rolling release of March)
 To install dependencies on your Arch-based distribution:
 ```bash
     sudo pacman -Syu cmake base-devel python3 boost doxygen gtest
