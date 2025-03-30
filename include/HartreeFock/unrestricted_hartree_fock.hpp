@@ -3,6 +3,11 @@
 #include "HartreeFock/hartree_fock.hpp"
 #include <Eigen/Dense>
 
+/**
+ * @brief Hartree-Fock method implementation in the unrestricted case. Basis
+ * orbitals are not supposed doubly occupied. Spin contamination may occurs.
+ *
+ */
 class UnrestrictedHartreeFock : public HartreeFock {
   public:
     UnrestrictedHartreeFock(const System &system, uint num_electrons,
