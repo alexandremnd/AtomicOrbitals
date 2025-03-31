@@ -47,12 +47,28 @@ To install dependencies on your Arch-based distribution:
     cd AtomicOrbitals
 ```
 
-3. Download requirements for executing python scripts from (using a virtual environnement is recommended):
+2. (Optionnal) Using a virtual environnement is recommended, in that case, use:
+```bash
+    python3 -m venv name_of_env
+```
+and execute the following line (required for plotting):
+```bash
+    source name_of_env/bin/activate
+```
+
+3. Download requirements with:
 ```bash
     pip install -r requirements.txt
 ```
+or you might get python error after computation. In that case, after a computation, you may use one of the following scripts to view results:
+```bash
+    python3 scripts/affichage.py # For Numerov method
+    python3 scripts/plot_atom.py # For periodic table energies
+    python3 scripts/plot_optimization.py # For H2 bond length optimization
+    python3 scripts/plot_molecule.py # For H2/Ethylen equilibrium geometry.
+```
 
-2. Build the project without tests:
+4. Build the project without tests:
 ```bash
     cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_DOCS=OFF -DENABLE_TESTS=OFF
     cmake --build build --config release
@@ -60,9 +76,9 @@ To install dependencies on your Arch-based distribution:
 ```
 
 *Note:* You can switch ```ENABLE_DOCS``` and ```ENABLE_TESTS``` if you want to build the documentation and test cases.
-When setting ```ENABLE_TESTS```, ```CMAKE_BUILD_TYPE``` is set to Debug for every future build. If you want to rebuild in Release mode, do not forget to add ```-DCMAKE_BUILD_TYPE=Release``` and ```-DENABLE_TESTS=OFF``` to reset cache file to next build !
+When setting ```ENABLE_TESTS```, ```CMAKE_BUILD_TYPE``` is set to Debug for every future build. If you want to rebuild in Release mode, do not forget to add ```-DCMAKE_BUILD_TYPE=Release``` and ```-DENABLE_TESTS=OFF``` to reset cache file for next build !
 
-1. Compiled project is located in ```build/AtomicOrbitals``` and (optionnaly) generated documentation in ```build/docs/html/index.html```
+5. Compiled project is located in ```build/AtomicOrbitals``` and (optionnaly) generated documentation in ```build/docs/html/index.html```
 
 ## Generating and running test cases
 To generate test cases, [GoogleTest](https://github.com/google/googletest) is required.
